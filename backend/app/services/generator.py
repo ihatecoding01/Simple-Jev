@@ -7,8 +7,81 @@ from app.config import settings
 class GeneratorService:
     """
     Extracts candidate {state, candidate_schema} from plain-language input.
-    Operates in live mode via LLM provider, or in high-fidelity deterministic simulation mode.
+    Operates in live mode via Groq/OpenAI, or in high-fidelity deterministic simulation mode.
     """
+
+    def _generate_with_groq(
+        self,
+        prompt: str,
+        existing_state: Optional[Dict[str, Any]]
+    ) -> Optional[Tuple[CandidateSchema, Dict[str, Any]]]:
+        """Calls Groq API to extract structured state and candidate schema."""
+        if not settings.GROQ_API_KEY or not settings.GROQ_API_KEY.strip():
+            return None
+
+        try:
+            from groq import Groq
+            client = Groq(api_key=settings.GROQ_API_KEY.strip())
+
+            system_prompt = (
+                "You are the schema extractor for Jev, a typed System One decision engine. "
+                "Analyze the user's natural language request and extract:\n"
+                "1. 'state': an object containing the factual context or background text to evaluate (e.g. email body, ticket text, variables).\n"
+                "2. 'schema': a typed question schema of type 'Choice', 'Score', or 'Noul'.\n"
+                "   - If Choice: provide 'question' and 'options' (array of 3 to 6 distinct, mutually exclusive choices).\n"
+                "   - If Score: provide 'question', 'min_score' (1.0), 'max_score' (5.0), and 'criteria'.\n"
+                "   - If Noul: provide 'question' and 'assertion' (boolean statement to verify).\n"
+                "Return ONLY valid JSON matching this schema: "
+                "{\"state\": {\"content_text\": \"...\"}, \"schema\": {\"type\": \"Choice\"|\"Score\"|\"Noul\", \"question\": \"...\", \"options\": [...]}}"
+            )
+
+            res = client.chat.completions.create(
+                model="openai/gpt-oss-20b",
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": prompt}
+                ],
+                temperature=0.1,
+                response_format={"type": "json_object"}
+            )
+
+            content = res.choices[0].message.content
+            data = json.loads(content)
+
+            extracted_state = existing_state.copy() if existing_state else {}
+            if "state" in data and isinstance(data["state"], dict):
+                extracted_state.update(data["state"])
+            extracted_state["raw_query"] = prompt
+            if "content_text" not in extracted_state and len(prompt) > 20:
+                extracted_state["content_text"] = prompt
+
+            s_data = data.get("schema", {})
+            raw_type = s_data.get("type", "Choice")
+            q_type = QuestionType.CHOICE
+            if raw_type.lower() == "score":
+                q_type = QuestionType.SCORE
+            elif raw_type.lower() == "noul":
+                q_type = QuestionType.NOUL
+
+            options = s_data.get("options", [])
+            if q_type == QuestionType.CHOICE and len(options) < 2:
+                options = ["Option A", "Option B", "General Inquiries"]
+
+            schema = CandidateSchema(
+                type=q_type,
+                question=s_data.get("question", prompt),
+                options=options if q_type == QuestionType.CHOICE else [],
+                min_score=float(s_data.get("min_score", 1.0)),
+                max_score=float(s_data.get("max_score", 5.0)),
+                criteria=s_data.get("criteria", "Evaluation criteria"),
+                assertion=s_data.get("assertion", prompt)
+            )
+
+            return schema, extracted_state
+
+        except Exception as e:
+            print(f"[Generator Service] Live Groq call failed ({e}), falling back to deterministic extraction.")
+            return None
 
     def generate_candidate(
         self,
@@ -16,13 +89,19 @@ class GeneratorService:
         existing_state: Optional[Dict[str, Any]] = None
     ) -> Tuple[CandidateSchema, Dict[str, Any]]:
         """
-        Parses user prompt into state and candidate schema.
+        Parses user prompt into state and candidate schema using Groq if enabled,
+        or falling back to deterministic heuristic parsing.
         """
+        # Try Groq if configured
+        if settings.LLM_PROVIDER.lower() == "groq":
+            groq_res = self._generate_with_groq(prompt, existing_state)
+            if groq_res:
+                return groq_res
+
+        # Heuristic / deterministic fallback
         prompt_clean = prompt.strip()
         state: Dict[str, Any] = existing_state.copy() if existing_state else {}
 
-        # 1. State extraction
-        # If user supplied contextual clues (emails, messages, numbers, quotes)
         quotes = re.findall(r'["\'](.*?)["\']', prompt_clean)
         emails = re.findall(r'[\w\.-]+@[\w\.-]+\.\w+', prompt_clean)
         
@@ -32,14 +111,12 @@ class GeneratorService:
         if emails:
             state["sender_email"] = emails[0]
             
-        # If prompt has text following "email:", "message:", "saying:", or "ticket:"
         match_context = re.search(r'(?:email|message|ticket|saying|text|content)\s*[:\-]\s*(.*)', prompt_clean, re.IGNORECASE)
         if match_context:
             state["content_text"] = match_context.group(1).strip()
         elif len(prompt_clean) > 50:
             state["content_text"] = prompt_clean
 
-        # 2. Schema classification and generation
         lower = prompt_clean.lower()
 
         # Score type detection
@@ -63,14 +140,12 @@ class GeneratorService:
             return schema, state
 
         # Default: Choice (Categorization)
-        # Extract explicit options if user provided "between X, Y, or Z" or "into X, Y, Z"
         options_match = re.search(r'(?:between|into|among|one of)\s*[:\-]?\s*([^?.]+)', prompt_clean, re.IGNORECASE)
         options: List[str] = []
         if options_match:
             raw_opts = re.split(r',|\bor\b|\band\b', options_match.group(1))
             options = [o.strip().title() for o in raw_opts if o.strip() and len(o.strip()) > 1]
 
-        # Domain heuristics if no explicit options found
         if not options:
             if any(w in lower for w in ["email", "ticket", "inquiry", "support", "customer"]):
                 options = ["Billing & Invoicing", "Technical Support", "Account Management", "General Inquiries"]
@@ -118,10 +193,6 @@ class GeneratorService:
         return "I've structured a decision question for your request. Sound right?"
 
     def generate_fallback_response(self, prompt: str) -> str:
-        """
-        Emitted when validation retries fail to converge on a strict Jev schema.
-        Provides a polite, helpful unstructured response with guidance.
-        """
         return (
             f"Here is a general assessment of your query: '{prompt}'. "
             f"To evaluate this with TypeSafe AI's deterministic Jev engine, try phrasing your request with explicit "

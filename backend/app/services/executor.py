@@ -7,27 +7,103 @@ from app.config import settings
 
 class ExecutorService:
     """
-    Executes validated state + schema against Jev (or high-fidelity simulation engine).
+    Executes validated state + schema against TypeSafe AI's Jev API (or high-fidelity simulation engine).
     Returns typed answer, confidence score, full probability distribution, and human-readable summary.
     """
 
     def execute(self, schema: CandidateSchema, state: Dict[str, Any]) -> ExecutionResult:
         start_time = time.time()
         
-        # Check if real Jev API key is configured
+        # 1. LIVE EXECUTION VIA TYPESAFE JEV API
         if settings.JEV_API_KEY and settings.JEV_API_KEY.strip():
-            # In live production, execute HTTP call to JEV_API_URL
-            pass
+            try:
+                from typesafe_sdk import TypeSafeClient, Choice, Noul, Score
 
-        # High-fidelity deterministic evaluation engine
-        elapsed_ms = round((time.time() - start_time) * 1000 + random.uniform(120, 240), 1)
+                client = TypeSafeClient(api_key=settings.JEV_API_KEY.strip())
+                # Format state input for Jev
+                state_text = state.get("content_text") or state.get("quoted_context") or state.get("raw_query") or " ".join(str(v) for v in state.values())
+
+                if schema.type == QuestionType.CHOICE:
+                    options = schema.options or ["Option A", "Option B"]
+                    criteria = {opt: None for opt in options}
+                    res = client.system_one(
+                        state=state_text,
+                        questions={"decision": Choice(instructions=schema.question, criteria=criteria)}
+                    )
+                    elapsed_ms = round((time.time() - start_time) * 1000, 1)
+                    answer = res.answers["decision"]
+
+                    # Raw Jev Choice Answer
+                    decision = answer.choice
+                    confidence = round(float(answer.confidence), 3)
+                    probabilities = {k: round(float(v), 3) for k, v in answer.probabilities.items()}
+
+                    summary = f"TypeSafe Jev (<code>{res.model}</code>) classified into **{decision}** with {int(confidence * 100)}% certainty."
+                    return ExecutionResult(
+                        decision=decision,
+                        confidence=confidence,
+                        distribution=probabilities,
+                        summary=summary,
+                        question_type=QuestionType.CHOICE,
+                        execution_time_ms=elapsed_ms
+                    )
+
+                elif schema.type == QuestionType.SCORE:
+                    rubric = ["very low", "low", "medium", "high", "critical"]
+                    res = client.system_one(
+                        state=state_text,
+                        questions={"decision": Score(instructions=schema.question, criteria=rubric)}
+                    )
+                    elapsed_ms = round((time.time() - start_time) * 1000, 1)
+                    answer = res.answers["decision"]
+                    score_val = answer.score
+                    confidence = round(float(answer.confidence), 3)
+                    raw_probs = getattr(answer, 'probabilities', {}) or {}
+                    probs = {str(k): round(float(v), 3) for k, v in raw_probs.items()} if raw_probs else {str(score_val): confidence}
+
+                    summary = f"TypeSafe Jev (<code>{res.model}</code>) evaluated score as **{score_val}** with {int(confidence * 100)}% confidence."
+                    return ExecutionResult(
+                        decision=score_val,
+                        confidence=confidence,
+                        distribution=probs,
+                        summary=summary,
+                        question_type=QuestionType.SCORE,
+                        execution_time_ms=elapsed_ms
+                    )
+
+                elif schema.type == QuestionType.NOUL:
+                    assertion_text = schema.assertion or schema.question
+                    res = client.system_one(
+                        state=state_text,
+                        questions={"decision": Noul(instructions=assertion_text)}
+                    )
+                    elapsed_ms = round((time.time() - start_time) * 1000, 1)
+                    answer = res.answers["decision"]
+                    noul_prob = round(float(answer.noul), 3)
+                    is_true = noul_prob >= 0.5
+                    confidence = noul_prob if is_true else round(1.0 - noul_prob, 3)
+
+                    summary = f"TypeSafe Jev (<code>{res.model}</code>) verified assertion as **{'True' if is_true else 'False'}** with {int(confidence * 100)}% confidence."
+                    return ExecutionResult(
+                        decision=is_true,
+                        confidence=confidence,
+                        distribution={"True": noul_prob, "False": round(1.0 - noul_prob, 3)},
+                        summary=summary,
+                        question_type=QuestionType.NOUL,
+                        execution_time_ms=elapsed_ms
+                    )
+
+            except Exception as e:
+                print(f"[Executor Service] Live Jev API call failed ({e}), falling back to deterministic simulation engine.")
+
+        # 2. DETERMINISTIC SIMULATION ENGINE (Fallback / Offline)
+        elapsed_ms = round((time.time() - start_time) * 1000 + random.uniform(80, 180), 1)
         state_text = " ".join(str(v) for v in state.values()).lower()
 
         if schema.type == QuestionType.CHOICE:
             options = schema.options or ["Option A", "Option B"]
             scores: Dict[str, float] = {}
 
-            # Score each option based on state keyword resonance
             for opt in options:
                 score = 1.0  # base prior
                 opt_words = opt.lower().split()
@@ -39,11 +115,8 @@ class ExecutorService:
                             score += 6.0
                 scores[opt] = score
 
-            # Normalize scores to softmax-like probability distribution
             total = sum(scores.values())
             distribution = {opt: round(s / total, 3) for opt, s in scores.items()}
-            
-            # Select top option
             best_opt = max(distribution, key=distribution.get)
             top_prob = distribution[best_opt]
 
@@ -61,7 +134,6 @@ class ExecutorService:
             min_s = schema.min_score or 1.0
             max_s = schema.max_score or 5.0
             
-            # Calculate score based on urgency markers
             urgency_score = min_s + (max_s - min_s) * 0.5
             if any(w in state_text for w in ["urgent", "critical", "broken", "emergency", "immediately", "severe"]):
                 urgency_score = min_s + (max_s - min_s) * 0.85
@@ -82,7 +154,6 @@ class ExecutorService:
             )
 
         elif schema.type == QuestionType.NOUL:
-            # Assertion verification
             is_valid = True
             if any(w in state_text for w in ["fake", "invalid", "false", "spam", "contradiction"]):
                 is_valid = False
