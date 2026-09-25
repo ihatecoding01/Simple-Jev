@@ -19,13 +19,13 @@ export default function Stepper({ stages }: StepperProps) {
 
   return (
     <div
-      className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-indigo-950/40 border border-indigo-500/30 text-xs text-indigo-300 shadow-sm animate-pulse"
+      className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-white border border-[#E5E5E2] text-xs text-[#374151] shadow-xs animate-pulse"
       id="pipeline-stepper"
     >
-      <div className="w-3 h-3 border-2 border-indigo-400/30 border-t-indigo-400 rounded-full animate-spin" />
+      <div className="w-3 h-3 border-2 border-[#5B61F6]/30 border-t-[#5B61F6] rounded-full animate-spin" />
       <div className="flex items-center gap-1.5">
-        <span className="font-semibold text-slate-100">Pipeline:</span>
-        <span>{currentStage.label || 'Evaluating intent...'}</span>
+        <span className="font-semibold text-[#111111] font-mono text-[11px] uppercase tracking-wide">Pipeline:</span>
+        <span className="text-xs">{currentStage.label || 'Evaluating intent...'}</span>
       </div>
     </div>
   );

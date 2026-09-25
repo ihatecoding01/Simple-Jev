@@ -1,6 +1,9 @@
+from pathlib import Path
 from pydantic_settings import BaseSettings
 from typing import Optional
 import os
+
+_BASE_DIR = Path(__file__).resolve().parent.parent
 
 class Settings(BaseSettings):
     APP_NAME: str = "Simple Jev Backend"
@@ -29,7 +32,7 @@ class Settings(BaseSettings):
     CORS_ORIGINS: list[str] = ["http://localhost:5173", "http://127.0.0.1:5173", "*"]
 
     class Config:
-        env_file = ".env"
+        env_file = [str(_BASE_DIR / ".env"), ".env", "backend/.env"]
         extra = "allow"
 
 settings = Settings()

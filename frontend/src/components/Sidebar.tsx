@@ -51,14 +51,14 @@ export default function Sidebar({
       />
 
       {/* Panel */}
-      <aside className="fixed top-0 bottom-0 left-0 w-80 sm:w-96 bg-slate-950 border-r border-slate-800 z-50 flex flex-col shadow-2xl animate-in slide-in-from-left duration-200">
-        <div className="p-4 border-b border-slate-800 flex items-center justify-between">
+      <aside className="fixed top-0 bottom-0 left-0 w-80 sm:w-96 bg-[#FBFBFA] border-r border-[#E5E5E2] z-50 flex flex-col shadow-2xl animate-in slide-in-from-left duration-200">
+        <div className="p-4 border-b border-[#E5E5E2] flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="text-lg">📌</span>
-            <span className="font-semibold text-sm text-slate-100">Pinned Rules & Cache</span>
+            <span className="text-sm">📌</span>
+            <span className="font-semibold text-sm text-[#111111]">Pinned Rules & Cache</span>
           </div>
           <button
-            className="w-8 h-8 rounded-lg bg-slate-900 border border-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
+            className="w-7 h-7 rounded-lg bg-white border border-[#E5E5E2] text-[#6B7280] hover:text-[#111111] flex items-center justify-center transition-colors cursor-pointer text-xs"
             onClick={onClose}
             title="Close sidebar"
             id="close-sidebar-btn"
@@ -69,20 +69,20 @@ export default function Sidebar({
 
         <div className="flex-1 overflow-y-auto p-4 space-y-6">
           <div>
-            <div className="text-[11px] font-mono uppercase tracking-wider text-slate-400 mb-3 font-semibold">
+            <div className="text-[11px] font-mono uppercase tracking-wider text-[#6B7280] mb-3 font-semibold">
               Your Pinned Rules ({pinnedSchemas.length})
             </div>
 
             {pinnedSchemas.length === 0 ? (
-              <p className="text-xs text-slate-500 italic">
-                No pinned rules yet. Pin a schema from any completed decision to reuse it instantly!
+              <p className="text-xs text-[#9CA3AF] italic">
+                No pinned rules yet. Pin a schema from any completed decision in the playground to reuse it instantly!
               </p>
             ) : (
               <div className="space-y-3">
                 {pinnedSchemas.map((schema) => (
                   <div
                     key={schema.id}
-                    className="p-3 rounded-xl bg-slate-900/80 border border-slate-800/80 hover:border-indigo-500/40 transition-all space-y-2 group shadow-sm"
+                    className="p-3.5 rounded-xl bg-white border border-[#E5E5E2] hover:border-[#5B61F6] transition-all space-y-2 group shadow-xs"
                   >
                     {editingId === schema.id ? (
                       <div className="flex gap-2">
@@ -90,24 +90,24 @@ export default function Sidebar({
                           type="text"
                           value={editName}
                           onChange={(e) => setEditName(e.target.value)}
-                          className="flex-1 px-2 py-1 text-xs bg-slate-950 border border-indigo-500 rounded text-slate-100 outline-none"
+                          className="flex-1 px-2 py-1 text-xs bg-[#FBFBFA] border border-[#5B61F6] rounded text-[#111111] outline-none"
                           autoFocus
                         />
                         <button
-                          className="px-2 py-1 text-xs bg-indigo-600 hover:bg-indigo-500 text-white rounded font-medium cursor-pointer"
+                          className="px-2 py-1 text-xs bg-[#111111] hover:bg-[#5B61F6] text-white rounded font-medium cursor-pointer"
                           onClick={() => handleSaveRename(schema.id)}
                         >
                           Save
                         </button>
                       </div>
                     ) : (
-                      <div className="font-semibold text-sm text-slate-100 truncate" title={schema.friendly_name}>
+                      <div className="font-semibold text-sm text-[#111111] truncate" title={schema.friendly_name}>
                         {schema.friendly_name}
                       </div>
                     )}
 
-                    <div className="text-xs text-slate-400 line-clamp-2">
-                      <span className="font-mono text-indigo-400 mr-1.5 font-medium">[{schema.question_type}]</span>
+                    <div className="text-xs text-[#6B7280] line-clamp-2">
+                      <span className="font-mono text-[#5B61F6] mr-1.5 font-medium">[{schema.question_type}]</span>
                       {schema.options && schema.options.length > 0
                         ? schema.options.join(', ')
                         : schema.intent_summary}
@@ -115,7 +115,7 @@ export default function Sidebar({
 
                     <div className="flex items-center gap-1.5 pt-1">
                       <button
-                        className="px-2.5 py-1 text-xs bg-indigo-600 hover:bg-indigo-500 text-white rounded-md font-medium flex items-center gap-1 shadow-sm transition-all cursor-pointer"
+                        className="px-2.5 py-1 text-xs bg-[#111111] hover:bg-[#5B61F6] text-white rounded-md font-medium flex items-center gap-1 shadow-xs transition-all cursor-pointer"
                         onClick={() => {
                           onQuickRun(schema);
                           onClose();
@@ -125,14 +125,14 @@ export default function Sidebar({
                         <span>⚡</span> Quick Run
                       </button>
                       <button
-                        className="p-1 text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-md transition-colors cursor-pointer"
+                        className="p-1 text-xs bg-[#F4F4F1] hover:bg-[#E5E5E2] text-[#374151] rounded-md transition-colors cursor-pointer"
                         onClick={() => handleStartRename(schema)}
                         title="Rename rule"
                       >
                         ✏️
                       </button>
                       <button
-                        className="p-1 text-xs bg-slate-800 hover:bg-rose-900/50 text-slate-300 hover:text-rose-300 rounded-md transition-colors cursor-pointer"
+                        className="p-1 text-xs bg-[#F4F4F1] hover:bg-rose-50 text-[#374151] hover:text-rose-600 rounded-md transition-colors cursor-pointer"
                         onClick={() => handleUnpin(schema.id)}
                         title="Unpin rule"
                       >
@@ -145,11 +145,11 @@ export default function Sidebar({
             )}
           </div>
 
-          <div className="pt-4 border-t border-slate-800/80">
-            <div className="text-[11px] font-mono uppercase tracking-wider text-slate-400 mb-2 font-semibold">
+          <div className="pt-4 border-t border-[#E5E5E2]">
+            <div className="text-[11px] font-mono uppercase tracking-wider text-[#6B7280] mb-2 font-semibold">
               How Pinned Rules Work
             </div>
-            <p className="text-xs text-slate-400 leading-relaxed">
+            <p className="text-xs text-[#6B7280] leading-relaxed">
               Pinned schemas eliminate LLM regeneration time and cost. In <strong>Unrestricted Mode</strong>, repeat requests automatically match via semantic vector embeddings and execute immediately at <strong>0 credit cost</strong>.
             </p>
           </div>
