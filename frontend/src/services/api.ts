@@ -1,0 +1,110 @@
+import { CandidateSchema, EvaluateResponse, ExecutionResult, PinnedSchema, QuotaStatus } from '../types';
+
+const API_BASE = '/api/v1';
+
+export async function evaluateIntent(
+  prompt: string,
+  mode: 'restricted' | 'unrestricted' = 'restricted',
+  existingState: Record<string, any> | null = null,
+  clientFingerprint = ''
+): Promise<EvaluateResponse> {
+  const res = await fetch(`${API_BASE}/intent/evaluate`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      prompt,
+      mode,
+      session_id: 'browser_session',
+      client_fingerprint: clientFingerprint,
+      existing_state: existingState,
+    }),
+  });
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(errorData.detail || `Server error (${res.status})`);
+  }
+  return res.json();
+}
+
+export async function revalidateSchema(
+  schemaData: CandidateSchema,
+  state: Record<string, any> | null = null
+): Promise<EvaluateResponse> {
+  const res = await fetch(`${API_BASE}/schema/revalidate`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      schema_data: schemaData,
+      state: state,
+    }),
+  });
+  if (!res.ok) {
+    throw new Error('Revalidation failed');
+  }
+  return res.json();
+}
+
+export async function patchSchema(
+  originalSchema: CandidateSchema,
+  state: Record<string, any> | null,
+  userCorrection: string,
+  originalPrompt = ''
+): Promise<EvaluateResponse> {
+  const res = await fetch(`${API_BASE}/schema/patch`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      original_schema: originalSchema,
+      state: state,
+      user_correction: userCorrection,
+      original_prompt: originalPrompt,
+    }),
+  });
+  if (!res.ok) {
+    throw new Error('Patching failed');
+  }
+  return res.json();
+}
+
+export async function executeJev(
+  schemaData: CandidateSchema,
+  state: Record<string, any>
+): Promise<ExecutionResult> {
+  const res = await fetch(`${API_BASE}/jev/execute`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      schema_data: schemaData,
+      state: state,
+      session_id: 'browser_session',
+    }),
+  });
+  if (!res.ok) {
+    throw new Error('Execution failed');
+  }
+  return res.json();
+}
+
+export async function fetchQuota(fingerprint = ''): Promise<QuotaStatus> {
+  try {
+    const res = await fetch(`${API_BASE}/usage/quota?fingerprint=${encodeURIComponent(fingerprint)}`);
+    if (res.ok) {
+      return res.json();
+    }
+  } catch (e) {
+    console.warn('Quota fetch failed, using fallback:', e);
+  }
+  return { daily_limit: 25, remaining: 25, cached_runs: 0, cold_runs: 0 };
+}
+
+export async function fetchCachedTemplates(): Promise<any[]> {
+  try {
+    const res = await fetch(`${API_BASE}/cache/all`);
+    if (res.ok) {
+      return res.json();
+    }
+  } catch (e) {
+    console.warn('Cache fetch failed:', e);
+  }
+  return [];
+}
