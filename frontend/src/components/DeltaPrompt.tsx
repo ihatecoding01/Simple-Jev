@@ -23,46 +23,92 @@ export default function DeltaPrompt({
 
   return (
     <div
-      className="w-full max-w-2xl bg-[#FFFBEB] border border-[#FDE68A] rounded-xl p-5 shadow-xs border-l-4 border-l-[#F59E0B] space-y-3"
+      className="w-full max-w-2xl animate-fade-in"
+      style={{
+        backgroundColor: '#111113',
+        border: '1px solid #2E2E32',
+        borderLeft: '3px solid #F59E0B',
+        borderRadius: '4px',
+        padding: '20px 24px',
+      }}
       id="delta-prompt-card"
     >
-      <div className="flex items-center gap-2">
-        <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-mono bg-amber-100 text-amber-800 border border-amber-300">
-          <span>⚠️ Schema Variation Detected</span>
+      {/* Badge */}
+      <div className="flex items-center gap-2 mb-3">
+        <span className="gt-badge gt-badge--amber">
+          ⚠ Schema Variation Detected
         </span>
       </div>
 
-      <div className="text-xs sm:text-sm font-semibold text-[#111111] leading-snug">
+      {/* Delta description */}
+      <div
+        className="mb-2 leading-snug"
+        style={{
+          fontFamily: "'Space Grotesk', sans-serif",
+          fontSize: '0.9375rem',
+          fontWeight: 600,
+          color: '#FFFFFF',
+          lineHeight: 1.4,
+        }}
+      >
         {added.length > 0 && (
           <span>
-            Last time this rule ran without <strong>{added.join(', ')}</strong>. This time there&apos;s a new option:{' '}
-            <span className="text-[#D97706] font-bold">{added.join(', ')}</span>.
+            Last time this ran without{' '}
+            <span style={{ color: '#F59E0B', fontFamily: "'JetBrains Mono', monospace", fontSize: '0.8125rem' }}>
+              {added.join(', ')}
+            </span>
+            . A new option has appeared.
           </span>
         )}
         {removed.length > 0 && (
           <span className="ml-1">
-            Previous options <strong>{removed.join(', ')}</strong> were excluded.
+            Options{' '}
+            <span style={{ color: '#F59E0B', fontFamily: "'JetBrains Mono', monospace", fontSize: '0.8125rem' }}>
+              {removed.join(', ')}
+            </span>{' '}
+            were excluded.
           </span>
         )}
       </div>
 
-      <p className="text-xs text-[#6B7280]">
-        Would you like to include this updated option set for this decision?
+      <p
+        className="mb-4"
+        style={{
+          fontFamily: "'Space Grotesk', sans-serif",
+          fontSize: '0.8125rem',
+          color: '#71717A',
+          lineHeight: 1.6,
+        }}
+      >
+        Include the updated option set for this decision run?
       </p>
 
-      <div className="flex flex-wrap items-center gap-2.5 pt-1">
+      {/* Action buttons */}
+      <div className="flex flex-wrap items-center gap-2">
         <button
-          className="px-3.5 py-1.5 text-xs font-semibold bg-[#D97706] hover:bg-[#B45309] text-white rounded-lg shadow-xs transition-all cursor-pointer disabled:opacity-50"
+          className="gt-btn-primary"
+          style={{ backgroundColor: '#F59E0B', color: '#0A0A0A' }}
           onClick={onIncludeAndExecute}
           disabled={isExecuting}
+          onMouseEnter={e => {
+            if (!isExecuting) {
+              (e.currentTarget as HTMLElement).style.backgroundColor = '#D97706';
+              (e.currentTarget as HTMLElement).style.boxShadow = '0 0 20px rgba(245, 158, 11, 0.2)';
+            }
+          }}
+          onMouseLeave={e => {
+            (e.currentTarget as HTMLElement).style.backgroundColor = '#F59E0B';
+            (e.currentTarget as HTMLElement).style.boxShadow = 'none';
+          }}
         >
-          {isExecuting ? 'Running Jev...' : 'Include & Execute'}
+          {isExecuting ? '⟳ Running Jev...' : 'Include & Execute'}
         </button>
 
         <button
-          className="px-3 py-1.5 text-xs font-medium bg-[#FFFFFF] hover:bg-slate-50 text-[#374151] rounded-lg border border-[#D1D5DB] transition-colors cursor-pointer shadow-xs"
+          className="gt-btn-secondary"
           onClick={onRevertToPrevious}
           disabled={isExecuting}
+          style={{ padding: '10px 16px' }}
         >
           Revert to Previous Rule
         </button>

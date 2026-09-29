@@ -65,7 +65,7 @@ export default function Home() {
 
   const handleModeChange = (newMode: 'restricted' | 'unrestricted') => {
     setMode(newMode);
-    savePreferences({ mode: newMode, theme: 'light', unedited_count: consecutiveUnedited });
+    savePreferences({ mode: newMode, theme: 'dark', unedited_count: consecutiveUnedited });
   };
 
   useEffect(() => {
@@ -220,7 +220,7 @@ export default function Home() {
 
       const newCount = consecutiveUnedited + 1;
       setConsecutiveUnedited(newCount);
-      savePreferences({ mode, theme: 'light', unedited_count: newCount });
+      savePreferences({ mode, theme: 'dark', unedited_count: newCount });
 
       if (mode === 'restricted' && newCount >= 3) {
         setShowTrustBanner(true);
@@ -331,19 +331,17 @@ export default function Home() {
   };
 
   return (
-    <div className="blueprint-sheet">
-      {/* Top Technical Drafting Ruler */}
-      <div className="blueprint-ruler">
-        <span className="crosshair">+</span>
-        <span className="hidden sm:inline">-300</span>
+    <div className="terminal-sheet bg-[#0A0A0A] text-[#FFFFFF] min-h-screen">
+      {/* Top Technical Grid Wire Ruler */}
+      <div className="h-7 border-b border-[#2E2E32] bg-[#0A0A0A] flex items-center justify-between px-4 sm:px-8 text-[10px] font-mono text-[#52525B] select-none tracking-widest uppercase">
+        <span className="text-[#C8FF00] font-bold">+</span>
+        <span className="hidden sm:inline">-400</span>
         <span className="hidden sm:inline">-200</span>
-        <span className="hidden sm:inline">-100</span>
-        <span className="text-[#111111] font-bold">0.00</span>
-        <span className="hidden sm:inline">+100</span>
+        <span className="text-[#A1A1AA] font-semibold">GRID 0.00</span>
         <span className="hidden sm:inline">+200</span>
-        <span className="hidden sm:inline">+300</span>
-        <span className="text-[#6B7280]">SCALE 1:1 · COL 1080</span>
-        <span className="crosshair">+</span>
+        <span className="hidden sm:inline">+400</span>
+        <span className="text-[#71717A]">SYS: JEV-1.13 // COL 1120</span>
+        <span className="text-[#C8FF00] font-bold">+</span>
       </div>
 
       {/* Header */}
@@ -365,63 +363,73 @@ export default function Home() {
       />
 
       {/* ========================================================================= */}
-      {/* SHEET 01 · THE MANIFESTO & THE IDEA                                       */}
+      {/* SHEET 01 · THE MANIFESTO & THE PROBLEM                                    */}
       {/* ========================================================================= */}
-      <section id="manifesto" className="px-6 sm:px-12 pt-12 pb-16 border-b border-[#E5E5E2]">
-        <div className="sheet-label mb-4">
-          <span>◇ SHEET 01 · THE PROBLEM & THE IDEA</span>
-        </div>
+      <section id="manifesto" className="terminal-section relative overflow-hidden">
+        {/* Subtle decorative grid background inspired by reference */}
+        <div className="absolute inset-0 gt-pixel-grid opacity-15 pointer-events-none" />
 
-        <div className="max-w-3xl space-y-6">
-          <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-[#111111] leading-[1.12]">
-            The Developer Bottleneck.
-            <span className="block text-2xl sm:text-4xl font-normal text-[#6B7280] mt-2">
-              Removing the human schema author from TypeSafe AI's Jev model.
+        <div className="relative z-10">
+          <div className="flex items-center gap-2 mb-4">
+            <span className="w-1.5 h-1.5 rounded-[1px] bg-[#C8FF00]" />
+            <span className="type-label text-[#8B5CF6]">
+              ◇ SHEET 01 // PROBLEM STATEMENT & MANIFESTO
             </span>
-          </h1>
+          </div>
 
-          <p className="text-base sm:text-lg text-[#374151] leading-relaxed">
-            TypeSafe AI's <strong>Jev</strong> is a non-autoregressive <strong>System One decision engine</strong>. Unlike chat models that generate text token-by-token, Jev executes deterministic, typed decisions (Choice, Score, Noul) in parallel at <strong>70ms to 500ms</strong> speeds.
-          </p>
+          <div className="max-w-4xl space-y-6">
+            <h1 className="type-display leading-[1.05]">
+              The Developer Bottleneck.
+              <span className="block text-xl sm:text-3xl font-normal text-[#A1A1AA] mt-3 font-sans">
+                Removing the human schema author from TypeSafe AI's Jev model.
+              </span>
+            </h1>
 
-          <p className="text-base sm:text-lg text-[#374151] leading-relaxed">
-            <strong>The Catch:</strong> Jev requires an engineer to write the exact <code>state</code> object and typed schema in JSON upfront. If you don't write code, Jev is completely inaccessible.
-          </p>
+            <p className="text-sm sm:text-base text-[#A1A1AA] leading-relaxed max-w-3xl font-sans">
+              TypeSafe AI's <strong className="text-white">Jev</strong> is a non-autoregressive <strong className="text-white">System One decision engine</strong>. Unlike chat models that generate text token-by-token, Jev executes deterministic, typed decisions (Choice, Score, Noul) in parallel at <strong className="text-[#C8FF00]">70ms to 500ms</strong> speeds.
+            </p>
 
-          <div className="p-5 rounded-2xl bg-[#FFFFFF] border border-[#E5E5E2] shadow-xs space-y-3">
-            <div className="text-xs font-mono font-semibold text-[#5B61F6] uppercase tracking-wider">
-              ✦ The Conversational Jev Solution
+            <p className="text-sm sm:text-base text-[#A1A1AA] leading-relaxed max-w-3xl font-sans">
+              <strong className="text-white font-mono uppercase text-xs tracking-wider bg-[#1C1C1F] px-2 py-0.5 border border-[#2E2E32] rounded-[2px] mr-1.5">The Invariant Gap</strong>
+              Jev requires an engineer to write the exact <code className="text-[#8B5CF6] font-mono text-xs">state</code> object and typed schema in JSON upfront. If you don't write code, Jev is completely inaccessible.
+            </p>
+
+            {/* Solution Callout Card */}
+            <div className="p-6 rounded-[4px] bg-[#111113] border border-[#2E2E32] border-l-[3px] border-l-[#C8FF00] space-y-2 mt-6">
+              <div className="text-[10px] font-mono font-bold text-[#C8FF00] uppercase tracking-wider">
+                ✦ THE CONVERSATIONAL JEV SOLUTION
+              </div>
+              <p className="text-sm sm:text-base text-white font-medium leading-relaxed font-sans">
+                A person types a free-form sentence in plain English. Simple Jev generates the typed schema, checks its fitness against a hand-crafted meta-schema, executes via Jev, and renders the result. <span className="text-[#C8FF00] font-semibold">The user never sees raw JSON.</span>
+              </p>
             </div>
-            <p className="text-sm sm:text-base text-[#111111] font-medium leading-normal">
-              A person types a free-form sentence in plain English. Simple Jev generates the typed schema, checks its fitness against a hand-crafted meta-schema, executes via Jev, and renders the result. <strong>The user never sees raw JSON.</strong>
-            </p>
-          </div>
-        </div>
-
-        {/* 3 Core Architecture Pillars (Grid) */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-10">
-          <div className="p-5 rounded-xl bg-[#FFFFFF] border border-[#E5E5E2] space-y-2">
-            <span className="text-xs font-mono text-[#5B61F6] font-semibold">01 / ZERO RAW JSON</span>
-            <div className="font-bold text-sm text-[#111111]">Interactive Visual Chips</div>
-            <p className="text-xs text-[#6B7280] leading-relaxed">
-              Schemas translate to plain English. Options appear as interactive visual chips (<kbd className="px-1 py-0.5 bg-slate-100 rounded text-[10px]">✕</kbd> to delete, <kbd className="px-1 py-0.5 bg-slate-100 rounded text-[10px]">+ Add</kbd>). Local edits re-validate instantly without LLM calls.
-            </p>
           </div>
 
-          <div className="p-5 rounded-xl bg-[#FFFFFF] border border-[#E5E5E2] space-y-2">
-            <span className="text-xs font-mono text-[#5B61F6] font-semibold">02 / META-SCHEMA</span>
-            <div className="font-bold text-sm text-[#111111]">5-Point Validator Contract</div>
-            <p className="text-xs text-[#6B7280] leading-relaxed">
-              The Validator does not answer the question; it evaluates candidate schema fitness across coverage, exclusivity, type fit, scope sizing, and state sufficiency before execution.
-            </p>
-          </div>
+          {/* 3 Core Architecture Pillars (Grid Blocks) */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-10">
+            <div className="p-5 rounded-[4px] bg-[#111113] border border-[#2E2E32] hover:border-[#8B5CF6] transition-all space-y-2 group">
+              <span className="text-[10px] font-mono text-[#8B5CF6] font-semibold tracking-wider block">01 // ZERO RAW JSON</span>
+              <div className="font-bold text-sm text-white font-mono">Interactive Visual Chips</div>
+              <p className="text-xs text-[#A1A1AA] leading-relaxed font-sans">
+                Schemas translate to plain English. Options appear as interactive visual chips (<kbd className="px-1.5 py-0.5 bg-[#1C1C1F] border border-[#2E2E32] rounded-[2px] text-[10px] font-mono text-white">✕</kbd> to delete, <kbd className="px-1.5 py-0.5 bg-[#1C1C1F] border border-[#2E2E32] rounded-[2px] text-[10px] font-mono text-[#C8FF00]">+ Add</kbd>). Local edits re-validate instantly without LLM calls.
+              </p>
+            </div>
 
-          <div className="p-5 rounded-xl bg-[#FFFFFF] border border-[#E5E5E2] space-y-2">
-            <span className="text-xs font-mono text-[#5B61F6] font-semibold">03 / TRUST ENGINE</span>
-            <div className="font-bold text-sm text-[#111111]">Safety-First Unrestricted</div>
-            <p className="text-xs text-[#6B7280] leading-relaxed">
-              Cached rules run instantly at 0 credit cost. Novel intents pause once for confirmation. Schema variations trigger amber delta alerts to prevent silent model drift.
-            </p>
+            <div className="p-5 rounded-[4px] bg-[#111113] border border-[#2E2E32] hover:border-[#8B5CF6] transition-all space-y-2 group">
+              <span className="text-[10px] font-mono text-[#8B5CF6] font-semibold tracking-wider block">02 // META-SCHEMA</span>
+              <div className="font-bold text-sm text-white font-mono">5-Point Validator Contract</div>
+              <p className="text-xs text-[#A1A1AA] leading-relaxed font-sans">
+                The Validator does not answer the question; it evaluates candidate schema fitness across coverage, exclusivity, type fit, scope sizing, and state sufficiency before execution.
+              </p>
+            </div>
+
+            <div className="p-5 rounded-[4px] bg-[#111113] border border-[#2E2E32] hover:border-[#C8FF00] transition-all space-y-2 group">
+              <span className="text-[10px] font-mono text-[#C8FF00] font-semibold tracking-wider block">03 // TRUST ENGINE</span>
+              <div className="font-bold text-sm text-white font-mono">Safety-First Unrestricted</div>
+              <p className="text-xs text-[#A1A1AA] leading-relaxed font-sans">
+                Cached rules run instantly at 0 credit cost. Novel intents pause once for confirmation. Schema variations trigger amber delta alerts to prevent silent model drift.
+              </p>
+            </div>
           </div>
         </div>
       </section>
@@ -429,47 +437,50 @@ export default function Home() {
       {/* ========================================================================= */}
       {/* SHEET 02 · ARCHITECTURE & VERIFICATION PIPELINE                           */}
       {/* ========================================================================= */}
-      <section id="architecture" className="px-6 sm:px-12 py-14 border-b border-[#E5E5E2] bg-[#FAFAFA]">
-        <div className="sheet-label mb-4">
-          <span>◇ SHEET 02 · SYSTEM ARCHITECTURE & 5-POINT VALIDATOR</span>
+      <section id="architecture" className="terminal-section bg-[#0A0A0A]">
+        <div className="flex items-center gap-2 mb-4">
+          <span className="w-1.5 h-1.5 rounded-[1px] bg-[#8B5CF6]" />
+          <span className="type-label text-[#8B5CF6]">
+            ◇ SHEET 02 // SYSTEM ARCHITECTURE & 5-POINT VALIDATOR
+          </span>
         </div>
 
-        <div className="space-y-6 max-w-3xl">
-          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#111111]">
+        <div className="space-y-4 max-w-3xl">
+          <h2 className="type-headline text-white">
             How the verification loop converges without thrashing.
           </h2>
-          <p className="text-sm sm:text-base text-[#4B5563] leading-relaxed">
-            Most LLM generation loops fail because they re-roll blindly upon error. Simple Jev uses <strong>targeted diff patching</strong>: the validator passes field-by-field diagnostics, allowing the generator to patch only the flagged field (append an option, adjust scale) rather than regenerating from scratch.
+          <p className="text-sm sm:text-base text-[#A1A1AA] leading-relaxed font-sans">
+            Most LLM generation loops fail because they re-roll blindly upon error. Simple Jev uses <strong className="text-white">targeted diff patching</strong>: the validator passes field-by-field diagnostics, allowing the generator to patch only the flagged field rather than regenerating from scratch.
           </p>
         </div>
 
-        {/* Technical Flow Visualization */}
-        <div className="mt-8 p-6 rounded-2xl bg-[#0D0E12] text-white font-mono text-xs shadow-xl space-y-4 border border-[#222530]">
-          <div className="flex items-center justify-between border-b border-[#222530] pb-3 text-[#9CA3AF]">
-            <span>Fig 2.1 · Pipeline Execution Graph</span>
-            <span>MODEL: JEV-1.13.0 · GROQ-GPT-OSS-20B</span>
+        {/* Technical Flow Visualization (Circuit Board Blocks) */}
+        <div className="mt-8 p-6 rounded-[4px] bg-[#111113] text-white font-mono text-xs space-y-4 border border-[#2E2E32]">
+          <div className="flex flex-wrap items-center justify-between border-b border-[#2E2E32] pb-3 text-[#71717A] text-[10px] uppercase tracking-wider">
+            <span className="text-[#A1A1AA]">FIG 2.1 // PIPELINE EXECUTION GRAPH</span>
+            <span>SPEC: JEV-1.13.0 · GROQ-GPT-OSS-20B</span>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-5 gap-3 text-center">
-            <div className="p-3 rounded-lg bg-[#14161E] border border-[#222530]">
-              <span className="text-indigo-400 block text-[10px] mb-1">STAGE 01</span>
-              <span className="font-bold">Plain Text</span>
+          <div className="grid grid-cols-1 sm:grid-cols-5 gap-2.5 text-center">
+            <div className="p-3 rounded-[0px] bg-[#161618] border border-[#2E2E32]">
+              <span className="text-[#8B5CF6] block text-[9px] mb-1 tracking-widest font-mono">STAGE 01</span>
+              <span className="font-bold text-white text-xs font-mono">Plain Text</span>
             </div>
-            <div className="p-3 rounded-lg bg-[#14161E] border border-[#222530]">
-              <span className="text-indigo-400 block text-[10px] mb-1">STAGE 02</span>
-              <span className="font-bold">384-d Cache</span>
+            <div className="p-3 rounded-[0px] bg-[#161618] border border-[#2E2E32]">
+              <span className="text-[#8B5CF6] block text-[9px] mb-1 tracking-widest font-mono">STAGE 02</span>
+              <span className="font-bold text-white text-xs font-mono">384-d Cache</span>
             </div>
-            <div className="p-3 rounded-lg bg-[#14161E] border border-[#222530]">
-              <span className="text-indigo-400 block text-[10px] mb-1">STAGE 03</span>
-              <span className="font-bold">Groq LLM</span>
+            <div className="p-3 rounded-[0px] bg-[#161618] border border-[#2E2E32]">
+              <span className="text-[#8B5CF6] block text-[9px] mb-1 tracking-widest font-mono">STAGE 03</span>
+              <span className="font-bold text-white text-xs font-mono">Groq LLM</span>
             </div>
-            <div className="p-3 rounded-lg bg-[#14161E] border border-[#222530]">
-              <span className="text-emerald-400 block text-[10px] mb-1">STAGE 04</span>
-              <span className="font-bold">5-pt Validator</span>
+            <div className="p-3 rounded-[0px] bg-[#161618] border border-[#2E2E32]">
+              <span className="text-[#10B981] block text-[9px] mb-1 tracking-widest font-mono">STAGE 04</span>
+              <span className="font-bold text-white text-xs font-mono">5-pt Validator</span>
             </div>
-            <div className="p-3 rounded-lg bg-[#5B61F6] text-white">
-              <span className="text-white/80 block text-[10px] mb-1">STAGE 05</span>
-              <span className="font-bold">Jev Decision</span>
+            <div className="p-3 rounded-[0px] bg-[#C8FF00] text-[#0A0A0A] font-bold border border-[#C8FF00] shadow-[0_0_15px_rgba(200,255,0,0.18)]">
+              <span className="text-black/80 block text-[9px] mb-1 tracking-widest font-mono">STAGE 05</span>
+              <span className="font-bold text-xs font-mono">Jev Decision</span>
             </div>
           </div>
         </div>
@@ -478,57 +489,78 @@ export default function Home() {
       {/* ========================================================================= */}
       {/* SHEET 03 · THE INTERACTIVE PLAYGROUND (TEST ON YOUR OWN)                  */}
       {/* ========================================================================= */}
-      <section ref={playgroundRef} id="playground" className="px-6 sm:px-12 py-14 border-b border-[#E5E5E2]">
+      <section ref={playgroundRef} id="playground" className="terminal-section bg-[#0A0A0A]">
         <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
-          <div className="sheet-label">
-            <span>◇ SHEET 03 · INTERACTIVE DECISION PLAYGROUND</span>
+          <div className="flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-[1px] bg-[#C8FF00]" />
+            <span className="type-label text-[#C8FF00]">
+              ◇ SHEET 03 // INTERACTIVE DECISION PLAYGROUND
+            </span>
           </div>
-          <div className="text-xs font-mono text-[#6B7280]">
-            CREDITS: <span className="font-bold text-[#111111]">{quota.remaining}/{quota.daily_limit}</span> (REPEAT RUNS FREE)
+          <div className="text-[11px] font-mono text-[#71717A] tracking-wider">
+            CREDITS: <span className="font-bold text-[#C8FF00]">{quota.remaining}/{quota.daily_limit}</span> [REPEAT RUNS FREE]
           </div>
         </div>
 
-        <div className="space-y-4 max-w-3xl mb-8">
-          <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-[#111111]">
+        <div className="space-y-3 max-w-3xl mb-8">
+          <h2 className="type-headline text-white">
             Test with live Jev System 1.
           </h2>
-          <p className="text-sm sm:text-base text-[#4B5563]">
+          <p className="text-sm sm:text-base text-[#A1A1AA] font-sans">
             Select a preset scenario below or type your own question. Watch how the schema is inferred, confirmed with visual chips, and executed against TypeSafe Jev.
           </p>
         </div>
 
-        {/* Preset Selector Pills (imdaryl style) */}
+        {/* Preset Selector Rectangular Blocks (Zero Pills) */}
         <div className="flex flex-wrap gap-2.5 mb-8">
           <button
-            className={`blueprint-pill ${activeTab === 'choice' ? 'active' : ''}`}
+            className={`px-3.5 py-2 text-xs font-mono font-medium rounded-[2px] border transition-all cursor-pointer ${
+              activeTab === 'choice'
+                ? 'bg-[#8B5CF6] text-white border-[#8B5CF6] shadow-[0_0_15px_rgba(139,92,246,0.2)]'
+                : 'bg-[#161618] text-[#A1A1AA] border-[#2E2E32] hover:border-[#8B5CF6] hover:text-white'
+            }`}
             onClick={() => loadPreset('choice')}
           >
-            <span>•</span> Choice: Customer Email Triage
+            <span className="mr-1.5 text-[#C8FF00]">■</span> CHOICE: Customer Email Triage
           </button>
           <button
-            className={`blueprint-pill ${activeTab === 'score' ? 'active' : ''}`}
+            className={`px-3.5 py-2 text-xs font-mono font-medium rounded-[2px] border transition-all cursor-pointer ${
+              activeTab === 'score'
+                ? 'bg-[#8B5CF6] text-white border-[#8B5CF6] shadow-[0_0_15px_rgba(139,92,246,0.2)]'
+                : 'bg-[#161618] text-[#A1A1AA] border-[#2E2E32] hover:border-[#8B5CF6] hover:text-white'
+            }`}
             onClick={() => loadPreset('score')}
           >
-            <span>•</span> Score: Outage Urgency (1 to 5)
+            <span className="mr-1.5 text-[#C8FF00]">■</span> SCORE: Outage Urgency (1 to 5)
           </button>
           <button
-            className={`blueprint-pill ${activeTab === 'noul' ? 'active' : ''}`}
+            className={`px-3.5 py-2 text-xs font-mono font-medium rounded-[2px] border transition-all cursor-pointer ${
+              activeTab === 'noul'
+                ? 'bg-[#8B5CF6] text-white border-[#8B5CF6] shadow-[0_0_15px_rgba(139,92,246,0.2)]'
+                : 'bg-[#161618] text-[#A1A1AA] border-[#2E2E32] hover:border-[#8B5CF6] hover:text-white'
+            }`}
             onClick={() => loadPreset('noul')}
           >
-            <span>•</span> Noul: Security SPF Assertion
+            <span className="mr-1.5 text-[#C8FF00]">■</span> NOUL: Security SPF Assertion
           </button>
         </div>
 
         {/* Active Quick Run Banner */}
         {activeQuickRunSchema && (
-          <div className="mb-6 p-4 rounded-xl bg-indigo-50 border border-indigo-200 flex items-center justify-between shadow-xs">
+          <div className="mb-6 p-4 rounded-[4px] bg-[#161618] border border-[#C8FF00] flex items-center justify-between shadow-[0_0_16px_rgba(200,255,0,0.1)]">
             <div>
-              <span className="text-[11px] font-mono text-indigo-700 font-semibold tracking-wider">⚡ QUICK RUN MODE ACTIVE</span>
-              <div className="font-semibold text-sm text-[#111111]">Pre-locked rule: "{activeQuickRunSchema.friendly_name}"</div>
-              <div className="text-xs text-[#4B5563]">Bypasses LLM generation. Evaluates directly via Jev (0 credits used).</div>
+              <span className="text-[10px] font-mono text-[#C8FF00] font-semibold tracking-widest block uppercase">
+                ⚡ QUICK RUN MODE ACTIVE
+              </span>
+              <div className="font-semibold text-sm text-white font-mono mt-0.5">
+                Pre-locked rule: "{activeQuickRunSchema.friendly_name}"
+              </div>
+              <div className="text-xs text-[#A1A1AA] font-sans">
+                Bypasses LLM generation. Evaluates directly via Jev (0 credits used).
+              </div>
             </div>
             <button
-              className="px-3 py-1.5 text-xs bg-white hover:bg-slate-50 text-[#374151] rounded-lg border border-[#D1D5DB] transition-colors cursor-pointer shadow-xs"
+              className="px-3 py-1.5 text-xs font-mono bg-transparent hover:bg-[#1C1C1F] text-[#C8FF00] hover:text-white rounded-[4px] border border-[#C8FF00] transition-colors cursor-pointer"
               onClick={() => setActiveQuickRunSchema(null)}
             >
               Cancel Quick Run
@@ -550,15 +582,17 @@ export default function Home() {
         )}
 
         {/* Live Conversation Thread / Playground Canvas */}
-        <div className="min-h-[320px] p-6 rounded-2xl bg-[#FFFFFF] border border-[#E5E5E2] shadow-sm space-y-6">
+        <div className="min-h-[340px] p-6 rounded-[4px] bg-[#111113] border border-[#2E2E32] space-y-6">
           {messages.length === 0 && !isProcessing && (
-            <div className="text-center py-12 space-y-3">
-              <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center mx-auto text-slate-500 font-mono text-sm">
-                ⚙️
+            <div className="text-center py-14 space-y-3">
+              <div className="w-10 h-10 rounded-[2px] bg-[#161618] border border-[#2E2E32] flex items-center justify-center mx-auto text-[#C8FF00] font-mono text-sm">
+                ⚙
               </div>
-              <div className="font-semibold text-sm text-[#111111]">Playground is Ready</div>
-              <p className="text-xs text-[#6B7280] max-w-md mx-auto">
-                Click one of the three preset pills above, or write your own decision scenario into the prompt bar below.
+              <div className="font-mono text-xs text-white uppercase tracking-wider">
+                PLAYGROUND STANDBY · SYSTEM READY
+              </div>
+              <p className="text-xs text-[#71717A] max-w-md mx-auto font-sans">
+                Select one of the three preset scenarios above, or enter your own decision prompt in the terminal input below.
               </p>
             </div>
           )}
@@ -567,7 +601,8 @@ export default function Home() {
           {messages.map((msg) => (
             <div key={msg.id} className={`flex flex-col ${msg.type === 'user' ? 'items-end' : 'items-start'} space-y-2`}>
               {msg.type === 'user' && (
-                <div className="max-w-[85%] sm:max-w-xl px-4 py-2.5 rounded-2xl rounded-br-sm bg-[#111111] text-white text-xs sm:text-sm leading-relaxed shadow-sm">
+                <div className="max-w-[85%] sm:max-w-xl px-4 py-2.5 rounded-[4px] bg-[#161618] border border-[#2E2E32] text-white text-xs sm:text-sm leading-relaxed shadow-sm font-sans">
+                  <div className="text-[10px] font-mono text-[#71717A] mb-1 uppercase tracking-wider">USER QUERY</div>
                   {msg.text}
                 </div>
               )}
@@ -607,21 +642,21 @@ export default function Home() {
               )}
 
               {msg.type === 'assistant_clarification' && (
-                <div className="w-full max-w-2xl p-4 rounded-xl bg-purple-50 border border-purple-200 border-l-4 border-l-purple-500 space-y-1">
-                  <span className="text-xs font-mono font-bold text-purple-700">💬 CLARIFICATION NEEDED</span>
-                  <div className="text-xs sm:text-sm text-purple-950">{msg.text}</div>
+                <div className="w-full max-w-2xl p-4 rounded-[4px] bg-[#161618] border border-[#2E2E32] border-l-[3px] border-l-[#8B5CF6] space-y-1">
+                  <span className="text-[10px] font-mono font-bold text-[#8B5CF6] tracking-wider uppercase">💬 CLARIFICATION NEEDED</span>
+                  <div className="text-xs sm:text-sm text-white font-sans">{msg.text}</div>
                 </div>
               )}
 
               {msg.type === 'fallback' && (
-                <div className="w-full max-w-2xl p-4 rounded-xl bg-slate-50 border border-slate-200 border-l-4 border-l-slate-400 space-y-1">
-                  <span className="text-xs font-mono font-bold text-slate-600">ℹ️ GENERAL ANSWER (UNSTRUCTURED)</span>
-                  <div className="text-xs sm:text-sm text-slate-700">{msg.text}</div>
+                <div className="w-full max-w-2xl p-4 rounded-[4px] bg-[#161618] border border-[#2E2E32] border-l-[3px] border-l-[#71717A] space-y-1">
+                  <span className="text-[10px] font-mono font-bold text-[#71717A] tracking-wider uppercase">ℹ️ GENERAL ANSWER (UNSTRUCTURED)</span>
+                  <div className="text-xs sm:text-sm text-white font-sans">{msg.text}</div>
                 </div>
               )}
 
               {msg.type === 'error' && (
-                <div className="w-full max-w-2xl p-4 rounded-xl bg-rose-50 border border-rose-200 border-l-4 border-l-rose-500 text-rose-800 text-xs sm:text-sm">
+                <div className="w-full max-w-2xl p-4 rounded-[4px] bg-[#161618] border border-[#2E2E32] border-l-[3px] border-l-rose-500 text-rose-400 text-xs sm:text-sm font-mono">
                   ⚠️ {msg.text}
                 </div>
               )}
@@ -643,8 +678,8 @@ export default function Home() {
           <div ref={chatBottomRef} />
         </div>
 
-        {/* Input Bar (embedded directly into playground sheet) */}
-        <div className="mt-4 flex items-center bg-[#FFFFFF] border border-[#E5E5E2] rounded-xl px-4 py-2.5 shadow-sm focus-within:border-[#5B61F6] transition-all">
+        {/* Input Bar (embedded directly into playground terminal) */}
+        <div className="mt-4 flex items-center bg-[#161618] border border-[#2E2E32] rounded-[4px] px-4 py-2.5 transition-all focus-within:border-[#C8FF00] focus-within:shadow-[0_0_16px_rgba(200,255,0,0.12)]">
           <input
             type="text"
             value={inputValue}
@@ -661,19 +696,19 @@ export default function Home() {
                 ? '⚡ Unrestricted Mode: Enter query to auto-execute approved rules...'
                 : 'Type your decision query (e.g. "Rate ticket urgency: database is down")...'
             }
-            className="flex-1 bg-transparent border-none outline-none text-xs sm:text-sm text-[#111111] placeholder:text-[#9CA3AF]"
+            className="flex-1 bg-transparent border-none outline-none text-xs sm:text-sm text-white placeholder:text-[#52525B] font-sans"
             disabled={isProcessing}
             id="playground-prompt-input"
           />
           <button
-            className="ml-2 px-3 py-1.5 bg-[#111111] hover:bg-[#5B61F6] text-white text-xs font-semibold rounded-lg transition-colors cursor-pointer disabled:opacity-40"
+            className="ml-2 px-3.5 py-1.5 bg-[#C8FF00] hover:bg-[#A3CC00] text-[#0A0A0A] text-xs font-mono font-semibold rounded-[4px] uppercase tracking-wider transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed hover:shadow-[0_0_12px_rgba(200,255,0,0.2)]"
             onClick={() => {
               if (inputValue.trim() && !isProcessing) handleSendPrompt(inputValue.trim());
             }}
             disabled={!inputValue.trim() || isProcessing}
             id="playground-send-btn"
           >
-            {isProcessing ? 'Thinking...' : 'Run Decision ↵'}
+            {isProcessing ? 'PROCESSING...' : 'RUN ↵'}
           </button>
         </div>
       </section>
@@ -681,15 +716,18 @@ export default function Home() {
       {/* ========================================================================= */}
       {/* SHEET 04 · SPECIFICATIONS & DOCUMENTATION                                */}
       {/* ========================================================================= */}
-      <footer className="px-6 sm:px-12 py-12 bg-[#F4F4F1] border-t border-[#E5E5E2] text-xs text-[#6B7280] space-y-6">
-        <div className="sheet-label">
-          <span>◇ SHEET 04 · SPECIFICATIONS & RESOURCES</span>
+      <footer className="terminal-section bg-[#0A0A0A] text-xs text-[#71717A] space-y-8">
+        <div className="flex items-center gap-2">
+          <span className="w-1.5 h-1.5 rounded-[1px] bg-[#52525B]" />
+          <span className="type-label text-[#71717A]">
+            ◇ SHEET 04 // SPECIFICATIONS & RESOURCES
+          </span>
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 pt-2">
           <div>
-            <div className="font-mono text-[#111111] font-semibold mb-2 uppercase text-[11px]">Core Primitives</div>
-            <ul className="space-y-1">
+            <div className="font-mono text-white font-semibold mb-2 uppercase text-[11px] tracking-wider">Core Primitives</div>
+            <ul className="space-y-1 font-sans text-[#A1A1AA]">
               <li>Choice (Classification)</li>
               <li>Score (Ordered Rubric)</li>
               <li>Noul (Boolean Probability)</li>
@@ -697,8 +735,8 @@ export default function Home() {
           </div>
 
           <div>
-            <div className="font-mono text-[#111111] font-semibold mb-2 uppercase text-[11px]">System Stack</div>
-            <ul className="space-y-1">
+            <div className="font-mono text-white font-semibold mb-2 uppercase text-[11px] tracking-wider">System Stack</div>
+            <ul className="space-y-1 font-sans text-[#A1A1AA]">
               <li>TypeSafe AI Jev (jev-1.13.0)</li>
               <li>Groq LLM (gpt-oss-20b)</li>
               <li>Python 3.11 / FastAPI</li>
@@ -707,8 +745,8 @@ export default function Home() {
           </div>
 
           <div>
-            <div className="font-mono text-[#111111] font-semibold mb-2 uppercase text-[11px]">Safety Invariants</div>
-            <ul className="space-y-1">
+            <div className="font-mono text-white font-semibold mb-2 uppercase text-[11px] tracking-wider">Safety Invariants</div>
+            <ul className="space-y-1 font-sans text-[#A1A1AA]">
               <li>Zero raw JSON exposure</li>
               <li>5-Point Meta-Schema</li>
               <li>Local chip re-validation</li>
@@ -717,21 +755,21 @@ export default function Home() {
           </div>
 
           <div>
-            <div className="font-mono text-[#111111] font-semibold mb-2 uppercase text-[11px]">Repository</div>
-            <ul className="space-y-1">
+            <div className="font-mono text-white font-semibold mb-2 uppercase text-[11px] tracking-wider">Repository</div>
+            <ul className="space-y-1 font-sans">
               <li>
-                <a href="https://github.com/ihatecoding01/Conversational-Jev" target="_blank" rel="noreferrer" className="text-[#5B61F6] hover:underline">
+                <a href="https://github.com/ihatecoding01/Conversational-Jev" target="_blank" rel="noreferrer" className="text-[#8B5CF6] hover:text-[#C8FF00] hover:underline font-mono">
                   GitHub Repository ↗
                 </a>
               </li>
-              <li>MIT License</li>
-              <li>Built with Antigravity</li>
+              <li className="text-[#A1A1AA]">MIT License</li>
+              <li className="text-[#A1A1AA]">Built with Antigravity</li>
             </ul>
           </div>
         </div>
 
-        <div className="pt-6 border-t border-[#E5E5E2] flex flex-wrap items-center justify-between gap-4 font-mono text-[11px]">
-          <div>CONVERSATIONAL JEV · SYSTEM ONE DECISION ENGINE</div>
+        <div className="pt-6 border-t border-[#2E2E32] flex flex-wrap items-center justify-between gap-4 font-mono text-[10px] text-[#52525B] uppercase tracking-widest">
+          <div>CONVERSATIONAL JEV // SYSTEM ONE DECISION ENGINE</div>
           <div>FOUNDING ARCHITECTURE · 2026</div>
         </div>
       </footer>

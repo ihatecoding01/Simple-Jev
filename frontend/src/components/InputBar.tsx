@@ -36,9 +36,9 @@ export default function InputBar({
   };
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-30 backdrop-blur-lg bg-slate-950/80 border-t border-slate-800/80 px-4 py-3 sm:py-4">
-      <div className="max-w-3xl mx-auto space-y-2">
-        <div className="flex items-center bg-slate-900 border border-slate-800 rounded-2xl px-4 py-2 shadow-2xl focus-within:border-indigo-500 transition-all">
+    <div className="fixed bottom-0 left-0 right-0 z-30 backdrop-blur-md bg-[#0A0A0A]/90 border-t border-[#2E2E32] px-4 py-3 sm:py-4">
+      <div className="max-w-4xl mx-auto space-y-2">
+        <div className="flex items-center bg-[#161618] border border-[#2E2E32] rounded-[4px] px-4 py-2 focus-within:border-[#C8FF00] focus-within:shadow-[0_0_16px_rgba(200,255,0,0.12)] transition-all">
           <textarea
             ref={textareaRef}
             rows={1}
@@ -46,12 +46,12 @@ export default function InputBar({
             onChange={(e) => setInputValue(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder={placeholder || 'Ask a plain-language question or paste text to evaluate...'}
-            className="flex-1 bg-transparent border-none outline-none text-slate-100 text-sm sm:text-base resize-none max-h-32 min-h-[26px] placeholder:text-slate-500 leading-normal"
+            className="flex-1 bg-transparent border-none outline-none text-[#FFFFFF] text-sm resize-none max-h-32 min-h-[26px] placeholder:text-[#52525B] leading-normal font-sans"
             disabled={isProcessing}
             id="main-prompt-input"
           />
           <button
-            className="ml-2 w-9 h-9 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white flex items-center justify-center transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed shadow-md shadow-indigo-600/20 hover:scale-105 active:scale-95 shrink-0"
+            className="ml-2 w-9 h-9 rounded-[4px] bg-[#C8FF00] hover:bg-[#A3CC00] text-[#0A0A0A] flex items-center justify-center transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed hover:shadow-[0_0_15px_rgba(200,255,0,0.2)] shrink-0 font-mono font-bold"
             onClick={() => {
               if (inputValue.trim() && !isProcessing) onSubmit(inputValue.trim());
             }}
@@ -60,9 +60,9 @@ export default function InputBar({
             id="send-prompt-btn"
           >
             {isProcessing ? (
-              <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              <div className="w-3.5 h-3.5 border-2 border-black/30 border-t-black animate-spin rounded-[1px]" />
             ) : (
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <line x1="22" y1="2" x2="11" y2="13"></line>
                 <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
               </svg>

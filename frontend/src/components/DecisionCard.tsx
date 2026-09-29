@@ -33,82 +33,188 @@ export default function DecisionCard({ result, schema, onPinRule }: DecisionCard
 
   return (
     <div
-      className="w-full max-w-2xl bg-[#FFFFFF] border border-[#E5E5E2] rounded-xl p-5 shadow-xs border-l-4 border-l-[#10B981] space-y-4"
+      className="w-full max-w-2xl animate-fade-in"
+      style={{
+        backgroundColor: '#111113',
+        border: '1px solid #2E2E32',
+        borderLeft: '3px solid #10B981',
+        borderRadius: '4px',
+        padding: '20px 24px',
+      }}
       id="decision-result-card"
     >
-      <div className="flex flex-wrap items-baseline justify-between gap-2">
-        <div>
-          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-mono bg-emerald-50 text-emerald-700 border border-emerald-200">
-            <span>✓ JEV DECISION</span>
-            <span>•</span>
-            <span>{result.execution_time_ms}ms</span>
+      {/* Top row: badge + execution time */}
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+        <div className="flex items-center gap-2">
+          <span className="gt-badge gt-badge--emerald">
+            ✓ JEV DECISION
           </span>
-          <div className="text-xl sm:text-2xl font-bold text-[#111111] tracking-tight mt-1.5 font-sans">
-            {String(result.decision)}
-          </div>
+          <span className="gt-badge gt-badge--emerald">
+            {result.execution_time_ms}ms
+          </span>
         </div>
-
-        <div className="font-mono text-xs px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold">
-          {confidencePct}% Certainty
+        {/* Confidence meter */}
+        <div
+          className="flex items-center gap-2"
+          style={{
+            fontFamily: "'JetBrains Mono', monospace",
+            fontSize: '0.6rem',
+            letterSpacing: '0.05em',
+            textTransform: 'uppercase',
+            color: '#71717A',
+          }}
+        >
+          <span>CERTAINTY</span>
+          <div
+            style={{
+              width: '80px',
+              height: '4px',
+              backgroundColor: '#1C1C1F',
+              borderRadius: '2px',
+              overflow: 'hidden',
+            }}
+          >
+            <div
+              style={{
+                width: `${confidencePct}%`,
+                height: '100%',
+                backgroundColor: '#10B981',
+                transition: 'width 0.6s ease',
+              }}
+            />
+          </div>
+          <span style={{ color: '#10B981', fontWeight: 700 }}>{confidencePct}%</span>
         </div>
       </div>
 
+      {/* Decision verdict */}
       <div
-        className="text-xs sm:text-sm text-[#4B5563] leading-relaxed"
+        className="mb-3"
+        style={{
+          fontFamily: "'JetBrains Mono', monospace",
+          fontSize: 'clamp(1.375rem, 3vw, 1.75rem)',
+          fontWeight: 700,
+          color: '#FFFFFF',
+          letterSpacing: '-0.02em',
+          lineHeight: 1.2,
+        }}
+      >
+        {String(result.decision)}
+      </div>
+
+      {/* Summary */}
+      <div
+        className="mb-4 leading-relaxed"
+        style={{
+          fontFamily: "'Space Grotesk', sans-serif",
+          fontSize: '0.875rem',
+          color: '#A1A1AA',
+        }}
         dangerouslySetInnerHTML={{ __html: result.summary }}
       />
 
-      {/* Action Toolbar */}
-      <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-[#E5E5E2]">
+      {/* Divider */}
+      <div style={{ borderTop: '1px solid #1F1F23', marginBottom: '12px' }} />
+
+      {/* Action toolbar */}
+      <div className="flex flex-wrap items-center gap-2">
         <button
-          className="px-3 py-1.5 text-xs font-medium bg-[#FBFBFA] hover:bg-[#F4F4F1] text-[#374151] hover:text-[#111111] rounded-lg border border-[#E5E5E2] transition-colors cursor-pointer shadow-xs"
+          className="gt-btn-ghost"
           onClick={handleCopy}
           title="Copy decision to clipboard"
         >
-          {copied ? '✓ Copied!' : '📋 Copy Result'}
+          {copied ? '✓ Copied' : '📋 Copy'}
         </button>
 
         <button
-          className="px-3 py-1.5 text-xs font-medium bg-[#FBFBFA] hover:bg-[#F4F4F1] text-[#374151] hover:text-[#111111] rounded-lg border border-[#E5E5E2] transition-colors cursor-pointer shadow-xs"
+          className="gt-btn-ghost"
           onClick={handlePin}
           title="Save this validated rule to sidebar"
         >
-          {pinned ? '✓ Pinned to Sidebar!' : '📌 Pin Rule to Sidebar'}
+          {pinned ? '✓ Pinned!' : '📌 Pin Rule'}
         </button>
 
         {sortedDist.length > 0 && (
           <button
-            className="px-3 py-1.5 text-xs font-medium bg-[#FBFBFA] hover:bg-[#F4F4F1] text-[#374151] hover:text-[#111111] rounded-lg border border-[#E5E5E2] transition-colors cursor-pointer shadow-xs"
+            className="gt-btn-ghost"
             onClick={() => setShowBreakdown(!showBreakdown)}
             title="Inspect probability spread across alternatives"
           >
-            {showBreakdown ? 'Hide Breakdown' : '📊 See Why & Alternatives'}
+            {showBreakdown ? '↑ Hide' : '📊 Breakdown'}
           </button>
         )}
       </div>
 
-      {/* Expandable Breakdown Drawer */}
+      {/* Probability breakdown */}
       {showBreakdown && sortedDist.length > 0 && (
-        <div className="p-4 rounded-xl bg-[#FBFBFA] border border-[#E5E5E2] space-y-2.5 animate-in fade-in">
-          <div className="text-[11px] font-mono uppercase tracking-wider text-[#6B7280] font-semibold">
-            Probability Distribution (Jev Softmax)
+        <div
+          className="mt-4 animate-fade-in"
+          style={{
+            backgroundColor: '#161618',
+            border: '1px solid #1F1F23',
+            borderRadius: '4px',
+            padding: '16px',
+          }}
+        >
+          <div
+            className="mb-3"
+            style={{
+              fontFamily: "'JetBrains Mono', monospace",
+              fontSize: '0.6rem',
+              letterSpacing: '0.06em',
+              textTransform: 'uppercase',
+              color: '#71717A',
+            }}
+          >
+            Probability Distribution · Jev Softmax
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-2.5">
             {sortedDist.map(([opt, prob]) => {
               const pct = Math.round(prob * 100);
+              const isTop = opt === String(result.decision);
               return (
-                <div key={opt} className="flex items-center gap-3 text-xs">
-                  <div className="w-32 sm:w-44 text-[#374151] truncate font-medium" title={opt}>
+                <div key={opt} className="flex items-center gap-3">
+                  <div
+                    className="truncate font-medium"
+                    style={{
+                      width: '140px',
+                      fontFamily: "'Space Grotesk', sans-serif",
+                      fontSize: '0.75rem',
+                      color: isTop ? '#FFFFFF' : '#A1A1AA',
+                    }}
+                    title={opt}
+                  >
                     {opt}
                   </div>
-                  <div className="flex-1 h-2 bg-[#E5E5E2] rounded-full overflow-hidden">
+                  <div
+                    className="flex-1 overflow-hidden"
+                    style={{
+                      height: '4px',
+                      backgroundColor: '#1C1C1F',
+                      borderRadius: '2px',
+                    }}
+                  >
                     <div
-                      className="h-full bg-[#5B61F6] rounded-full transition-all duration-500"
-                      style={{ width: `${pct}%` }}
+                      style={{
+                        width: `${pct}%`,
+                        height: '100%',
+                        backgroundColor: isTop ? '#C8FF00' : '#8B5CF6',
+                        borderRadius: '2px',
+                        transition: 'width 0.5s ease',
+                      }}
                     />
                   </div>
-                  <div className="w-10 text-right font-mono text-[#6B7280] text-[11px]">
+                  <div
+                    style={{
+                      width: '36px',
+                      textAlign: 'right',
+                      fontFamily: "'JetBrains Mono', monospace",
+                      fontSize: '0.6875rem',
+                      color: isTop ? '#C8FF00' : '#71717A',
+                      fontWeight: isTop ? 700 : 400,
+                    }}
+                  >
                     {pct}%
                   </div>
                 </div>

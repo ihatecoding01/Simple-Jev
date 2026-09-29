@@ -46,19 +46,21 @@ export default function Sidebar({
     <>
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 transition-opacity animate-in fade-in"
+        className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 transition-opacity animate-in fade-in"
         onClick={onClose}
       />
 
       {/* Panel */}
-      <aside className="fixed top-0 bottom-0 left-0 w-80 sm:w-96 bg-[#FBFBFA] border-r border-[#E5E5E2] z-50 flex flex-col shadow-2xl animate-in slide-in-from-left duration-200">
-        <div className="p-4 border-b border-[#E5E5E2] flex items-center justify-between">
+      <aside className="fixed top-0 bottom-0 left-0 w-80 sm:w-96 bg-[#111113] border-r border-[#2E2E32] z-50 flex flex-col shadow-2xl animate-in slide-in-from-left duration-200">
+        <div className="p-4 border-b border-[#2E2E32] flex items-center justify-between bg-[#0A0A0A]">
           <div className="flex items-center gap-2">
-            <span className="text-sm">📌</span>
-            <span className="font-semibold text-sm text-[#111111]">Pinned Rules & Cache</span>
+            <div className="w-2.5 h-2.5 rounded-[1px] bg-[#C8FF00]" />
+            <span className="font-mono font-semibold text-xs tracking-wider text-white uppercase">
+              PINNED RULES & CACHE
+            </span>
           </div>
           <button
-            className="w-7 h-7 rounded-lg bg-white border border-[#E5E5E2] text-[#6B7280] hover:text-[#111111] flex items-center justify-center transition-colors cursor-pointer text-xs"
+            className="w-7 h-7 rounded-[4px] bg-[#161618] border border-[#2E2E32] text-[#A1A1AA] hover:text-white hover:border-[#71717A] flex items-center justify-center transition-colors cursor-pointer text-xs font-mono"
             onClick={onClose}
             title="Close sidebar"
             id="close-sidebar-btn"
@@ -69,20 +71,20 @@ export default function Sidebar({
 
         <div className="flex-1 overflow-y-auto p-4 space-y-6">
           <div>
-            <div className="text-[11px] font-mono uppercase tracking-wider text-[#6B7280] mb-3 font-semibold">
-              Your Pinned Rules ({pinnedSchemas.length})
+            <div className="text-[10px] font-mono uppercase tracking-widest text-[#71717A] mb-3 font-semibold">
+              PINNED SCHEMAS [{pinnedSchemas.length}]
             </div>
 
             {pinnedSchemas.length === 0 ? (
-              <p className="text-xs text-[#9CA3AF] italic">
-                No pinned rules yet. Pin a schema from any completed decision in the playground to reuse it instantly!
-              </p>
+              <div className="p-4 rounded-[4px] bg-[#161618] border border-[#2E2E32] text-xs text-[#71717A] font-mono">
+                No pinned rules yet. Pin a schema from any completed decision in the playground to reuse it instantly.
+              </div>
             ) : (
               <div className="space-y-3">
                 {pinnedSchemas.map((schema) => (
                   <div
                     key={schema.id}
-                    className="p-3.5 rounded-xl bg-white border border-[#E5E5E2] hover:border-[#5B61F6] transition-all space-y-2 group shadow-xs"
+                    className="p-3.5 rounded-[4px] bg-[#161618] border border-[#2E2E32] hover:border-[#8B5CF6] hover:shadow-[0_0_15px_rgba(139,92,246,0.12)] transition-all space-y-2 group"
                   >
                     {editingId === schema.id ? (
                       <div className="flex gap-2">
@@ -90,24 +92,24 @@ export default function Sidebar({
                           type="text"
                           value={editName}
                           onChange={(e) => setEditName(e.target.value)}
-                          className="flex-1 px-2 py-1 text-xs bg-[#FBFBFA] border border-[#5B61F6] rounded text-[#111111] outline-none"
+                          className="flex-1 px-2.5 py-1 text-xs bg-[#1C1C1F] border border-[#C8FF00] rounded-[4px] text-white outline-none font-mono"
                           autoFocus
                         />
                         <button
-                          className="px-2 py-1 text-xs bg-[#111111] hover:bg-[#5B61F6] text-white rounded font-medium cursor-pointer"
+                          className="px-2.5 py-1 text-xs bg-[#C8FF00] hover:bg-[#A3CC00] text-[#0A0A0A] rounded-[4px] font-mono font-semibold uppercase tracking-wider cursor-pointer"
                           onClick={() => handleSaveRename(schema.id)}
                         >
                           Save
                         </button>
                       </div>
                     ) : (
-                      <div className="font-semibold text-sm text-[#111111] truncate" title={schema.friendly_name}>
+                      <div className="font-semibold text-xs text-white truncate font-mono" title={schema.friendly_name}>
                         {schema.friendly_name}
                       </div>
                     )}
 
-                    <div className="text-xs text-[#6B7280] line-clamp-2">
-                      <span className="font-mono text-[#5B61F6] mr-1.5 font-medium">[{schema.question_type}]</span>
+                    <div className="text-xs text-[#A1A1AA] line-clamp-2 font-sans">
+                      <span className="font-mono text-[#8B5CF6] mr-1.5 text-[11px]">[{schema.question_type.toUpperCase()}]</span>
                       {schema.options && schema.options.length > 0
                         ? schema.options.join(', ')
                         : schema.intent_summary}
@@ -115,28 +117,28 @@ export default function Sidebar({
 
                     <div className="flex items-center gap-1.5 pt-1">
                       <button
-                        className="px-2.5 py-1 text-xs bg-[#111111] hover:bg-[#5B61F6] text-white rounded-md font-medium flex items-center gap-1 shadow-xs transition-all cursor-pointer"
+                        className="px-2.5 py-1 text-[11px] bg-[#C8FF00] hover:bg-[#A3CC00] text-[#0A0A0A] rounded-[4px] font-mono font-semibold uppercase tracking-wider flex items-center gap-1 transition-all cursor-pointer hover:shadow-[0_0_10px_rgba(200,255,0,0.2)]"
                         onClick={() => {
                           onQuickRun(schema);
                           onClose();
                         }}
                         title="Run new text directly against this schema"
                       >
-                        <span>⚡</span> Quick Run
+                        <span>⚡</span> QUICK RUN
                       </button>
                       <button
-                        className="p-1 text-xs bg-[#F4F4F1] hover:bg-[#E5E5E2] text-[#374151] rounded-md transition-colors cursor-pointer"
+                        className="px-2 py-1 text-[11px] bg-[#1C1C1F] hover:bg-[#222225] border border-[#2E2E32] text-[#A1A1AA] hover:text-white rounded-[4px] transition-colors cursor-pointer font-mono"
                         onClick={() => handleStartRename(schema)}
                         title="Rename rule"
                       >
-                        ✏️
+                        EDIT
                       </button>
                       <button
-                        className="p-1 text-xs bg-[#F4F4F1] hover:bg-rose-50 text-[#374151] hover:text-rose-600 rounded-md transition-colors cursor-pointer"
+                        className="px-2 py-1 text-[11px] bg-[#1C1C1F] hover:bg-rose-950/40 border border-[#2E2E32] hover:border-rose-800 text-[#71717A] hover:text-rose-400 rounded-[4px] transition-colors cursor-pointer font-mono"
                         onClick={() => handleUnpin(schema.id)}
                         title="Unpin rule"
                       >
-                        🗑️
+                        DEL
                       </button>
                     </div>
                   </div>
@@ -145,12 +147,12 @@ export default function Sidebar({
             )}
           </div>
 
-          <div className="pt-4 border-t border-[#E5E5E2]">
-            <div className="text-[11px] font-mono uppercase tracking-wider text-[#6B7280] mb-2 font-semibold">
-              How Pinned Rules Work
+          <div className="pt-4 border-t border-[#2E2E32]">
+            <div className="text-[10px] font-mono uppercase tracking-widest text-[#71717A] mb-2 font-semibold">
+              HOW PINNED RULES WORK
             </div>
-            <p className="text-xs text-[#6B7280] leading-relaxed">
-              Pinned schemas eliminate LLM regeneration time and cost. In <strong>Unrestricted Mode</strong>, repeat requests automatically match via semantic vector embeddings and execute immediately at <strong>0 credit cost</strong>.
+            <p className="text-xs text-[#71717A] font-sans leading-relaxed">
+              Pinned schemas eliminate LLM regeneration time and cost. In <strong className="text-white">Unrestricted Mode</strong>, repeat requests automatically match via semantic vector embeddings and execute immediately at <strong className="text-[#C8FF00]">0 credit cost</strong>.
             </p>
           </div>
         </div>
