@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { CandidateSchema } from '../types';
+import { DotCluster } from './AbstractGeometry';
 
 interface DeltaPromptProps {
   delta: Record<string, any>;
@@ -23,38 +24,27 @@ export default function DeltaPrompt({
 
   return (
     <div
-      className="w-full max-w-2xl animate-fade-in"
-      style={{
-        backgroundColor: '#111113',
-        border: '1px solid #2E2E32',
-        borderLeft: '3px solid #F59E0B',
-        borderRadius: '4px',
-        padding: '20px 24px',
-      }}
+      className="w-full max-w-2xl bg-[#0E0E10] border border-[#27272B] border-l-[3px] border-l-[#F59E0B] rounded-[4px] p-5 sm:p-6 shadow-[0_0_30px_rgba(245,158,11,0.15)] relative overflow-hidden animate-fade-in"
       id="delta-prompt-card"
     >
+      <div className="absolute top-3 right-3 flex items-center gap-1.5 opacity-60 pointer-events-none select-none">
+        <DotCluster rows={2} cols={2} color="red" />
+        <span className="font-mono text-[9px] text-[#F59E0B] tracking-widest">[DELTA]</span>
+      </div>
+
       {/* Badge */}
       <div className="flex items-center gap-2 mb-3">
-        <span className="gt-badge gt-badge--amber">
-          ⚠ Schema Variation Detected
+        <span className="gt-badge gt-badge--amber font-mono">
+          [SCHEMA VARIATION DETECTED]
         </span>
       </div>
 
       {/* Delta description */}
-      <div
-        className="mb-2 leading-snug"
-        style={{
-          fontFamily: "'Space Grotesk', sans-serif",
-          fontSize: '0.9375rem',
-          fontWeight: 600,
-          color: '#FFFFFF',
-          lineHeight: 1.4,
-        }}
-      >
+      <div className="mb-2 text-white font-sans text-sm sm:text-base font-semibold leading-snug">
         {added.length > 0 && (
           <span>
             Last time this ran without{' '}
-            <span style={{ color: '#F59E0B', fontFamily: "'JetBrains Mono', monospace", fontSize: '0.8125rem' }}>
+            <span className="text-[#F59E0B] font-mono text-xs">
               {added.join(', ')}
             </span>
             . A new option has appeared.
@@ -63,7 +53,7 @@ export default function DeltaPrompt({
         {removed.length > 0 && (
           <span className="ml-1">
             Options{' '}
-            <span style={{ color: '#F59E0B', fontFamily: "'JetBrains Mono', monospace", fontSize: '0.8125rem' }}>
+            <span className="text-[#F59E0B] font-mono text-xs">
               {removed.join(', ')}
             </span>{' '}
             were excluded.
@@ -71,44 +61,24 @@ export default function DeltaPrompt({
         )}
       </div>
 
-      <p
-        className="mb-4"
-        style={{
-          fontFamily: "'Space Grotesk', sans-serif",
-          fontSize: '0.8125rem',
-          color: '#71717A',
-          lineHeight: 1.6,
-        }}
-      >
+      <p className="mb-4 text-xs sm:text-sm text-[#71717A] font-sans leading-relaxed">
         Include the updated option set for this decision run?
       </p>
 
       {/* Action buttons */}
-      <div className="flex flex-wrap items-center gap-2">
+      <div className="flex flex-wrap items-center gap-2.5">
         <button
-          className="gt-btn-primary"
-          style={{ backgroundColor: '#F59E0B', color: '#0A0A0A' }}
+          className="gt-btn-execute"
           onClick={onIncludeAndExecute}
           disabled={isExecuting}
-          onMouseEnter={e => {
-            if (!isExecuting) {
-              (e.currentTarget as HTMLElement).style.backgroundColor = '#D97706';
-              (e.currentTarget as HTMLElement).style.boxShadow = '0 0 20px rgba(245, 158, 11, 0.2)';
-            }
-          }}
-          onMouseLeave={e => {
-            (e.currentTarget as HTMLElement).style.backgroundColor = '#F59E0B';
-            (e.currentTarget as HTMLElement).style.boxShadow = 'none';
-          }}
         >
-          {isExecuting ? '⟳ Running Jev...' : 'Include & Execute'}
+          {isExecuting ? '[RUNNING JEV...]' : 'Include & Execute'}
         </button>
 
         <button
-          className="gt-btn-secondary"
+          className="gt-btn-secondary px-3.5 py-2 text-xs font-mono"
           onClick={onRevertToPrevious}
           disabled={isExecuting}
-          style={{ padding: '10px 16px' }}
         >
           Revert to Previous Rule
         </button>

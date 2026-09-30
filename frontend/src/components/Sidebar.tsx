@@ -124,7 +124,7 @@ export default function Sidebar({
                         }}
                         title="Run new text directly against this schema"
                       >
-                        <span>⚡</span> QUICK RUN
+                        QUICK RUN
                       </button>
                       <button
                         className="px-2 py-1 text-[11px] bg-[#1C1C1F] hover:bg-[#222225] border border-[#2E2E32] text-[#A1A1AA] hover:text-white rounded-[4px] transition-colors cursor-pointer font-mono"
