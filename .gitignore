@@ -67,6 +67,9 @@ Thumbs.db
 *.swp
 *.swo
 
+# Reference assets (large video files)
+frontend/public/references/
+
 # Temporary artifacts
 scratch/
 tmp/
