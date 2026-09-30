@@ -24,7 +24,7 @@ export default function ProgressiveTrustBanner({ onSwitch, onDismiss }: Progress
         </div>
         <div>
           <div className="font-semibold text-xs sm:text-sm text-white font-mono tracking-wide">
-            PROGRESSIVE TRUST MILESTONE // 3 CONFIRMED RUNS
+            TRUST MILESTONE — 3 CONFIRMED RUNS
           </div>
           <div className="text-xs text-[#A1A1AA] font-sans mt-0.5">
             You haven&apos;t needed to edit any generated schemas. Ready to enable <strong className="text-white">Unrestricted Mode</strong> for instant, zero-click execution on repeat queries?

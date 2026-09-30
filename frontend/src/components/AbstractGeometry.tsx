@@ -113,7 +113,7 @@ export function SmallGridBox({
 
 // Barcode & technical tag stamp from Reference Image 1
 export function BarcodeTag({
-  code = 'JEV // 26.03',
+  code = 'JEV — v1',
   className = '',
 }: {
   code?: string;
@@ -132,7 +132,7 @@ export function BarcodeTag({
         <span className="w-[4px] h-full bg-[#C8FF00]" />
       </div>
       <span className="tracking-widest uppercase font-semibold text-[#C8FF00]">{code}</span>
-      <span className="text-[#71717A]">[SCAN]</span>
+      <span className="text-[#71717A]">READY</span>
     </div>
   );
 }
@@ -143,10 +143,10 @@ export function AsciiTelemetry({ className = '' }: { className?: string }) {
 
   const glyphs = ['■ □ ▣ ▤', '▣ ▤ ▥ ▦', '▤ ▥ ▦ ■', '▥ ▦ ■ □'];
   const telemetry = [
-    'SYS.OK // 32142.932717.29',
-    'NON-AUTOREGRESSIVE // 70MS',
-    'PARALLEL NOUL DECISION // OK',
-    '5-PT META-SCHEMA // 1.00',
+    'READY — ALL SYSTEMS ACTIVE',
+    'DECISION SPEED — 70MS',
+    'VERIFIED — QUALITY CHECK PASSED',
+    'STATUS — ACCEPTING QUERIES',
   ];
 
   useEffect(() => {
@@ -249,9 +249,9 @@ export function OutwardApertureHero({
         <div className="inline-flex items-center gap-2.5 px-3 py-1 rounded-[2px] bg-[#141416] border border-[#27272B] mb-5 shadow-[0_0_15px_rgba(200,255,0,0.1)]">
           <span className="w-2 h-2 bg-[#C8FF00] shadow-[0_0_8px_#C8FF00]" />
           <span className="font-mono text-[10px] font-bold tracking-widest text-white uppercase">
-            TYPE-SAFE AI // JEV DECISION ENGINE
+            SIMPLE JEV — DECISION ENGINE
           </span>
-          <span className="text-[#8B5CF6] font-mono text-[10px]">[v1.13]</span>
+          <span className="text-[#8B5CF6] font-mono text-[10px]">v1.13</span>
         </div>
 
         {/* Commanding White Display Headline */}
@@ -266,7 +266,7 @@ export function OutwardApertureHero({
 
         {/* ASCII / Barcode Telemetry strip below headline */}
         <div className="mt-6 flex flex-wrap items-center justify-center gap-4 sm:gap-6 border-t border-[#27272B] pt-4">
-          <BarcodeTag code="JEV // CORE 01" />
+          <BarcodeTag code="JEV CORE" />
           <span className="hidden sm:inline text-[#27272B]">|</span>
           <AsciiTelemetry />
         </div>

@@ -113,7 +113,7 @@ export default function DecisionCard({ result, schema, onPinRule }: DecisionCard
       {showBreakdown && sortedDist.length > 0 && (
         <div className="mt-4 p-4 rounded-[4px] bg-[#141416] border border-[#27272B] animate-fade-in space-y-3">
           <div className="font-mono text-[10px] tracking-wider uppercase text-[#71717A]">
-            PROBABILITY DISTRIBUTION // JEV SOFTMAX
+            PROBABILITY BREAKDOWN
           </div>
 
           <div className="space-y-2.5">

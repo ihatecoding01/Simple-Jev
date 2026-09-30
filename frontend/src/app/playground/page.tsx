@@ -9,7 +9,7 @@ import DeltaPrompt from '../../components/DeltaPrompt';
 import DecisionCard from '../../components/DecisionCard';
 import Stepper from '../../components/Stepper';
 import ProgressiveTrustBanner from '../../components/ProgressiveTrustBanner';
-import PacmanTrack from '../../components/PacmanTrack';
+import DecisionPulse from '../../components/DecisionPulse';
 import { DotCluster, BarcodeTag } from '../../components/AbstractGeometry';
 import { CandidateSchema, ExecutionResult, PinnedSchema, QuotaStatus } from '../../types';
 import {
@@ -369,7 +369,7 @@ export default function PlaygroundPage() {
               onClick={() => handleModeChange('restricted')}
               id="mode-restricted-btn"
             >
-              [RESTRICTED]
+              RESTRICTED
             </button>
             <button
               className={`px-2.5 py-1 font-mono text-[10px] font-semibold tracking-wider uppercase rounded-[2px] transition-all cursor-pointer ${
@@ -380,7 +380,7 @@ export default function PlaygroundPage() {
               onClick={() => handleModeChange('unrestricted')}
               id="mode-unrestricted-btn"
             >
-              [UNRESTRICTED]
+              UNRESTRICTED
             </button>
           </div>
 
@@ -397,7 +397,7 @@ export default function PlaygroundPage() {
             onClick={() => setIsSidebarOpen(true)}
             id="sidebar-toggle-btn"
           >
-            <span>[RULES]</span>
+            <span>RULES</span>
             {pinnedSchemas.length > 0 && (
               <span className="px-1 bg-[#8B5CF6] text-white text-[9px] rounded-[1px] font-bold">
                 {pinnedSchemas.length}
@@ -453,7 +453,7 @@ export default function PlaygroundPage() {
             </button>
           </div>
 
-          <BarcodeTag code="JEV // RUNTIME" />
+          <BarcodeTag code="JEV RUNTIME" />
         </div>
 
         {/* Active Quick Run Banner */}
@@ -461,7 +461,7 @@ export default function PlaygroundPage() {
           <div className="p-3.5 rounded-[4px] bg-[#181A20] border border-[#C8FF00] flex items-center justify-between shadow-[0_0_15px_rgba(200,255,0,0.15)] animate-fade-in">
             <div>
               <span className="text-[10px] font-mono text-[#C8FF00] font-semibold tracking-widest block uppercase">
-                [QUICK RUN MODE ACTIVE]
+                QUICK RUN MODE ACTIVE
               </span>
               <div className="font-semibold text-xs text-white font-mono mt-0.5">
                 Pre-locked rule: "{activeQuickRunSchema.friendly_name}" (0 credits used)
@@ -496,10 +496,10 @@ export default function PlaygroundPage() {
           {messages.length === 0 && !isProcessing && (
             <div className="text-center py-20 space-y-4">
               <div className="w-12 h-12 rounded-[2px] bg-[#181A20] border border-[#272A35] flex items-center justify-center mx-auto text-[#C8FF00] font-mono text-sm shadow-[0_0_20px_rgba(200,255,0,0.15)]">
-                [STANDBY]
+                STANDBY
               </div>
               <div className="font-mono text-xs text-white uppercase tracking-wider">
-                PLAYGROUND READY // SYSTEM STANDBY
+                PLAYGROUND READY — STANDING BY
               </div>
               <p className="text-xs text-[#71717A] max-w-sm mx-auto font-sans leading-relaxed">
                 Choose a preset scenario above or enter your question below to evaluate live with TypeSafe Jev.
@@ -556,21 +556,21 @@ export default function PlaygroundPage() {
 
               {msg.type === 'assistant_clarification' && (
                 <div className="w-full max-w-2xl p-4 rounded-[4px] bg-[#181A20] border border-[#272A35] border-l-[3px] border-l-[#8B5CF6] space-y-1">
-                  <span className="text-[10px] font-mono font-bold text-[#8B5CF6] tracking-wider uppercase">[CLARIFICATION NEEDED]</span>
+                  <span className="text-[10px] font-mono font-bold text-[#8B5CF6] tracking-wider uppercase">CLARIFICATION NEEDED</span>
                   <div className="text-xs sm:text-sm text-white font-sans">{msg.text}</div>
                 </div>
               )}
 
               {msg.type === 'fallback' && (
                 <div className="w-full max-w-2xl p-4 rounded-[4px] bg-[#181A20] border border-[#272A35] border-l-[3px] border-l-[#71717A] space-y-1">
-                  <span className="text-[10px] font-mono font-bold text-[#71717A] tracking-wider uppercase">[GENERAL ANSWER]</span>
+                  <span className="text-[10px] font-mono font-bold text-[#71717A] tracking-wider uppercase">GENERAL ANSWER</span>
                   <div className="text-xs sm:text-sm text-white font-sans">{msg.text}</div>
                 </div>
               )}
 
               {msg.type === 'error' && (
                 <div className="w-full max-w-2xl p-4 rounded-[4px] bg-[#181A20] border border-[#272A35] border-l-[3px] border-l-[#FF2E54] text-[#FF2E54] text-xs sm:text-sm font-mono">
-                  [ERROR] {msg.text}
+                  ERROR: {msg.text}
                 </div>
               )}
             </div>
@@ -581,8 +581,8 @@ export default function PlaygroundPage() {
             <div className="flex justify-start">
               <Stepper
                 stages={[
-                  { stage: 'intent', label: 'Extracting candidate schema via Groq' },
-                  { stage: 'verifying', label: 'Scoring with TypeSafe Jev System 1' },
+                  { stage: 'intent', label: 'Understanding your question...' },
+                  { stage: 'verifying', label: 'Checking quality and running decision...' },
                 ]}
               />
             </div>
@@ -627,7 +627,7 @@ export default function PlaygroundPage() {
       </main>
 
       {/* Pacman Track Animation at Bottom */}
-      <PacmanTrack />
+      <DecisionPulse />
     </div>
   );
 }

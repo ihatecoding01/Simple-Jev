@@ -216,21 +216,6 @@ export default function FloatingGeometry({
     // Scale for devicePixelRatio
     const dpr = window.devicePixelRatio || 1;
 
-    // Update & draw glitch lines
-    for (const line of glitchLinesRef.current) {
-      line.y += line.speed;
-      if (line.y > canvas.height) {
-        line.y = -5;
-        line.alpha = randomRange(0.02, 0.08);
-      }
-
-      ctx.save();
-      ctx.globalAlpha = line.alpha;
-      ctx.fillStyle = line.color;
-      ctx.fillRect(0, line.y, line.width, 1 * dpr);
-      ctx.restore();
-    }
-
     // Update & draw particles
     for (let i = 0; i < particlesRef.current.length; i++) {
       const p = particlesRef.current[i];
@@ -305,19 +290,6 @@ export default function FloatingGeometry({
           break;
       }
 
-      ctx.restore();
-    }
-
-    // Occasional micro-glitch flash (1% chance per frame)
-    if (Math.random() < 0.01) {
-      ctx.save();
-      ctx.globalAlpha = randomRange(0.02, 0.06);
-      ctx.fillStyle = randomAccentColor();
-      const gx = randomRange(0, canvas.width);
-      const gy = randomRange(0, canvas.height);
-      const gw = randomRange(20, 120) * dpr;
-      const gh = randomRange(2, 6) * dpr;
-      ctx.fillRect(gx, gy, gw, gh);
       ctx.restore();
     }
 

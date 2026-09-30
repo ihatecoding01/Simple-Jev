@@ -25,7 +25,7 @@ export default function Stepper({ stages }: StepperProps) {
       <div className="w-2.5 h-2.5 border-2 border-[#8B5CF6]/30 border-t-[#8B5CF6] animate-spin rounded-[1px]" />
       <div className="flex items-center gap-2">
         <span className="font-semibold text-[#8B5CF6] font-mono text-[10px] uppercase tracking-wider">
-          PIPELINE:
+          WORKING:
         </span>
         <span className="text-xs font-mono text-white">{currentStage.label || 'Evaluating intent...'}</span>
       </div>
