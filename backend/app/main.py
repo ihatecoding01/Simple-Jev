@@ -1,6 +1,6 @@
 import time
 from typing import Any, Dict, List
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import BackgroundTasks, FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
 from app.models.api_types import (
@@ -262,7 +262,7 @@ def patch_schema_endpoint(req: PatchRequest):
     )
 
 @app.post("/api/v1/jev/execute", response_model=ExecutionResult)
-def execute_jev_schema(req: ExecuteRequest, request: Request):
+def execute_jev_schema(req: ExecuteRequest, request: Request, background_tasks: BackgroundTasks):
     """
     Executes confirmed schema against Jev and caches the validated rule for future instant runs.
     """
@@ -271,9 +271,10 @@ def execute_jev_schema(req: ExecuteRequest, request: Request):
 
     result = executor_service.execute(req.schema_data, req.state)
 
-    # Cache write (schema + state, keyed by prompt / context intent)
+    # Offload cache write to background task so response is dispatched immediately to client
     intent_summary = req.state.get("raw_query") or req.schema_data.question
-    intent_cache.store(
+    background_tasks.add_task(
+        intent_cache.store,
         intent_text=intent_summary,
         schema_data=req.schema_data,
         state=req.state,

@@ -211,6 +211,8 @@ export default function PlaygroundPage() {
   const [pinnedSchemas, setPinnedSchemas] = useState<PinnedSchema[]>([]);
   const [quota, setQuota] = useState<QuotaStatus>({ daily_limit: 25, remaining: 25, cached_runs: 0, cold_runs: 0 });
   const [isProcessing, setIsProcessing] = useState(false);
+  const [executingTurnId, setExecutingTurnId] = useState<string | null>(null);
+  const [isQuickRunning, setIsQuickRunning] = useState(false);
   const [activeQuickRunSchema, setActiveQuickRunSchema] = useState<PinnedSchema | null>(null);
   const [consecutiveUnedited, setConsecutiveUnedited] = useState(0);
   const [showTrustBanner, setShowTrustBanner] = useState(false);
@@ -316,6 +318,7 @@ export default function PlaygroundPage() {
     ]);
 
     if (activeQuickRunSchema) {
+      setIsQuickRunning(true);
       try {
         const state = { content_text: cleanText, raw_query: cleanText };
         const result = await executeJev(activeQuickRunSchema.schema_data, state);
@@ -331,7 +334,7 @@ export default function PlaygroundPage() {
           { id: newTurnId, type: 'error', text: `Quick Run failed: ${err.message}` },
         ]);
       } finally {
-        setIsProcessing(false);
+        setIsQuickRunning(false);
       }
       return;
     }
@@ -377,7 +380,7 @@ export default function PlaygroundPage() {
   };
 
   const handleConfirmDecision = async (turnId: string, schema: CandidateSchema, state?: Record<string, any>) => {
-    setIsProcessing(true);
+    setExecutingTurnId(turnId);
     try {
       const result = await executeJev(schema, state || {});
       setMessages((prev) =>
@@ -393,7 +396,7 @@ export default function PlaygroundPage() {
     } catch (err: any) {
       alert(`Execution failed: ${err.message}`);
     } finally {
-      setIsProcessing(false);
+      setExecutingTurnId(null);
     }
   };
 
@@ -1001,7 +1004,7 @@ export default function PlaygroundPage() {
                           onOptionRemove={(optIdx) => handleOptionRemove(msg.id, optIdx)}
                           onOptionAdd={(newOpt) => handleOptionAdd(msg.id, newOpt)}
                           onStructuralPatch={(patchText) => handleStructuralPatch(msg.id, patchText)}
-                          isExecuting={isProcessing}
+                          isExecuting={executingTurnId === msg.id}
                           isCached={msg.isCached}
                         />
                       )}
@@ -1015,7 +1018,7 @@ export default function PlaygroundPage() {
                             const prev = msg.delta?.previous_schema || msg.schema!;
                             handleConfirmDecision(msg.id, prev, msg.state);
                           }}
-                          isExecuting={isProcessing}
+                          isExecuting={executingTurnId === msg.id}
                         />
                       )}
 
@@ -1050,8 +1053,16 @@ export default function PlaygroundPage() {
                     </div>
                   ))}
 
-                  {/* Processing Stepper */}
-                  {isProcessing && (
+                  {/* Processing Telemetry / HUD */}
+                  {executingTurnId || isQuickRunning ? (
+                    <div className="flex justify-start py-2 animate-fade-in">
+                      <div className="inline-flex items-center gap-2.5 px-3.5 py-2 rounded-[3px] bg-[#121316] border border-[#C8FF00]/40 text-xs shadow-[0_0_18px_rgba(200,255,0,0.18)] font-mono">
+                        <div className="w-2.5 h-2.5 rounded-full bg-[#C8FF00] animate-ping" />
+                        <span className="text-[#C8FF00] font-bold text-[11px] tracking-wider uppercase">JEV SYSTEM 1</span>
+                        <span className="text-white text-xs">Computing deterministic decision in real time (~300ms)...</span>
+                      </div>
+                    </div>
+                  ) : isProcessing ? (
                     <div className="flex justify-start py-2 animate-fade-in">
                       <Stepper
                         stages={[
@@ -1060,7 +1071,7 @@ export default function PlaygroundPage() {
                         ]}
                       />
                     </div>
-                  )}
+                  ) : null}
 
                   <div ref={chatBottomRef} />
                 </div>

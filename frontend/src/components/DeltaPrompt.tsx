@@ -68,11 +68,18 @@ export default function DeltaPrompt({
       {/* Action buttons */}
       <div className="flex flex-wrap items-center gap-2.5">
         <button
-          className="gt-btn-execute"
+          className={`gt-btn-execute inline-flex items-center gap-2 ${isExecuting ? 'opacity-95 cursor-wait shadow-[0_0_25px_rgba(200,255,0,0.5)] border-[#C8FF00]' : ''}`}
           onClick={onIncludeAndExecute}
           disabled={isExecuting}
         >
-          {isExecuting ? '[RUNNING JEV...]' : 'Include & Execute'}
+          {isExecuting ? (
+            <>
+              <span className="w-2 h-2 rounded-full bg-[#C8FF00] animate-ping" />
+              <span className="font-mono text-white tracking-wide">EXECUTING JEV (~300ms)...</span>
+            </>
+          ) : (
+            'Include & Execute'
+          )}
         </button>
 
         <button

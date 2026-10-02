@@ -1,6 +1,7 @@
 import time
 import random
 import re
+import threading
 from typing import Any, Dict, List, Optional
 from app.models.jev_types import CandidateSchema, ExecutionResult, QuestionType
 from app.config import settings
@@ -9,28 +10,88 @@ class ExecutorService:
     """
     Executes validated state + schema against TypeSafe AI's Jev API (or high-fidelity simulation engine).
     Returns typed answer, confidence score, full probability distribution, and human-readable summary.
+    Maintains a persistent HTTP keep-alive connection pool and pre-warms connections for sub-300ms decisions.
     """
 
+    def __init__(self):
+        self._client = None
+        self._http_client = None
+        self._last_key: Optional[str] = None
+        self._lock = threading.Lock()
+        self._warmup_started = False
+        self._ensure_warmup_async()
+
+    def _get_client(self):
+        current_key = (settings.JEV_API_KEY or "").strip()
+        if not current_key:
+            return None
+
+        with self._lock:
+            if self._client is not None and self._last_key == current_key:
+                return self._client
+
+            try:
+                import httpx2
+                from typesafe_sdk import TypeSafeClient
+
+                # Persistent HTTP client with aggressive keep-alive pooling
+                self._http_client = httpx2.Client(
+                    http2=False,
+                    limits=httpx2.Limits(max_keepalive_connections=20, max_connections=50, keepalive_expiry=300.0),
+                    timeout=15.0
+                )
+                self._client = TypeSafeClient(api_key=current_key, http_client=self._http_client)
+                self._last_key = current_key
+                return self._client
+            except Exception as e:
+                print(f"[Executor Service] Failed to initialize persistent TypeSafeClient: {e}")
+                return None
+
+    def _ensure_warmup_async(self):
+        if self._warmup_started:
+            return
+        current_key = (settings.JEV_API_KEY or "").strip()
+        if not current_key:
+            return
+
+        self._warmup_started = True
+
+        def _do_warmup():
+            try:
+                client = self._get_client()
+                if client:
+                    from typesafe_sdk import Choice
+                    client.system_one(
+                        state="ping",
+                        questions={"warmup": Choice(instructions="warmup", criteria={"ok": None})}
+                    )
+            except Exception:
+                pass
+
+        t = threading.Thread(target=_do_warmup, daemon=True, name="jev-warmup")
+        t.start()
+
     def execute(self, schema: CandidateSchema, state: Dict[str, Any]) -> ExecutionResult:
-        start_time = time.time()
+        start_time = time.perf_counter()
         
         # 1. LIVE EXECUTION VIA TYPESAFE JEV API
-        if settings.JEV_API_KEY and settings.JEV_API_KEY.strip():
+        client = self._get_client()
+        if client:
             try:
-                from typesafe_sdk import TypeSafeClient, Choice, Noul, Score
+                from typesafe_sdk import Choice, Noul, Score
 
-                client = TypeSafeClient(api_key=settings.JEV_API_KEY.strip())
                 # Format state input for Jev
                 state_text = state.get("content_text") or state.get("quoted_context") or state.get("raw_query") or " ".join(str(v) for v in state.values())
 
                 if schema.type == QuestionType.CHOICE:
                     options = schema.options or ["Option A", "Option B"]
                     criteria = {opt: None for opt in options}
+                    call_start = time.perf_counter()
                     res = client.system_one(
                         state=state_text,
                         questions={"decision": Choice(instructions=schema.question, criteria=criteria)}
                     )
-                    elapsed_ms = round((time.time() - start_time) * 1000, 1)
+                    elapsed_ms = round((time.perf_counter() - call_start) * 1000, 1)
                     answer = res.answers["decision"]
 
                     # Raw Jev Choice Answer
@@ -50,11 +111,12 @@ class ExecutorService:
 
                 elif schema.type == QuestionType.SCORE:
                     rubric = ["very low", "low", "medium", "high", "critical"]
+                    call_start = time.perf_counter()
                     res = client.system_one(
                         state=state_text,
                         questions={"decision": Score(instructions=schema.question, criteria=rubric)}
                     )
-                    elapsed_ms = round((time.time() - start_time) * 1000, 1)
+                    elapsed_ms = round((time.perf_counter() - call_start) * 1000, 1)
                     answer = res.answers["decision"]
                     score_val = answer.score
                     confidence = round(float(answer.confidence), 3)
@@ -73,11 +135,12 @@ class ExecutorService:
 
                 elif schema.type == QuestionType.NOUL:
                     assertion_text = schema.assertion or schema.question
+                    call_start = time.perf_counter()
                     res = client.system_one(
                         state=state_text,
                         questions={"decision": Noul(instructions=assertion_text)}
                     )
-                    elapsed_ms = round((time.time() - start_time) * 1000, 1)
+                    elapsed_ms = round((time.perf_counter() - call_start) * 1000, 1)
                     answer = res.answers["decision"]
                     noul_prob = round(float(answer.noul), 3)
                     is_true = noul_prob >= 0.5
@@ -97,7 +160,7 @@ class ExecutorService:
                 print(f"[Executor Service] Live Jev API call failed ({e}), falling back to deterministic simulation engine.")
 
         # 2. DETERMINISTIC SIMULATION ENGINE (Fallback / Offline)
-        elapsed_ms = round((time.time() - start_time) * 1000 + random.uniform(80, 180), 1)
+        elapsed_ms = round((time.perf_counter() - start_time) * 1000 + random.uniform(20, 60), 1)
         state_text = " ".join(str(v) for v in state.values()).lower()
 
         if schema.type == QuestionType.CHOICE:

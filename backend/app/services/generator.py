@@ -10,19 +10,31 @@ class GeneratorService:
     Operates in live mode via Groq/OpenAI, or in high-fidelity deterministic simulation mode.
     """
 
+    def __init__(self):
+        self._groq_client = None
+
+    def _get_groq_client(self):
+        if not settings.GROQ_API_KEY or not settings.GROQ_API_KEY.strip():
+            return None
+        if self._groq_client is None:
+            try:
+                from groq import Groq
+                self._groq_client = Groq(api_key=settings.GROQ_API_KEY.strip())
+            except Exception:
+                self._groq_client = None
+        return self._groq_client
+
     def _generate_with_groq(
         self,
         prompt: str,
         existing_state: Optional[Dict[str, Any]]
     ) -> Optional[Tuple[CandidateSchema, Dict[str, Any]]]:
         """Calls Groq API to extract structured state and candidate schema."""
-        if not settings.GROQ_API_KEY or not settings.GROQ_API_KEY.strip():
+        client = self._get_groq_client()
+        if not client:
             return None
 
         try:
-            from groq import Groq
-            client = Groq(api_key=settings.GROQ_API_KEY.strip())
-
             system_prompt = (
                 "You are the schema extractor for Jev, a typed System One decision engine. "
                 "Analyze the user's natural language request and extract:\n"
