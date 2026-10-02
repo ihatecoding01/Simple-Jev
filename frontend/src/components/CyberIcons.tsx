@@ -7,10 +7,11 @@ interface IconProps {
 }
 
 // ────────────────────────────────────────────────────────────────────
-// 1. ICON: Choice Router / Multi-Branching Flow (Customer Email Router)
-// Smooth continuous curved paths with rounded arrowheads (Zero jagged edges)
+// THE 8 CANONICAL REFERENCE ICONS (DIRECTLY REPLICATING USER'S IMAGE)
 // ────────────────────────────────────────────────────────────────────
-export function IconChoiceRouter({ size = 20, className = '', color = 'currentColor' }: IconProps) {
+
+// 1. Cloud Upload / Up Arrow (White, Row 1 Col 1)
+export function IconCloudUpload({ size = 20, className = '', color = 'currentColor' }: IconProps) {
   return (
     <svg
       width={size}
@@ -18,27 +19,20 @@ export function IconChoiceRouter({ size = 20, className = '', color = 'currentCo
       viewBox="0 0 24 24"
       fill="none"
       stroke={color}
-      strokeWidth="2.2"
+      strokeWidth="2.3"
       strokeLinecap="round"
       strokeLinejoin="round"
       className={className}
     >
-      <circle cx="4.5" cy="12" r="2.2" />
-      <path d="M6.8 12h4c2.2 0 3.7-1.5 3.7-4.5V6" />
-      <path d="M6.8 12h11" />
-      <path d="M6.8 12h4c2.2 0 3.7 1.5 3.7 4.5V18" />
-      <path d="M12.5 7.5L14.5 5.5l2 2" />
-      <path d="M16 10l2 2-2 2" />
-      <path d="M12.5 16.5l2 2 2-2" />
+      <path d="M6.5 17H5a3.5 3.5 0 0 1-.5-6.97A5 5 0 0 1 14 7.2a4.5 4.5 0 0 1 5.5 5.3A3.5 3.5 0 0 1 17.5 17H16" />
+      <line x1="12" y1="12" x2="12" y2="20" />
+      <polyline points="9 15 12 12 15 15" />
     </svg>
   );
 }
 
-// ────────────────────────────────────────────────────────────────────
-// 2. ICON: Urgency Score (Incident Urgency Scorer)
-// 4 smooth vertical rounded bars of rising heights with trend arrow
-// ────────────────────────────────────────────────────────────────────
-export function IconUrgencyScore({ size = 20, className = '', color = 'currentColor' }: IconProps) {
+// 2. Chat Bubble (Blue, Row 1 Col 2)
+export function IconChatBubble({ size = 20, className = '', color = 'currentColor' }: IconProps) {
   return (
     <svg
       width={size}
@@ -46,26 +40,18 @@ export function IconUrgencyScore({ size = 20, className = '', color = 'currentCo
       viewBox="0 0 24 24"
       fill="none"
       stroke={color}
-      strokeWidth="2.2"
+      strokeWidth="2.3"
       strokeLinecap="round"
       strokeLinejoin="round"
       className={className}
     >
-      <line x1="4" y1="20" x2="20" y2="20" />
-      <line x1="7" y1="16" x2="7" y2="20" strokeWidth="2.4" />
-      <line x1="11" y1="12" x2="11" y2="20" strokeWidth="2.4" />
-      <line x1="15" y1="8" x2="15" y2="20" strokeWidth="2.4" />
-      <line x1="19" y1="4" x2="19" y2="20" strokeWidth="2.4" />
-      <path d="M14 4h5v5" />
+      <path d="M4 6a2.5 2.5 0 0 1 2.5-2.5h11A2.5 2.5 0 0 1 20 6v7.5a2.5 2.5 0 0 1-2.5 2.5H7.5L4 18.5V6z" />
     </svg>
   );
 }
 
-// ────────────────────────────────────────────────────────────────────
-// 3. ICON: Policy Verifier (SPF & Security Verifier / Noul)
-// Smooth curved shield with rounded checkmark
-// ────────────────────────────────────────────────────────────────────
-export function IconPolicyVerifier({ size = 20, className = '', color = 'currentColor' }: IconProps) {
+// 3. Flame / Teardrop (Red-Orange, Row 1 Col 3)
+export function IconFlame({ size = 20, className = '', color = 'currentColor' }: IconProps) {
   return (
     <svg
       width={size}
@@ -73,22 +59,18 @@ export function IconPolicyVerifier({ size = 20, className = '', color = 'current
       viewBox="0 0 24 24"
       fill="none"
       stroke={color}
-      strokeWidth="2.2"
+      strokeWidth="2.3"
       strokeLinecap="round"
       strokeLinejoin="round"
       className={className}
     >
-      <path d="M12 22s8-4 8-10V5.5L12 2 4 5.5V12c0 6 8 10 8 10z" />
-      <path d="M8.5 12l2.5 2.5 4.5-5" />
+      <path d="M12 2.5c-1.2 2.3-4.5 5.5-4.5 9.5a5.5 5.5 0 0 0 10.8 1.5c.3-.8.2-1.8-.3-2.5C16.5 9 14.5 6.5 13.5 5c-.5-.8-1-1.8-1.5-2.5z" />
     </svg>
   );
 }
 
-// ────────────────────────────────────────────────────────────────────
-// 4. ICON: Lead Qualifier (Sales Opportunity Qualifier)
-// Smooth concentric target reticle with rounded crosshairs
-// ────────────────────────────────────────────────────────────────────
-export function IconLeadQualifier({ size = 20, className = '', color = 'currentColor' }: IconProps) {
+// 4. Folder (Amber / Orange, Row 1 Col 4)
+export function IconFolder({ size = 20, className = '', color = 'currentColor' }: IconProps) {
   return (
     <svg
       width={size}
@@ -96,26 +78,18 @@ export function IconLeadQualifier({ size = 20, className = '', color = 'currentC
       viewBox="0 0 24 24"
       fill="none"
       stroke={color}
-      strokeWidth="2.2"
+      strokeWidth="2.3"
       strokeLinecap="round"
       strokeLinejoin="round"
       className={className}
     >
-      <circle cx="12" cy="12" r="8" />
-      <circle cx="12" cy="12" r="3.5" />
-      <line x1="12" y1="2" x2="12" y2="4.5" />
-      <line x1="12" y1="19.5" x2="12" y2="22" />
-      <line x1="2" y1="12" x2="4.5" y2="12" />
-      <line x1="19.5" y1="12" x2="22" y2="12" />
+      <path d="M3.5 7.5V6A2 2 0 0 1 5.5 4h3.2a2 2 0 0 1 1.4.6l1.6 1.8h6.8a2 2 0 0 1 2 2v9.5a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2v-9.4z" />
     </svg>
   );
 }
 
-// ────────────────────────────────────────────────────────────────────
-// 5. ICON: Sentiment Waveform (Review Sentiment Gauge)
-// Smooth acoustic waveform with 5 rounded vertical capsules
-// ────────────────────────────────────────────────────────────────────
-export function IconSentimentGauge({ size = 20, className = '', color = 'currentColor' }: IconProps) {
+// 5. House / Home (Coral / Orange-Red, Row 2 Col 1)
+export function IconHouse({ size = 20, className = '', color = 'currentColor' }: IconProps) {
   return (
     <svg
       width={size}
@@ -123,25 +97,18 @@ export function IconSentimentGauge({ size = 20, className = '', color = 'current
       viewBox="0 0 24 24"
       fill="none"
       stroke={color}
-      strokeWidth="2.4"
+      strokeWidth="2.3"
       strokeLinecap="round"
       strokeLinejoin="round"
       className={className}
     >
-      <line x1="4" y1="10" x2="4" y2="14" />
-      <line x1="8" y1="7" x2="8" y2="17" />
-      <line x1="12" y1="4" x2="12" y2="20" />
-      <line x1="16" y1="7" x2="16" y2="17" />
-      <line x1="20" y1="10" x2="20" y2="14" />
+      <path d="M12 3.5L3.5 11h2.5v8a1.5 1.5 0 0 0 1.5 1.5h9a1.5 1.5 0 0 0 1.5-1.5v-8h2.5L12 3.5z" />
     </svg>
   );
 }
 
-// ────────────────────────────────────────────────────────────────────
-// 6. ICON: Vault Compliance (GDPR & Compliance)
-// Smooth rounded padlock with keyhole
-// ────────────────────────────────────────────────────────────────────
-export function IconVaultCompliance({ size = 20, className = '', color = 'currentColor' }: IconProps) {
+// 6. User Profile (Mint Green, Row 2 Col 2)
+export function IconUserProfile({ size = 20, className = '', color = 'currentColor' }: IconProps) {
   return (
     <svg
       width={size}
@@ -149,23 +116,109 @@ export function IconVaultCompliance({ size = 20, className = '', color = 'curren
       viewBox="0 0 24 24"
       fill="none"
       stroke={color}
-      strokeWidth="2.2"
+      strokeWidth="2.3"
       strokeLinecap="round"
       strokeLinejoin="round"
       className={className}
     >
-      <rect x="5" y="11" width="14" height="10" rx="3.5" />
-      <path d="M8 11V7a4 4 0 0 1 8 0v4" />
-      <circle cx="12" cy="15.5" r="1.2" fill={color} />
-      <line x1="12" y1="16.5" x2="12" y2="18.5" />
+      <circle cx="12" cy="7.5" r="3.8" />
+      <path d="M5 20.5c0-3.5 3.1-6.5 7-6.5s7 3 7 6.5" />
+      <line x1="4.5" y1="20.5" x2="19.5" y2="20.5" />
+    </svg>
+  );
+}
+
+// 7. Split Card / Dual Capsule (Purple, Row 2 Col 3)
+export function IconSplitCard({ size = 20, className = '', color = 'currentColor' }: IconProps) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke={color}
+      strokeWidth="2.3"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+    >
+      <rect x="4" y="4.5" width="16" height="6.5" rx="2.5" />
+      <rect x="4" y="13" width="16" height="6.5" rx="2.5" />
+    </svg>
+  );
+}
+
+// 8. Speedometer Arc with 45° Arrow (Cyan, Row 2 Col 4)
+export function IconSpeedometerArc({ size = 20, className = '', color = 'currentColor' }: IconProps) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke={color}
+      strokeWidth="2.3"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+    >
+      <path d="M12 20a8 8 0 1 1 8-8" />
+      <line x1="11" y1="13" x2="19" y2="5" />
+      <polyline points="14 5 19 5 19 10" />
     </svg>
   );
 }
 
 // ────────────────────────────────────────────────────────────────────
-// 7. ICON: Send Decision (Kinetic Action Projectile)
-// Clean rounded paper plane arrow
+// SEMANTIC ALIASES USING THE EXACT 8 REFERENCE ICONS
 // ────────────────────────────────────────────────────────────────────
+
+// Customer Email Router -> Blue Chat Bubble (Row 1 Col 2)
+export function IconChoiceRouter(props: IconProps) {
+  return <IconChatBubble {...props} />;
+}
+
+// Incident Urgency Scorer -> Red Flame (Row 1 Col 3)
+export function IconUrgencyScore(props: IconProps) {
+  return <IconFlame {...props} />;
+}
+
+// SPF & Security Verifier -> White Cloud Upload (Row 1 Col 1)
+export function IconPolicyVerifier(props: IconProps) {
+  return <IconCloudUpload {...props} />;
+}
+
+// Sales Lead Qualifier -> Mint User Profile (Row 2 Col 2)
+export function IconLeadQualifier(props: IconProps) {
+  return <IconUserProfile {...props} />;
+}
+
+// Review Sentiment Gauge -> Cyan Speedometer Arc (Row 2 Col 4)
+export function IconSentimentGauge(props: IconProps) {
+  return <IconSpeedometerArc {...props} />;
+}
+
+// GDPR Compliance -> Orange Folder (Row 1 Col 4)
+export function IconVaultCompliance(props: IconProps) {
+  return <IconFolder {...props} />;
+}
+
+// Studio Session Tab -> Blue Chat Bubble (Row 1 Col 2)
+export function IconStudioTerminal(props: IconProps) {
+  return <IconChatBubble {...props} />;
+}
+
+// Decision Templates Tab -> Purple Split Card (Row 2 Col 3)
+export function IconTemplatesMatrix(props: IconProps) {
+  return <IconSplitCard {...props} />;
+}
+
+// Saved Rules Tab -> Orange Folder (Row 1 Col 4)
+export function IconSavedRulesPin(props: IconProps) {
+  return <IconFolder {...props} />;
+}
+
+// Send Decision / Run Action -> Cyan 45° Vector Arrow
 export function IconSendDecision({ size = 18, className = '', color = 'currentColor' }: IconProps) {
   return (
     <svg
@@ -174,88 +227,21 @@ export function IconSendDecision({ size = 18, className = '', color = 'currentCo
       viewBox="0 0 24 24"
       fill="none"
       stroke={color}
-      strokeWidth="2.2"
+      strokeWidth="2.3"
       strokeLinecap="round"
       strokeLinejoin="round"
       className={className}
     >
-      <path d="M22 2L11 13" />
-      <path d="M22 2L15 22L11 13L2 9L22 2Z" />
+      <line x1="5" y1="19" x2="19" y2="5" />
+      <polyline points="10 5 19 5 19 14" />
     </svg>
   );
 }
 
 // ────────────────────────────────────────────────────────────────────
-// 8. ICON: Studio Terminal / Chat (Matching Reference Image 2)
-// Smooth rounded speech bubble
+// CORE UI NAVIGATION & CHATBOX UTILITIES
 // ────────────────────────────────────────────────────────────────────
-export function IconStudioTerminal({ size = 18, className = '', color = 'currentColor' }: IconProps) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke={color}
-      strokeWidth="2.2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={className}
-    >
-      <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
-    </svg>
-  );
-}
 
-// ────────────────────────────────────────────────────────────────────
-// 9. ICON: Templates Matrix (4-Quadrant Smooth Rounded Grid)
-// ────────────────────────────────────────────────────────────────────
-export function IconTemplatesMatrix({ size = 18, className = '', color = 'currentColor' }: IconProps) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke={color}
-      strokeWidth="2.2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={className}
-    >
-      <rect x="3.5" y="3.5" width="7" height="7" rx="2.5" />
-      <rect x="13.5" y="3.5" width="7" height="7" rx="2.5" />
-      <rect x="3.5" y="13.5" width="7" height="7" rx="2.5" />
-      <rect x="13.5" y="13.5" width="7" height="7" rx="2.5" />
-    </svg>
-  );
-}
-
-// ────────────────────────────────────────────────────────────────────
-// 10. ICON: Saved Rules Pin (Clean Bookmark Ribbon)
-// ────────────────────────────────────────────────────────────────────
-export function IconSavedRulesPin({ size = 18, className = '', color = 'currentColor' }: IconProps) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke={color}
-      strokeWidth="2.2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={className}
-    >
-      <path d="M6 3h12a2 2 0 0 1 2 2v16l-8-4-8 4V5a2 2 0 0 1 2-2z" />
-    </svg>
-  );
-}
-
-// ────────────────────────────────────────────────────────────────────
-// 11. ICON: Scanner Reticle (Prompt Input Lens)
-// Smooth rounded 4-corner brackets with focal circle
-// ────────────────────────────────────────────────────────────────────
 export function IconScannerReticle({ size = 20, className = '', color = 'currentColor' }: IconProps) {
   return (
     <svg
@@ -264,7 +250,7 @@ export function IconScannerReticle({ size = 20, className = '', color = 'current
       viewBox="0 0 24 24"
       fill="none"
       stroke={color}
-      strokeWidth="2.2"
+      strokeWidth="2.3"
       strokeLinecap="round"
       strokeLinejoin="round"
       className={className}
@@ -278,9 +264,6 @@ export function IconScannerReticle({ size = 20, className = '', color = 'current
   );
 }
 
-// ────────────────────────────────────────────────────────────────────
-// 12. ICON: Chevron Right (Next Step Indicator)
-// ────────────────────────────────────────────────────────────────────
 export function IconCyberChevronRight({ size = 16, className = '', color = 'currentColor' }: IconProps) {
   return (
     <svg
@@ -289,7 +272,7 @@ export function IconCyberChevronRight({ size = 16, className = '', color = 'curr
       viewBox="0 0 24 24"
       fill="none"
       stroke={color}
-      strokeWidth="2.2"
+      strokeWidth="2.3"
       strokeLinecap="round"
       strokeLinejoin="round"
       className={className}
@@ -299,9 +282,6 @@ export function IconCyberChevronRight({ size = 16, className = '', color = 'curr
   );
 }
 
-// ────────────────────────────────────────────────────────────────────
-// 13. ICON: Chevron Left (Back Step Indicator)
-// ────────────────────────────────────────────────────────────────────
 export function IconCyberChevronLeft({ size = 16, className = '', color = 'currentColor' }: IconProps) {
   return (
     <svg
@@ -310,7 +290,7 @@ export function IconCyberChevronLeft({ size = 16, className = '', color = 'curre
       viewBox="0 0 24 24"
       fill="none"
       stroke={color}
-      strokeWidth="2.2"
+      strokeWidth="2.3"
       strokeLinecap="round"
       strokeLinejoin="round"
       className={className}
@@ -320,9 +300,6 @@ export function IconCyberChevronLeft({ size = 16, className = '', color = 'curre
   );
 }
 
-// ────────────────────────────────────────────────────────────────────
-// 14. ICON: Sidebar Toggle (Split-Pane Container)
-// ────────────────────────────────────────────────────────────────────
 export function IconSidebarToggle({ size = 18, className = '', color = 'currentColor' }: IconProps) {
   return (
     <svg
@@ -331,7 +308,7 @@ export function IconSidebarToggle({ size = 18, className = '', color = 'currentC
       viewBox="0 0 24 24"
       fill="none"
       stroke={color}
-      strokeWidth="2.2"
+      strokeWidth="2.3"
       strokeLinecap="round"
       strokeLinejoin="round"
       className={className}
@@ -342,9 +319,6 @@ export function IconSidebarToggle({ size = 18, className = '', color = 'currentC
   );
 }
 
-// ────────────────────────────────────────────────────────────────────
-// 15. ICON: Search Terminal (Smooth Magnifying Glass)
-// ────────────────────────────────────────────────────────────────────
 export function IconSearchTerminal({ size = 14, className = '', color = 'currentColor' }: IconProps) {
   return (
     <svg
@@ -353,7 +327,7 @@ export function IconSearchTerminal({ size = 14, className = '', color = 'current
       viewBox="0 0 24 24"
       fill="none"
       stroke={color}
-      strokeWidth="2.2"
+      strokeWidth="2.3"
       strokeLinecap="round"
       strokeLinejoin="round"
       className={className}
@@ -364,9 +338,6 @@ export function IconSearchTerminal({ size = 14, className = '', color = 'current
   );
 }
 
-// ────────────────────────────────────────────────────────────────────
-// 16. ICON: Close / Clear (Smooth Rounded X)
-// ────────────────────────────────────────────────────────────────────
 export function IconClose({ size = 14, className = '', color = 'currentColor' }: IconProps) {
   return (
     <svg
@@ -375,7 +346,7 @@ export function IconClose({ size = 14, className = '', color = 'currentColor' }:
       viewBox="0 0 24 24"
       fill="none"
       stroke={color}
-      strokeWidth="2.2"
+      strokeWidth="2.3"
       strokeLinecap="round"
       strokeLinejoin="round"
       className={className}

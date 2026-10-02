@@ -9,6 +9,14 @@ import DecisionCard from '../../components/DecisionCard';
 import Stepper from '../../components/Stepper';
 import ProgressiveTrustBanner from '../../components/ProgressiveTrustBanner';
 import {
+  IconCloudUpload,
+  IconChatBubble,
+  IconFlame,
+  IconFolder,
+  IconHouse,
+  IconUserProfile,
+  IconSplitCard,
+  IconSpeedometerArc,
   IconChoiceRouter,
   IconUrgencyScore,
   IconPolicyVerifier,
@@ -75,8 +83,8 @@ const HERO_SLIDES = [
     title: 'Customer Email & Ticket Router',
     description: 'Sort incoming emails into Billing, Support, or Account with deterministic Jev schemas.',
     query: "Categorize customer email: 'I was charged twice on invoice #994. Please issue a refund ASAP.'",
-    color: '#8B5CF6',
-    icon: <IconChoiceRouter size={24} color="#8B5CF6" />,
+    color: '#3B82F6',
+    icon: <IconChatBubble size={24} color="#3B82F6" />,
   },
   {
     id: 'slide-urgency',
@@ -84,8 +92,8 @@ const HERO_SLIDES = [
     title: 'Production Incident Urgency Scorer',
     description: 'Score system outage impact and customer disruption on a deterministic 1 to 5 scale.',
     query: 'Rate urgency: Primary database cluster has failed and all customer logins are returning errors.',
-    color: '#C8FF00',
-    icon: <IconUrgencyScore size={24} color="#C8FF00" />,
+    color: '#EF4444',
+    icon: <IconFlame size={24} color="#EF4444" />,
   },
   {
     id: 'slide-spf',
@@ -93,8 +101,8 @@ const HERO_SLIDES = [
     title: 'Security & Domain Policy Verifier',
     description: 'Verify if sender domain passes strict SPF authentication with mathematical certainty.',
     query: 'Verify: The incoming email SPF record passes verification for paypal.com domain.',
-    color: '#10B981',
-    icon: <IconPolicyVerifier size={24} color="#10B981" />,
+    color: '#F4F4F5',
+    icon: <IconCloudUpload size={24} color="#F4F4F5" />,
   },
   {
     id: 'slide-lead',
@@ -102,8 +110,8 @@ const HERO_SLIDES = [
     title: 'Sales Opportunity Qualifier',
     description: 'Triage enterprise prospects vs self-serve signups by headcount and deployment scope.',
     query: 'Qualify lead: Fortune 500 enterprise requesting 25,000 seat dedicated cloud deployment.',
-    color: '#06B6D4',
-    icon: <IconLeadQualifier size={24} color="#06B6D4" />,
+    color: '#10B981',
+    icon: <IconUserProfile size={24} color="#10B981" />,
   },
 ];
 
@@ -117,8 +125,8 @@ const READY_TEMPLATES = [
     title: 'Customer Email Router',
     description: 'Sort incoming emails into Billing, Support, or Account automatically.',
     query: "Categorize customer email: 'I was charged twice on invoice #994. Please issue a refund ASAP.'",
-    color: '#8B5CF6',
-    icon: <IconChoiceRouter size={24} color="#8B5CF6" />,
+    color: '#3B82F6',
+    icon: <IconChatBubble size={22} color="#3B82F6" />,
   },
   {
     id: 'incident-scorer',
@@ -126,8 +134,8 @@ const READY_TEMPLATES = [
     title: 'Incident Urgency Scorer',
     description: 'Score production downtime impact from 1 (minor) to 5 (critical emergency).',
     query: 'Rate urgency: Primary database cluster has failed and all customer logins are returning errors.',
-    color: '#C8FF00',
-    icon: <IconUrgencyScore size={24} color="#C8FF00" />,
+    color: '#EF4444',
+    icon: <IconFlame size={22} color="#EF4444" />,
   },
   {
     id: 'spf-verifier',
@@ -135,8 +143,8 @@ const READY_TEMPLATES = [
     title: 'SPF & Security Verifier',
     description: 'Verify if incoming email domain passes SPF and security policies.',
     query: 'Verify: The incoming email SPF record passes verification for paypal.com domain.',
-    color: '#10B981',
-    icon: <IconPolicyVerifier size={24} color="#10B981" />,
+    color: '#F4F4F5',
+    icon: <IconCloudUpload size={22} color="#F4F4F5" />,
   },
   {
     id: 'lead-qualifier',
@@ -144,8 +152,8 @@ const READY_TEMPLATES = [
     title: 'Sales Lead Qualifier',
     description: 'Triage incoming leads: Enterprise, Mid-Market, SMB, or Unqualified.',
     query: 'Qualify lead: Fortune 500 enterprise requesting 25,000 seat dedicated deployment.',
-    color: '#06B6D4',
-    icon: <IconLeadQualifier size={24} color="#06B6D4" />,
+    color: '#10B981',
+    icon: <IconUserProfile size={22} color="#10B981" />,
   },
   {
     id: 'feedback-sentiment',
@@ -153,8 +161,8 @@ const READY_TEMPLATES = [
     title: 'Review Sentiment Gauge',
     description: 'Quantify customer satisfaction and churn risk on a 1 to 10 scale.',
     query: "Score sentiment: 'Product is fast and sleek, but checkout failed twice and documentation is lacking.'",
-    color: '#F59E0B',
-    icon: <IconSentimentGauge size={24} color="#F59E0B" />,
+    color: '#06B6D4',
+    icon: <IconSpeedometerArc size={22} color="#06B6D4" />,
   },
   {
     id: 'gdpr-compliance',
@@ -162,8 +170,8 @@ const READY_TEMPLATES = [
     title: 'GDPR Compliance Check',
     description: 'Verify whether a user deletion request requires immediate Article 17 action.',
     query: 'Verify: User requests complete data deletion under Article 17 of GDPR within 30 days.',
-    color: '#EC4899',
-    icon: <IconVaultCompliance size={24} color="#EC4899" />,
+    color: '#F59E0B',
+    icon: <IconFolder size={22} color="#F59E0B" />,
   },
 ];
 
@@ -180,6 +188,7 @@ export default function PlaygroundPage() {
   const [consecutiveUnedited, setConsecutiveUnedited] = useState(0);
   const [showTrustBanner, setShowTrustBanner] = useState(false);
   const [inputFocused, setInputFocused] = useState(false);
+  const [showAllTemplates, setShowAllTemplates] = useState(false);
 
   // Speculative prefetch cache: stores in-flight background promises triggered on hover or mount
   const prefetchCacheRef = useRef<Map<string, { key: string; promise: Promise<ExecutionResult> }>>(new Map());
@@ -481,12 +490,12 @@ export default function PlaygroundPage() {
   const activeSlide = HERO_SLIDES[currentSlideIndex];
 
   return (
-    <div className="bg-[#0B0C0E] text-white min-h-screen flex flex-col font-sans selection:bg-[#C8FF00] selection:text-black">
+    <div className="bg-[#07080A] text-white h-screen max-h-screen overflow-hidden flex flex-col font-sans selection:bg-[#C8FF00] selection:text-black">
       {/* Global Top Navbar */}
       <Header />
 
       {/* Main Studio Shell: Whirl.chat Inspired Split-Pane App Layout */}
-      <div className="flex-1 flex w-full max-w-[1600px] mx-auto overflow-hidden">
+      <div className="flex-1 min-h-0 flex w-full max-w-[1600px] mx-auto overflow-hidden">
         {/* ──────────────────────────────────────────────────────── */}
         {/* LEFT APP SIDEBAR (WHIRL.CHAT STYLE)                      */}
         {/* ──────────────────────────────────────────────────────── */}
@@ -646,9 +655,9 @@ export default function PlaygroundPage() {
         {/* ──────────────────────────────────────────────────────── */}
         {/* MAIN STUDIO CANVAS                                      */}
         {/* ──────────────────────────────────────────────────────── */}
-        <main className="flex-1 flex flex-col min-w-0 bg-[#07080A] h-screen overflow-hidden relative">
+        <main className="flex-1 min-h-0 flex flex-col overflow-hidden relative bg-[#07080A]">
           {/* Main Top Header Controls */}
-          <header className="shrink-0 px-6 py-3.5 bg-[#0B0C0E]/90 backdrop-blur-md border-b border-[#1C1E26] flex items-center justify-between gap-4 z-10">
+          <header className="shrink-0 px-6 py-2.5 bg-[#07080A]/95 backdrop-blur-md border-b border-[#1C1E26] flex items-center justify-between gap-4 z-10">
             <div>
               <h1 className="text-lg sm:text-xl font-bold text-white font-sans tracking-tight flex items-center gap-2">
                 <span>Playground Studio</span>
@@ -700,8 +709,8 @@ export default function PlaygroundPage() {
           </header>
 
           {/* SCROLLABLE VIEWPORT FOR MESSAGES & TEMPLATES */}
-          <div className="flex-1 overflow-y-auto px-4 sm:px-8 py-6">
-            <div className="max-w-4xl w-full mx-auto space-y-6">
+          <div className="flex-1 min-h-0 overflow-y-auto px-4 sm:px-8 py-3 sm:py-4">
+            <div className="max-w-4xl w-full mx-auto space-y-4">
               {/* Quick Run Banner */}
               {activeQuickRunSchema && (
                 <div className="flex items-center justify-between p-3.5 rounded-[8px] bg-[#C8FF00]/10 border border-[#C8FF00]/30 animate-fade-in">
@@ -735,50 +744,50 @@ export default function PlaygroundPage() {
             {/* VIEW A: TEMPLATES BROWSER (WHIRL.CHAT STYLE)             */}
             {/* ──────────────────────────────────────────────────────── */}
             {activeTab === 'browse' && (
-              <div className="space-y-8 animate-fade-in">
-                {/* 1. HERO FEATURED BANNER CARD (Directly matching Whirl.chat) */}
-                <div className="relative w-full rounded-2xl overflow-hidden border border-[#272A35] shadow-2xl group min-h-[220px] sm:min-h-[250px] flex flex-col justify-end p-6 sm:p-8">
+              <div className="space-y-4 sm:space-y-5 animate-fade-in">
+                {/* 1. HERO FEATURED BANNER CARD (Compact Whirl.chat Style) */}
+                <div className="relative w-full rounded-xl overflow-hidden border border-[#222530] shadow-xl group min-h-[120px] sm:min-h-[135px] flex flex-col justify-end p-4 sm:p-5">
                   {/* Banner Image Background */}
                   <img
                     src="/playground-header.jpg"
                     alt="Featured Template Illustration"
                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                   />
-                  {/* Subtle dark gradient overlay to ensure perfect contrast */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0B0C0E] via-[#0B0C0E]/70 to-transparent" />
+                  {/* Dark gradient overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#07080A] via-[#07080A]/75 to-transparent" />
 
                   {/* Overlaid Banner Content */}
-                  <div className="relative z-10 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
-                    <div className="space-y-2 max-w-xl">
-                      <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-[10px] font-mono tracking-wider text-[#C8FF00] uppercase font-semibold">
+                  <div className="relative z-10 flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+                    <div className="space-y-1.5 max-w-xl">
+                      <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-[9px] font-mono tracking-wider text-[#C8FF00] uppercase font-semibold">
                         {activeSlide.badge}
                       </div>
                       <div className="flex items-center gap-3">
                         <div
-                          className="w-12 h-12 rounded-[12px] bg-[#030305] border border-white/15 flex items-center justify-center shrink-0 shadow-2xl transition-transform group-hover:scale-105"
+                          className="w-10 h-10 rounded-[10px] bg-[#030305] border border-white/15 flex items-center justify-center shrink-0 shadow-2xl transition-transform group-hover:scale-105"
                           style={{ color: activeSlide.color }}
                         >
                           {activeSlide.icon}
                         </div>
                         <div>
-                          <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight font-sans">
+                          <h2 className="text-base sm:text-lg font-bold text-white tracking-tight font-sans">
                             {activeSlide.title}
                           </h2>
-                          <p className="text-xs sm:text-sm text-[#D4D4D8] font-sans mt-0.5 leading-relaxed">
+                          <p className="text-xs text-[#D4D4D8] font-sans line-clamp-1">
                             {activeSlide.description}
                           </p>
                         </div>
                       </div>
 
                       {/* Carousel Pagination Dots */}
-                      <div className="flex items-center gap-1.5 pt-2">
+                      <div className="flex items-center gap-1.5 pt-1">
                         {HERO_SLIDES.map((_, idx) => (
                           <button
                             key={idx}
                             onClick={() => setCurrentSlideIndex(idx)}
                             className={`h-1.5 rounded-full transition-all cursor-pointer ${
                               currentSlideIndex === idx
-                                ? 'w-6 bg-[#C8FF00]'
+                                ? 'w-5 bg-[#C8FF00]'
                                 : 'w-1.5 bg-white/30 hover:bg-white/60'
                             }`}
                             aria-label={`Go to slide ${idx + 1}`}
@@ -790,24 +799,24 @@ export default function PlaygroundPage() {
                     <div className="shrink-0">
                       <button
                         onClick={() => handleSendPrompt(activeSlide.query)}
-                        className="px-5 py-2.5 rounded-full bg-white hover:bg-[#F4F4F5] text-black font-semibold text-xs tracking-wide shadow-xl flex items-center gap-2 cursor-pointer transition-all hover:scale-105 active:scale-95"
+                        className="px-4 py-2 rounded-full bg-white hover:bg-[#F4F4F5] text-black font-semibold text-xs tracking-wide shadow-lg flex items-center gap-1.5 cursor-pointer transition-all hover:scale-105 active:scale-95"
                       >
-                        <span>Try This Template</span>
-                        <IconCyberChevronRight size={14} />
+                        <span>Try Template</span>
+                        <IconCyberChevronRight size={13} />
                       </button>
                     </div>
                   </div>
                 </div>
 
-                {/* 2. READY-TO-RUN DECISION TEMPLATES (WHIRL.CHAT 2-COLUMN GRID) */}
-                <div className="space-y-4">
+                {/* 2. READY-TO-RUN DECISION TEMPLATES (Default 4 with View More Expansion) */}
+                <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h3 className="text-base font-bold text-white font-sans">
+                      <h3 className="text-sm sm:text-base font-bold text-white font-sans">
                         Decision Templates
                       </h3>
                       <p className="text-xs text-[#71717A]">
-                        Click any template to load and execute an instant deterministic decision.
+                        Select a template to evaluate instantly with deterministic Jev schemas.
                       </p>
                     </div>
                     {messages.length > 0 && (
@@ -821,16 +830,16 @@ export default function PlaygroundPage() {
                     )}
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
-                    {filteredTemplates.map((template) => (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {(showAllTemplates ? filteredTemplates : filteredTemplates.slice(0, 4)).map((template) => (
                       <div
                         key={template.id}
                         onClick={() => handleSendPrompt(template.query)}
-                        className="group flex items-start gap-4 p-4 rounded-[14px] bg-[#0A0B0E] border border-[#1A1C24] hover:border-[#2C303E] hover:bg-[#0F1116] transition-all duration-200 cursor-pointer shadow-md hover:shadow-2xl relative overflow-hidden"
+                        className="group flex items-start gap-3.5 p-3 sm:p-3.5 rounded-[12px] bg-[#0A0B0E] border border-[#1A1C24] hover:border-[#2C303E] hover:bg-[#0F1116] transition-all duration-200 cursor-pointer shadow-md hover:shadow-xl relative overflow-hidden"
                       >
                         {/* App Icon Tile - Deep Obsidian matching Reference Image */}
                         <div
-                          className="w-12 h-12 rounded-[12px] bg-[#030305] border border-white/[0.08] group-hover:border-white/20 flex items-center justify-center shrink-0 transition-all duration-300 group-hover:scale-105 shadow-inner"
+                          className="w-10 h-10 sm:w-11 sm:h-11 rounded-[10px] bg-[#030305] border border-white/[0.08] group-hover:border-white/20 flex items-center justify-center shrink-0 transition-all duration-300 group-hover:scale-105 shadow-inner"
                           style={{ color: template.color }}
                         >
                           {template.icon}
@@ -839,25 +848,42 @@ export default function PlaygroundPage() {
                         {/* Text description */}
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between gap-2">
-                            <span className="text-sm font-semibold text-white group-hover:text-[#C8FF00] transition-colors truncate">
+                            <span className="text-xs sm:text-sm font-semibold text-white group-hover:text-[#C8FF00] transition-colors truncate">
                               {template.title}
                             </span>
-                            <span className="text-[10px] font-mono uppercase px-1.5 py-0.5 rounded bg-black/40 text-[#71717A] border border-white/5">
+                            <span className="text-[9px] font-mono uppercase px-1.5 py-0.5 rounded bg-black/40 text-[#71717A] border border-white/5">
                               {template.type}
                             </span>
                           </div>
-                          <p className="text-xs text-[#8E909B] mt-1 line-clamp-2 leading-relaxed">
+                          <p className="text-[11px] sm:text-xs text-[#8E909B] mt-0.5 line-clamp-2 leading-relaxed">
                             {template.description}
                           </p>
                         </div>
 
                         {/* Right Chevron Slide Icon */}
-                        <div className="text-[#52525B] group-hover:text-[#C8FF00] transition-all transform group-hover:translate-x-1 shrink-0 pt-1">
-                          <IconCyberChevronRight size={16} />
+                        <div className="text-[#52525B] group-hover:text-[#C8FF00] transition-all transform group-hover:translate-x-1 shrink-0 pt-0.5">
+                          <IconCyberChevronRight size={14} />
                         </div>
                       </div>
                     ))}
                   </div>
+
+                  {/* View More / View Fewer Toggle Button */}
+                  {filteredTemplates.length > 4 && (
+                    <div className="flex justify-center pt-1 pb-0.5">
+                      <button
+                        onClick={() => setShowAllTemplates(!showAllTemplates)}
+                        className="px-4 py-1.5 rounded-[6px] bg-[#0E1015] hover:bg-[#161820] border border-[#202330] hover:border-[#34384A] text-xs font-mono font-medium text-[#D4D4D8] hover:text-white transition-all cursor-pointer flex items-center gap-2 shadow-sm"
+                        id="toggle-view-more-templates-btn"
+                      >
+                        <span>{showAllTemplates ? 'Show Fewer Templates' : `View More Templates (${filteredTemplates.length - 4} more)`}</span>
+                        <IconCyberChevronRight
+                          size={13}
+                          className={`transition-transform duration-200 ${showAllTemplates ? '-rotate-90' : 'rotate-90'}`}
+                        />
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
             )}
@@ -1113,7 +1139,7 @@ export default function PlaygroundPage() {
         {/* ──────────────────────────────────────────────────────── */}
         {/* PROMINENT GROUNDED BOTTOM CHATBOX                        */}
         {/* ──────────────────────────────────────────────────────── */}
-        <div className="shrink-0 w-full bg-[#0B0C0E]/95 backdrop-blur-xl border-t border-[#1C1E26] px-4 py-3 sm:px-8 sm:py-3.5 z-20 shadow-[0_-15px_35px_rgba(0,0,0,0.7)]">
+        <div className="shrink-0 w-full bg-[#07080A]/95 backdrop-blur-xl border-t border-[#1C1E26] px-4 py-2 sm:px-8 sm:py-2.5 z-20 shadow-[0_-15px_35px_rgba(0,0,0,0.7)]">
           <div className="max-w-4xl mx-auto space-y-2.5">
             {/* Quick Prompt Pill / Template Suggestions */}
             <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5 select-none text-[11px] font-mono">
