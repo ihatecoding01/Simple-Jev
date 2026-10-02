@@ -256,9 +256,20 @@ Conversational-Jev/
 ├── docs/
 │   └── assets/
 │       └── demo.gif                  # Real 15-second animated demonstration
+├── .github/
+│   ├── ISSUE_TEMPLATE/
+│   │   ├── bug_report.md             # Structured bug reporting template
+│   │   ├── feature_request.md        # Architectural extension proposal template
+│   │   └── config.yml                # Issue routing config
+│   └── pull_request_template.md      # Pull request invariant checklist
 ├── Architecture.md                   # Full architectural specification
 ├── PRD.md                            # Comprehensive Product Requirements Document
 ├── AGENTS.md                         # Coding agent guidelines & invariant rules
+├── CONTRIBUTING.md                   # Contribution guide & setup protocols
+├── CODE_OF_CONDUCT.md                # Contributor Covenant v2.1
+├── SECURITY.md                       # Security policy & prompt-injection threat model
+├── CHANGELOG.md                      # Keep a Changelog release history
+├── LICENSE                           # MIT License
 └── README.md                         # This document
 ```
 
@@ -302,6 +313,12 @@ Ensures 0 TypeScript errors, 0 ESLint warnings, and valid Turbopack static compi
 
 ---
 
-## 8. License
+## 8. Community & Open Source Standards
 
-Distributed under the **MIT License**. See [`LICENSE`](LICENSE) for details.
+We welcome community contributions! Please review our standard open-source documentation:
+- 🤝 **[Contributing Guide](CONTRIBUTING.md)**: Setup, architectural invariants, and PR guidelines.
+- 📜 **[Code of Conduct](CODE_OF_CONDUCT.md)**: Contributor Covenant v2.1 community pledge.
+- 🛡️ **[Security Policy](SECURITY.md)**: Prompt injection defense model and responsible disclosure.
+- 📝 **[Changelog](CHANGELOG.md)**: Version history following Keep a Changelog.
+- ⚖️ **[License](LICENSE)**: MIT License.
+
