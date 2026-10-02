@@ -407,37 +407,36 @@ export default function Home() {
         </section>
 
         {/* ═══════════════════════════════════════════════════════════ */}
-        {/* BOTTOM CTA                                                 */}
+        {/* WHY DID I CREATE THIS AND FOR WHOM                          */}
         {/* ═══════════════════════════════════════════════════════════ */}
         <section className="terminal-section py-16 px-4 sm:px-8 relative overflow-hidden">
-          <ScrollReveal variant="scale-up" duration={900}>
-            <div className="max-w-4xl mx-auto p-8 sm:p-12 rounded-[4px] bg-[#131418] border border-[#272A35] border-l-[4px] border-l-[#C8FF00] shadow-[0_0_40px_rgba(200,255,0,0.12)] relative overflow-hidden anim-border-glow-morph">
-              <div className="absolute top-4 right-4 opacity-40 pointer-events-none anim-float-slow">
-                <DotCluster rows={3} cols={4} color="lime" />
+          <ScrollReveal variant="fade-up" duration={800}>
+            <div className="max-w-3xl mx-auto space-y-6">
+              <div className="inline-flex items-center gap-2 px-2.5 py-1 bg-[#181A20] border border-[#272A35] rounded-[2px] text-[10px] font-mono text-[#C8FF00] font-bold tracking-widest uppercase">
+                [ A NOTE FROM THE CREATOR ]
               </div>
 
-              <div className="relative z-10 space-y-5 max-w-2xl">
-                <div className="inline-flex items-center gap-2 px-2.5 py-1 bg-[#181A20] border border-[#272A35] rounded-[2px] text-[10px] font-mono text-[#C8FF00] font-bold tracking-widest uppercase">
-                  [ NO SETUP NEEDED ]
-                </div>
+              <h2 className="type-headline text-2xl sm:text-3xl font-extrabold text-white">
+                Why did I create this — and for whom?
+              </h2>
 
-                <h2 className="type-headline text-2xl sm:text-3xl font-extrabold text-white">
-                  Ready to try it yourself?
-                </h2>
-
-                <p className="text-sm sm:text-base text-[#A1A1AA] font-sans leading-relaxed">
-                  Start making decisions right in your browser. No account needed — comes pre-loaded with examples so you can see it work immediately.
+              <div className="space-y-4 font-sans text-base sm:text-lg text-[#D4D4D8] leading-relaxed">
+                <p>
+                  Most modern AI tools demand a computer science degree just to get a straight answer. To make a deterministic, mathematically grounded decision with Jev, you previously had to configure rigid JSON schemas, map complex state graphs, and write backend boilerplate. If you just had an urgent question in plain English, you were left behind.
                 </p>
 
-                <div className="pt-2">
-                  <Link
-                    href="/playground"
-                    className="gt-btn-execute text-sm px-6 py-3.5 shadow-[0_0_20px_rgba(255,46,84,0.4)] hover:shadow-[0_0_30px_rgba(255,46,84,0.6)] hover:scale-105 active:scale-95 transition-all inline-flex items-center gap-2"
-                    id="footer-launch-playground-btn"
-                  >
-                    <span>OPEN PLAYGROUND ↵</span>
-                  </Link>
-                </div>
+                <p>
+                  I created Simple Jev with a simple, caring belief: you shouldn't have to write code to get answers you can count on. Whether you are trying to route customer emails to the right queue, rate the urgency of a midnight database crash, or verify if an incoming payment domain is authentic, the software should understand your words and do the hard math for you.
+                </p>
+
+                <p>
+                  This is built for the solo founders juggling everything at once, the customer support teams drowned in tickets, the curious builders who love clean tools, and anyone exhausted by unpredictable AI hallucinations. It’s made to feel calm, effortless, and dependable — turning your everyday questions into deterministic decisions in under a second.
+                </p>
+              </div>
+
+              <div className="pt-4 border-t border-[#222532] flex items-center justify-between text-xs font-mono text-[#71717A]">
+                <span className="text-[#C8FF00]">Built with care for everyday thinkers &amp; builders.</span>
+                <span>Free to use • Zero setup</span>
               </div>
             </div>
           </ScrollReveal>
@@ -447,22 +446,148 @@ export default function Home() {
       {/* Decision pulse animation */}
       <DecisionPulse />
 
-      {/* Footer */}
-      <footer className="border-t border-[#272A35] bg-[#0B0C0E] py-8 px-4 sm:px-8 text-xs text-[#71717A]">
-        <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4 font-mono text-[10px] uppercase tracking-widest">
-          <div>SIMPLE JEV — DECISION ENGINE</div>
-          <div className="flex items-center gap-4">
-            <Link href="/playground" className="text-[#C8FF00] hover:underline">
-              PLAYGROUND ↗
-            </Link>
-            <a
-              href="https://github.com/ihatecoding01/Conversational-Jev"
-              target="_blank"
-              rel="noreferrer"
-              className="text-[#8B5CF6] hover:underline"
-            >
-              GITHUB ↗
-            </a>
+      {/* Clean Modern Footer */}
+      <footer className="border-t border-[#272A35] bg-[#0B0C0E] pt-14 pb-10 px-4 sm:px-8 text-xs text-[#71717A]">
+        <div className="max-w-5xl mx-auto space-y-10">
+          {/* Playground Invitation Banner */}
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-10 border-b border-[#1C1F2B]">
+            <div className="space-y-2 max-w-xl">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-[#C8FF00] animate-pulse" />
+                <span className="font-mono text-[10px] text-[#C8FF00] tracking-widest uppercase font-semibold">
+                  [ INTERACTIVE PLAYGROUND ]
+                </span>
+              </div>
+              <h3 className="text-xl sm:text-2xl font-bold font-mono text-white tracking-tight">
+                Make decisions in real time.
+              </h3>
+              <p className="text-xs sm:text-sm text-[#8E92A4] font-sans leading-relaxed">
+                No setup or API key required. Explore pre-loaded templates for email routing, incident triage, and logic verification.
+              </p>
+            </div>
+
+            <div className="shrink-0 flex items-center">
+              <Link
+                href="/playground"
+                id="footer-launch-playground-btn"
+                className="px-6 py-3.5 bg-[#C8FF00] hover:bg-[#D4FF00] text-black font-mono font-bold text-xs uppercase tracking-wider rounded-[2px] shadow-[0_0_20px_rgba(200,255,0,0.25)] hover:shadow-[0_0_30px_rgba(200,255,0,0.45)] hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-2 cursor-pointer"
+              >
+                <span>Launch Playground</span>
+                <span className="text-sm font-sans font-bold">↵</span>
+              </Link>
+            </div>
+          </div>
+
+          {/* Footer Navigation Columns */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 pb-10 border-b border-[#1C1F2B]">
+            {/* Column 1: Brand & Philosophy */}
+            <div className="space-y-3">
+              <div className="font-mono text-xs font-bold text-white tracking-wider uppercase flex items-center gap-1.5">
+                <span className="text-[#C8FF00]">◆</span> SIMPLE JEV
+              </div>
+              <p className="text-xs text-[#71717A] leading-relaxed">
+                A zero-code conversational layer over TypeSafe AI's Jev model. Deterministic decisions with 5-point mathematical validation.
+              </p>
+              <div className="flex items-center gap-1.5 text-[10px] font-mono text-[#10B981]">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#10B981]" />
+                SYSTEM OPERATIONAL
+              </div>
+            </div>
+
+            {/* Column 2: Primitives */}
+            <div className="space-y-3 font-mono text-xs">
+              <div className="text-[10px] text-[#A1A1AA] uppercase tracking-wider font-bold">
+                Decision Primitives
+              </div>
+              <ul className="space-y-2 text-[#71717A]">
+                <li>
+                  <span className="text-white">Choice</span> — Categorization &amp; Routing
+                </li>
+                <li>
+                  <span className="text-white">Score</span> — 1-5 Numerical Priority
+                </li>
+                <li>
+                  <span className="text-white">Noul</span> — Truth &amp; Verification
+                </li>
+              </ul>
+            </div>
+
+            {/* Column 3: Playground Links */}
+            <div className="space-y-3 font-mono text-xs">
+              <div className="text-[10px] text-[#A1A1AA] uppercase tracking-wider font-bold">
+                Playground
+              </div>
+              <ul className="space-y-2">
+                <li>
+                  <Link href="/playground" className="text-[#C8FF00] hover:underline flex items-center gap-1">
+                    <span>Open Playground</span>
+                    <span>↗</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/playground" className="text-[#71717A] hover:text-white transition-colors">
+                    Customer Email Router
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/playground" className="text-[#71717A] hover:text-white transition-colors">
+                    Urgency Scorer
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/playground" className="text-[#71717A] hover:text-white transition-colors">
+                    Security SPF Verifier
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            {/* Column 4: Project & Source */}
+            <div className="space-y-3 font-mono text-xs">
+              <div className="text-[10px] text-[#A1A1AA] uppercase tracking-wider font-bold">
+                Project
+              </div>
+              <ul className="space-y-2">
+                <li>
+                  <a
+                    href="https://github.com/ihatecoding01/Conversational-Jev"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-[#8B5CF6] hover:underline flex items-center gap-1"
+                  >
+                    <span>GitHub Repository</span>
+                    <span>↗</span>
+                  </a>
+                </li>
+                <li>
+                  <span className="text-[#71717A]">5-Point Meta Validator</span>
+                </li>
+                <li>
+                  <span className="text-[#71717A]">Zero Raw JSON</span>
+                </li>
+                <li>
+                  <span className="text-[#71717A]">Free • Zero Setup</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Bottom Copyright & Status */}
+          <div className="flex flex-wrap items-center justify-between gap-4 font-mono text-[10px] uppercase tracking-widest text-[#71717A]">
+            <div>SIMPLE JEV © 2026 — ZERO CODE DECISION LAYER</div>
+            <div className="flex items-center gap-4">
+              <Link href="/playground" className="text-[#C8FF00] hover:underline">
+                PLAYGROUND ↗
+              </Link>
+              <a
+                href="https://github.com/ihatecoding01/Conversational-Jev"
+                target="_blank"
+                rel="noreferrer"
+                className="text-[#8B5CF6] hover:underline"
+              >
+                GITHUB ↗
+              </a>
+            </div>
           </div>
         </div>
       </footer>
