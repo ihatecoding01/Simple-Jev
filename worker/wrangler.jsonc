@@ -1,0 +1,9 @@
+{
+  "name": "simple-jev-backend",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-10-02",
+  "account_id": "a58e95011cc32ad542fde23e069d643b",
+  "observability": {
+    "enabled": true
+  }
+}

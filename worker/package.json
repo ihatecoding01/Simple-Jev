@@ -1,0 +1,11 @@
+{
+  "name": "simple-jev-backend",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "deploy": "cf deploy"
+  },
+  "devDependencies": {
+    "wrangler": "^4.147.0"
+  }
+}
