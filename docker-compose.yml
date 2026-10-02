@@ -1,0 +1,29 @@
+version: "3.8"
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - HOST=0.0.0.0
+      - PORT=8000
+      - DEBUG=false
+      - LLM_PROVIDER=mock
+      - CACHE_SIMILARITY_THRESHOLD=0.85
+      - EXACT_CACHE_THRESHOLD=0.95
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - INTERNAL_BACKEND_URL=http://backend:8000
+    depends_on:
+      - backend
+    restart: unless-stopped
