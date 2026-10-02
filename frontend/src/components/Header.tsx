@@ -17,9 +17,7 @@ export default function Header() {
             <span className="font-bold text-sm tracking-tight text-white font-mono">
               Simple Jev
             </span>
-            <span className="hidden sm:inline-block font-mono text-[10px] text-[#71717A] tracking-widest uppercase">
-              DECISION ENGINE
-            </span>
+            
           </div>
         </Link>
 

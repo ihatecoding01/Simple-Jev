@@ -116,20 +116,7 @@ function FloatingBlockComposition({ className = '' }: { className?: string }) {
 export default function Home() {
   const [activePrimitive, setActivePrimitive] = useState<'choice' | 'score' | 'noul'>('choice');
   const [typewriterText, setTypewriterText] = useState('');
-  const fullText = '> Getting your decision engine ready...';
-
-  useEffect(() => {
-    let idx = 0;
-    const interval = setInterval(() => {
-      if (idx <= fullText.length) {
-        setTypewriterText(fullText.slice(0, idx));
-        idx++;
-      } else {
-        clearInterval(interval);
-      }
-    }, 45);
-    return () => clearInterval(interval);
-  }, []);
+  
 
   return (
     <div className="terminal-sheet bg-[#0B0C0E] text-[#FFFFFF] min-h-screen relative overflow-hidden flex flex-col">
@@ -150,18 +137,11 @@ export default function Home() {
         {/* HERO                                                       */}
         {/* ═══════════════════════════════════════════════════════════ */}
         <section className="relative px-4 sm:px-8 pt-6 pb-8 text-center">
-          <div className="max-w-2xl mx-auto mb-4">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-[#131418] border border-[#272A35] rounded-[2px]">
-              <span className="font-mono text-[10px] text-[#C8FF00] tracking-wider">
-                {typewriterText}
-              </span>
-              <span className="w-2 h-3.5 bg-[#C8FF00] anim-cursor-blink" />
-            </div>
-          </div>
+          
 
           <OutwardApertureHero
             title="Instant Decisions. Zero Code."
-            subtitle="Ask any question in plain English. Simple Jev turns your words into structured, deterministic decisions — categorize, score, or verify — all in under a second."
+            subtitle="Ask any question in plain English. Simple Jev turns your words into structured, deterministic decisions; categorize, score, or verify all in under a second."
           />
 
           <ScrollReveal variant="fade-up" delay={400} duration={800}>

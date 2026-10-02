@@ -62,7 +62,7 @@ export function IconChatBubble({ size = 20, className = '', color = 'currentColo
   );
 }
 
-// 3. Flame / Teardrop (Red-Orange, Row 1 Col 3)
+// 3. Flame / Fire (Distinct Edge Tongues & Inner Core, Red-Orange)
 export function IconFlame({ size = 20, className = '', color = 'currentColor' }: IconProps) {
   return (
     <svg
@@ -76,11 +76,13 @@ export function IconFlame({ size = 20, className = '', color = 'currentColor' }:
       strokeLinejoin="round"
       className={className}
     >
+      {/* Outer flame with distinct edge tongues and cutouts */}
       <path
-        d="M12 2.5c-1.2 2.3-4.5 5.5-4.5 9.5a5.5 5.5 0 0 0 10.8 1.5c.3-.8.2-1.8-.3-2.5C16.5 9 14.5 6.5 13.5 5c-.5-.8-1-1.8-1.5-2.5z"
+        d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"
         fill={color}
         fillOpacity="0.22"
       />
+      
     </svg>
   );
 }
@@ -151,7 +153,7 @@ export function IconUserProfile({ size = 20, className = '', color = 'currentCol
         fill={color}
         fillOpacity="0.22"
       />
-      <line x1="4.5" y1="20.5" x2="19.5" y2="20.5" />
+      <line x1="6.5" y1="20.5" x2="19.5" y2="20.5" />
     </svg>
   );
 }
@@ -201,6 +203,31 @@ export function IconSpeedometerArc({ size = 20, className = '', color = 'current
   );
 }
 
+// 9. Shield / Security Verifier (Curved Shield with Checkmark, Emerald)
+export function IconShield({ size = 20, className = '', color = 'currentColor' }: IconProps) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke={color}
+      strokeWidth="2.3"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+    >
+      {/* Translucent shield interior */}
+      <path
+        d="M12 22s8-4 8-10V5.5L12 2 4 5.5V12c0 6 8 10 8 10z"
+        fill={color}
+        fillOpacity="0.2"
+      />
+      
+    </svg>
+  );
+}
+
 // ────────────────────────────────────────────────────────────────────
 // SEMANTIC ALIASES
 // ────────────────────────────────────────────────────────────────────
@@ -214,7 +241,7 @@ export function IconUrgencyScore(props: IconProps) {
 }
 
 export function IconPolicyVerifier(props: IconProps) {
-  return <IconCloudUpload {...props} />;
+  return <IconShield {...props} />;
 }
 
 export function IconLeadQualifier(props: IconProps) {

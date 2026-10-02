@@ -17,6 +17,7 @@ import {
   IconUserProfile,
   IconSplitCard,
   IconSpeedometerArc,
+  IconShield,
   IconChoiceRouter,
   IconUrgencyScore,
   IconPolicyVerifier,
@@ -101,8 +102,8 @@ const HERO_SLIDES = [
     title: 'Security & Domain Policy Verifier',
     description: 'Verify if sender domain passes strict SPF authentication with mathematical certainty.',
     query: 'Verify: The incoming email SPF record passes verification for paypal.com domain.',
-    color: '#F4F4F5',
-    icon: <IconCloudUpload size={24} color="#F4F4F5" />,
+    color: '#10B981',
+    icon: <IconShield size={24} color="#10B981" />,
   },
   {
     id: 'slide-lead',
@@ -110,8 +111,8 @@ const HERO_SLIDES = [
     title: 'Sales Opportunity Qualifier',
     description: 'Triage enterprise prospects vs self-serve signups by headcount and deployment scope.',
     query: 'Qualify lead: Fortune 500 enterprise requesting 25,000 seat dedicated cloud deployment.',
-    color: '#10B981',
-    icon: <IconUserProfile size={24} color="#10B981" />,
+    color: '#06B6D4',
+    icon: <IconUserProfile size={24} color="#06B6D4" />,
   },
 ];
 
@@ -143,8 +144,8 @@ const READY_TEMPLATES = [
     title: 'SPF & Security Verifier',
     description: 'Verify if incoming email domain passes SPF and security policies.',
     query: 'Verify: The incoming email SPF record passes verification for paypal.com domain.',
-    color: '#F4F4F5',
-    icon: <IconCloudUpload size={22} color="#F4F4F5" />,
+    color: '#10B981',
+    icon: <IconShield size={22} color="#10B981" />,
   },
   {
     id: 'lead-qualifier',
@@ -152,8 +153,8 @@ const READY_TEMPLATES = [
     title: 'Sales Lead Qualifier',
     description: 'Triage incoming leads: Enterprise, Mid-Market, SMB, or Unqualified.',
     query: 'Qualify lead: Fortune 500 enterprise requesting 25,000 seat dedicated deployment.',
-    color: '#10B981',
-    icon: <IconUserProfile size={22} color="#10B981" />,
+    color: '#06B6D4',
+    icon: <IconUserProfile size={22} color="#06B6D4" />,
   },
   {
     id: 'feedback-sentiment',
@@ -762,11 +763,8 @@ export default function PlaygroundPage() {
                       <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-[9px] font-mono tracking-wider text-[#C8FF00] uppercase font-semibold">
                         {activeSlide.badge}
                       </div>
-                      <div className="flex items-center gap-3">
-                        <div
-                          className="w-10 h-10 rounded-[10px] bg-[#030305] border border-white/15 flex items-center justify-center shrink-0 shadow-2xl transition-transform group-hover:scale-105"
-                          style={{ color: activeSlide.color }}
-                        >
+                      <div className="flex items-center gap-3.5">
+                        <div className="flex items-center justify-center w-11 h-11 shrink-0 transition-transform duration-300 group-hover:scale-110">
                           {activeSlide.icon}
                         </div>
                         <div>
@@ -835,33 +833,30 @@ export default function PlaygroundPage() {
                       <div
                         key={template.id}
                         onClick={() => handleSendPrompt(template.query)}
-                        className="group flex items-start gap-3.5 p-3 sm:p-3.5 rounded-[12px] bg-[#0A0B0E] border border-[#1A1C24] hover:border-[#2C303E] hover:bg-[#0F1116] transition-all duration-200 cursor-pointer shadow-md hover:shadow-xl relative overflow-hidden"
+                        className="group flex items-center gap-3.5 p-3.5 sm:p-4 rounded-[14px] bg-[#0A0B0E] border border-[#1A1C24] hover:border-[#2C303E] hover:bg-[#0F1116] transition-all duration-200 cursor-pointer shadow-md hover:shadow-xl relative overflow-hidden"
                       >
-                        {/* App Icon Tile - Deep Obsidian matching Reference Image */}
-                        <div
-                          className="w-10 h-10 sm:w-11 sm:h-11 rounded-[10px] bg-[#030305] border border-white/[0.08] group-hover:border-white/20 flex items-center justify-center shrink-0 transition-all duration-300 group-hover:scale-105 shadow-inner"
-                          style={{ color: template.color }}
-                        >
+                        {/* Clean floating duotone icon */}
+                        <div className="flex items-center justify-center w-10 h-10 shrink-0 self-center transition-transform duration-300 group-hover:scale-110">
                           {template.icon}
                         </div>
 
-                        {/* Text description */}
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center justify-between gap-2">
-                            <span className="text-xs sm:text-sm font-semibold text-white group-hover:text-[#C8FF00] transition-colors truncate">
+                        {/* Text description with clean inline title + badge */}
+                        <div className="flex-1 min-w-0 pr-1 flex flex-col justify-center">
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="text-xs sm:text-sm font-semibold text-white group-hover:text-[#C8FF00] transition-colors truncate font-sans">
                               {template.title}
                             </span>
-                            <span className="text-[9px] font-mono uppercase px-1.5 py-0.5 rounded bg-black/40 text-[#71717A] border border-white/5">
+                            <span className="text-[9px] font-mono uppercase px-1.5 py-0.5 rounded bg-white/[0.06] text-[#A1A1AA] border border-white/[0.08] shrink-0 font-medium tracking-wider">
                               {template.type}
                             </span>
                           </div>
-                          <p className="text-[11px] sm:text-xs text-[#8E909B] mt-0.5 line-clamp-2 leading-relaxed">
+                          <p className="text-[11px] sm:text-xs text-[#8E909B] line-clamp-2 leading-relaxed font-sans">
                             {template.description}
                           </p>
                         </div>
 
-                        {/* Right Chevron Slide Icon */}
-                        <div className="text-[#52525B] group-hover:text-[#C8FF00] transition-all transform group-hover:translate-x-1 shrink-0 pt-0.5">
+                        {/* Right Chevron Slide Icon - Centered Vertically */}
+                        <div className="text-[#52525B] group-hover:text-[#C8FF00] transition-all transform group-hover:translate-x-1 shrink-0 self-center">
                           <IconCyberChevronRight size={14} />
                         </div>
                       </div>
