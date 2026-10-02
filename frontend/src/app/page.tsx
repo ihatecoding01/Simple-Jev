@@ -277,20 +277,44 @@ export default function Home() {
                     Every question becomes one of three types.
                   </h2>
                 </div>
-                <div className="flex gap-1.5">
-                  {(['choice', 'score', 'noul'] as const).map((prim) => (
-                    <button
-                      key={prim}
-                      className={`px-3 py-1 font-mono text-xs font-semibold rounded-[2px] cursor-pointer transition-all duration-300 ${
-                        activePrimitive === prim
-                          ? 'bg-[#C8FF00] text-black shadow-[0_0_12px_rgba(200,255,0,0.3)] scale-105'
-                          : 'bg-[#181A20] text-[#71717A] hover:text-white hover:bg-[#1F222A]'
-                      }`}
-                      onClick={() => setActivePrimitive(prim)}
-                    >
-                      {prim.toUpperCase()}
-                    </button>
-                  ))}
+                <div className="flex flex-wrap items-center gap-2 p-1.5 bg-[#0D0F14] border border-[#232735] rounded-[8px] shadow-sm">
+                  <span className="text-[10px] font-mono text-[#71717A] uppercase tracking-wider pl-2 pr-1 hidden sm:inline">
+                    Select Type:
+                  </span>
+                  {[
+                    { id: 'choice' as const, label: 'CHOICE', hint: 'Categorize', color: '#8B5CF6' },
+                    { id: 'score' as const, label: 'SCORE', hint: 'Rate 1-5', color: '#C8FF00' },
+                    { id: 'noul' as const, label: 'NOUL', hint: 'Verify', color: '#10B981' },
+                  ].map((prim) => {
+                    const isActive = activePrimitive === prim.id;
+                    return (
+                      <button
+                        key={prim.id}
+                        className={`px-3.5 py-1.5 font-mono text-xs font-semibold rounded-[6px] cursor-pointer transition-all duration-200 flex items-center gap-2 border shadow-sm ${
+                          isActive
+                            ? 'bg-[#C8FF00] text-black border-[#C8FF00] shadow-[0_0_14px_rgba(200,255,0,0.35)] scale-[1.03] font-bold'
+                            : 'bg-[#151720] hover:bg-[#1E2230] text-[#D4D4D8] hover:text-white border-[#2A2E3E] hover:border-white/20'
+                        }`}
+                        onClick={() => setActivePrimitive(prim.id)}
+                        id={`tab-primitive-${prim.id}`}
+                      >
+                        <span
+                          className="w-2 h-2 rounded-full shrink-0"
+                          style={{
+                            backgroundColor: isActive ? '#000000' : prim.color,
+                          }}
+                        />
+                        <span>{prim.label}</span>
+                        <span
+                          className={`text-[10px] font-mono tracking-wider ${
+                            isActive ? 'text-black/70' : 'text-[#71717A]'
+                          }`}
+                        >
+                          ({prim.hint})
+                        </span>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             </ScrollReveal>
