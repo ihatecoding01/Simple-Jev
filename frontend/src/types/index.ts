@@ -27,6 +27,9 @@ export interface ExecutionResult {
   summary: string;
   question_type: QuestionType;
   execution_time_ms: number;
+  is_simulation?: boolean;
+  engine_mode?: 'live' | 'simulation';
+  engine_name?: string;
 }
 
 export interface EvaluateResponse {
@@ -41,6 +44,8 @@ export interface EvaluateResponse {
   stepper_stages: Array<{ stage: string; label: string; status?: string }>;
   execution_result?: ExecutionResult;
   is_cached?: boolean;
+  is_simulation?: boolean;
+  engine_mode?: 'live' | 'simulation';
 }
 
 export interface PinnedSchema {

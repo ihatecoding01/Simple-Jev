@@ -21,6 +21,9 @@ class EvaluateResponse(BaseModel):
     stepper_stages: List[Dict[str, str]] = Field(default_factory=list)
     execution_result: Optional[ExecutionResult] = None
     is_cached: bool = False
+    engine_mode: str = "simulation"
+    is_simulation: bool = True
+
 
 class RevalidateRequest(BaseModel):
     schema_data: CandidateSchema

@@ -61,6 +61,12 @@ class ValidatorService:
             elif len(opts) > 8:
                 scope_judgment = "too_broad"
                 diagnostics.append("too_broad: Option set has more than 8 categories, causing potential cognitive bloat.")
+            else:
+                for opt in opts:
+                    if len(str(opt)) > 120 or re.search(r'(?i)<\s*(?:script|iframe|object)[^>]*>', str(opt)):
+                        scope_judgment = "too_broad"
+                        diagnostics.append(f"oversized_or_unsafe_payload: Option '{str(opt)[:25]}...' exceeds safe bounds or contains unsafe markup.")
+                        break
 
         # 4. Mutual exclusivity check (Noul)
         # Check for overlapping options

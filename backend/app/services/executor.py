@@ -100,13 +100,20 @@ class ExecutorService:
                     probabilities = {k: round(float(v), 3) for k, v in answer.probabilities.items()}
 
                     summary = f"TypeSafe Jev (<code>{res.model}</code>) classified into **{decision}** with {int(confidence * 100)}% certainty."
+                    print(f"\n=======================================================")
+                    print(f"[JEV ENGINE] >>> LIVE TYPESAFE JEV API <<<")
+                    print(f"  Model: {res.model} | Decision: {decision} | Conf: {confidence*100:.1f}% | Time: {elapsed_ms}ms")
+                    print(f"=======================================================\n")
                     return ExecutionResult(
                         decision=decision,
                         confidence=confidence,
                         distribution=probabilities,
                         summary=summary,
                         question_type=QuestionType.CHOICE,
-                        execution_time_ms=elapsed_ms
+                        execution_time_ms=elapsed_ms,
+                        is_simulation=False,
+                        engine_mode="live",
+                        engine_name=f"TypeSafe Jev ({res.model})"
                     )
 
                 elif schema.type == QuestionType.SCORE:
@@ -124,13 +131,20 @@ class ExecutorService:
                     probs = {str(k): round(float(v), 3) for k, v in raw_probs.items()} if raw_probs else {str(score_val): confidence}
 
                     summary = f"TypeSafe Jev (<code>{res.model}</code>) evaluated score as **{score_val}** with {int(confidence * 100)}% confidence."
+                    print(f"\n=======================================================")
+                    print(f"[JEV ENGINE] >>> LIVE TYPESAFE JEV API <<<")
+                    print(f"  Model: {res.model} | Score: {score_val} | Conf: {confidence*100:.1f}% | Time: {elapsed_ms}ms")
+                    print(f"=======================================================\n")
                     return ExecutionResult(
                         decision=score_val,
                         confidence=confidence,
                         distribution=probs,
                         summary=summary,
                         question_type=QuestionType.SCORE,
-                        execution_time_ms=elapsed_ms
+                        execution_time_ms=elapsed_ms,
+                        is_simulation=False,
+                        engine_mode="live",
+                        engine_name=f"TypeSafe Jev ({res.model})"
                     )
 
                 elif schema.type == QuestionType.NOUL:
@@ -147,13 +161,20 @@ class ExecutorService:
                     confidence = noul_prob if is_true else round(1.0 - noul_prob, 3)
 
                     summary = f"TypeSafe Jev (<code>{res.model}</code>) verified assertion as **{'True' if is_true else 'False'}** with {int(confidence * 100)}% confidence."
+                    print(f"\n=======================================================")
+                    print(f"[JEV ENGINE] >>> LIVE TYPESAFE JEV API <<<")
+                    print(f"  Model: {res.model} | Verified: {is_true} | Conf: {confidence*100:.1f}% | Time: {elapsed_ms}ms")
+                    print(f"=======================================================\n")
                     return ExecutionResult(
                         decision=is_true,
                         confidence=confidence,
                         distribution={"True": noul_prob, "False": round(1.0 - noul_prob, 3)},
                         summary=summary,
                         question_type=QuestionType.NOUL,
-                        execution_time_ms=elapsed_ms
+                        execution_time_ms=elapsed_ms,
+                        is_simulation=False,
+                        engine_mode="live",
+                        engine_name=f"TypeSafe Jev ({res.model})"
                     )
 
             except Exception as e:
@@ -162,6 +183,12 @@ class ExecutorService:
         # 2. DETERMINISTIC SIMULATION ENGINE (Fallback / Offline)
         elapsed_ms = round((time.perf_counter() - start_time) * 1000 + random.uniform(20, 60), 1)
         state_text = " ".join(str(v) for v in state.values()).lower()
+
+        print(f"\n=======================================================")
+        print(f"[JEV ENGINE] >>> SIMULATION ENGINE (DEMO / OFFLINE) <<<")
+        print(f"  Notice: JEV_API_KEY is not configured.")
+        print(f"  Type: {schema.type.value} | Elapsed: {elapsed_ms}ms")
+        print(f"=======================================================\n")
 
         if schema.type == QuestionType.CHOICE:
             options = schema.options or ["Option A", "Option B"]
@@ -190,7 +217,10 @@ class ExecutorService:
                 distribution=distribution,
                 summary=summary,
                 question_type=QuestionType.CHOICE,
-                execution_time_ms=elapsed_ms
+                execution_time_ms=elapsed_ms,
+                is_simulation=True,
+                engine_mode="simulation",
+                engine_name="Deterministic Simulation Engine (Demo)"
             )
 
         elif schema.type == QuestionType.SCORE:
@@ -213,7 +243,10 @@ class ExecutorService:
                 distribution={f"Score {urgency_val}": confidence, "Variance": round(1 - confidence, 2)},
                 summary=summary,
                 question_type=QuestionType.SCORE,
-                execution_time_ms=elapsed_ms
+                execution_time_ms=elapsed_ms,
+                is_simulation=True,
+                engine_mode="simulation",
+                engine_name="Deterministic Simulation Engine (Demo)"
             )
 
         elif schema.type == QuestionType.NOUL:
@@ -230,7 +263,10 @@ class ExecutorService:
                 distribution={"True": confidence if is_valid else 1 - confidence, "False": 1 - confidence if is_valid else confidence},
                 summary=summary,
                 question_type=QuestionType.NOUL,
-                execution_time_ms=elapsed_ms
+                execution_time_ms=elapsed_ms,
+                is_simulation=True,
+                engine_mode="simulation",
+                engine_name="Deterministic Simulation Engine (Demo)"
             )
 
         return ExecutionResult(
@@ -239,7 +275,10 @@ class ExecutorService:
             distribution={},
             summary="Decision executed successfully.",
             question_type=schema.type,
-            execution_time_ms=elapsed_ms
+            execution_time_ms=elapsed_ms,
+            is_simulation=True,
+            engine_mode="simulation",
+            engine_name="Deterministic Simulation Engine (Demo)"
         )
 
 executor_service = ExecutorService()

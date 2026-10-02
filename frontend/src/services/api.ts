@@ -108,3 +108,29 @@ export async function fetchCachedTemplates(): Promise<any[]> {
   }
   return [];
 }
+
+export interface SystemEngineStatus {
+  status: string;
+  is_simulation: boolean;
+  engine_mode: 'live' | 'simulation';
+  engine_name: string;
+  embedding_model: string;
+}
+
+export async function fetchSystemStatus(): Promise<SystemEngineStatus> {
+  try {
+    const res = await fetch('/');
+    if (res.ok) {
+      return res.json();
+    }
+  } catch (e) {
+    console.warn('System status fetch failed:', e);
+  }
+  return {
+    status: 'online',
+    is_simulation: true,
+    engine_mode: 'simulation',
+    engine_name: 'Deterministic Simulation Engine (Demo)',
+    embedding_model: 'all-MiniLM-L6-v2 (384-d)',
+  };
+}

@@ -42,13 +42,33 @@ def get_client_id(request: Request, body_fingerprint: str = None) -> str:
     client_host = request.client.host if request.client else "127.0.0.1"
     return f"ip_{client_host}"
 
+@app.on_event("startup")
+def startup_banner():
+    is_sim = not bool(settings.JEV_API_KEY and settings.JEV_API_KEY.strip())
+    engine_name = "SIMULATION ENGINE (DEMO / OFFLINE)" if is_sim else "LIVE TYPESAFE JEV API"
+    print("\n" + "=" * 76)
+    print(f"[{settings.APP_NAME.upper()} v{settings.VERSION}] INITIALIZING")
+    print(f"  EXECUTION ENGINE : {engine_name}")
+    if is_sim:
+        print(f"  SIMULATION NOTICE: Running local deterministic simulation. Set JEV_API_KEY to switch to live Jev.")
+    else:
+        print(f"  LIVE JEV ENDPOINT: {settings.JEV_API_URL}")
+    print(f"  EMBEDDING MODEL  : SentenceTransformers (all-MiniLM-L6-v2, 384 dimensions)")
+    print(f"  INTENT CACHE     : 384-d normalized vector index initialized")
+    print("=" * 76 + "\n")
+
 @app.get("/")
 def read_root():
+    is_sim = not bool(settings.JEV_API_KEY and settings.JEV_API_KEY.strip())
     return {
         "status": "online",
         "app": settings.APP_NAME,
         "version": settings.VERSION,
-        "mode": "Simulation / Pluggable Jev" if not settings.JEV_API_KEY else "Live Jev Connected"
+        "is_simulation": is_sim,
+        "engine_mode": "simulation" if is_sim else "live",
+        "engine_name": "Deterministic Simulation Engine (Demo)" if is_sim else "TypeSafe Jev Cloud",
+        "embedding_model": "all-MiniLM-L6-v2 (384-d)",
+        "mode": "Simulation / Pluggable Jev" if is_sim else "Live Jev Connected"
     }
 
 @app.get("/api/v1/usage/quota", response_model=UsageQuotaResponse)

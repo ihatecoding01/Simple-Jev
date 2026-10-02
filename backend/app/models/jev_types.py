@@ -32,6 +32,10 @@ class ExecutionResult(BaseModel):
     summary: str
     question_type: QuestionType
     execution_time_ms: float = 0.0
+    is_simulation: bool = True
+    engine_mode: str = "simulation"  # "live" | "simulation"
+    engine_name: str = "Deterministic Simulation Engine (Demo)"
+
 
 class CachedIntent(BaseModel):
     id: str
