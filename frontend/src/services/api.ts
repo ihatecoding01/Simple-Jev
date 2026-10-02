@@ -2,7 +2,9 @@ import { CachedIntentSummary, CandidateSchema, EvaluateResponse, ExecutionResult
 
 const BACKEND_URL = (typeof process !== 'undefined' && process.env?.NEXT_PUBLIC_API_URL)
   ? process.env.NEXT_PUBLIC_API_URL.replace(/\/$/, '')
-  : '';
+  : (typeof window !== 'undefined' && window.location.hostname.includes('pages.dev'))
+    ? 'https://simple-jev-backend.forhack10892.workers.dev'
+    : '';
 const API_BASE = BACKEND_URL ? `${BACKEND_URL}/api/v1` : '/api/v1';
 
 export async function evaluateIntent(
