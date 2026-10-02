@@ -3,7 +3,44 @@ import { CandidateSchema, PinnedSchema } from '../types';
 const STORAGE_KEYS = {
   PREFS: 'simple_jev_user_prefs',
   PINNED: 'simple_jev_pinned_schemas',
+  RECENT: 'simple_jev_recent_inquiries',
 };
+
+export interface StoredInquiry {
+  id: string;
+  title: string;
+  query: string;
+  type: 'choice' | 'score' | 'noul';
+  verdict?: string;
+  timestamp: string;
+}
+
+const DEFAULT_INQUIRIES: StoredInquiry[] = [
+  {
+    id: 'rec-1',
+    title: 'Invoice Billing Refund',
+    query: "Categorize customer email: 'I was charged twice on invoice #994. Please issue a refund ASAP.'",
+    type: 'choice',
+    verdict: 'Billing & Invoicing',
+    timestamp: '2m ago',
+  },
+  {
+    id: 'rec-2',
+    title: 'Database Outage Severity',
+    query: 'Rate urgency: Primary database cluster has failed and all customer logins are returning errors.',
+    type: 'score',
+    verdict: '5.0 / 5.0 (Critical)',
+    timestamp: '14m ago',
+  },
+  {
+    id: 'rec-3',
+    title: 'Compliance Verification',
+    query: 'Verify email compliance: Customer claims their GDPR data deletion request was ignored.',
+    type: 'noul',
+    verdict: 'Verified (Violated)',
+    timestamp: '1h ago',
+  },
+];
 
 export interface UserPrefs {
   mode: 'restricted' | 'unrestricted';
@@ -108,5 +145,37 @@ export function renamePinnedSchema(id: string, newName: string): PinnedSchema[] 
   const existing = getPinnedSchemas();
   const updated = existing.map((s) => (s.id === id ? { ...s, friendly_name: newName } : s));
   savePinnedSchemas(updated);
+  return updated;
+}
+
+export function getRecentInquiries(): StoredInquiry[] {
+  if (typeof window === 'undefined') return DEFAULT_INQUIRIES;
+  try {
+    const raw = localStorage.getItem(STORAGE_KEYS.RECENT);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    }
+  } catch (e) {
+    console.error('Failed to read recent inquiries', e);
+  }
+  return DEFAULT_INQUIRIES;
+}
+
+export function saveRecentInquiry(inquiry: Omit<StoredInquiry, 'id' | 'timestamp'> & { timestamp?: string }): StoredInquiry[] {
+  if (typeof window === 'undefined') return DEFAULT_INQUIRIES;
+  const existing = getRecentInquiries();
+  const entry: StoredInquiry = {
+    ...inquiry,
+    id: `rec-${Date.now()}`,
+    timestamp: inquiry.timestamp || 'Just now',
+  };
+  const filtered = existing.filter((item) => item.query.trim().toLowerCase() !== inquiry.query.trim().toLowerCase());
+  const updated = [entry, ...filtered].slice(0, 15);
+  try {
+    localStorage.setItem(STORAGE_KEYS.RECENT, JSON.stringify(updated));
+  } catch (e) {
+    console.error('Failed to save recent inquiry', e);
+  }
   return updated;
 }

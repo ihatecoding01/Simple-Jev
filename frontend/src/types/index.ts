@@ -12,11 +12,11 @@ export interface CandidateSchema {
 
 export interface FitnessReport {
   passed: boolean;
-  coverage: Record<string, any>;
-  exclusivity: Record<string, any>;
-  type_fitness: Record<string, any>;
-  scope: Record<string, any>;
-  state_sufficiency: Record<string, any>;
+  coverage: Record<string, unknown>;
+  exclusivity: Record<string, unknown>;
+  type_fitness: Record<string, unknown>;
+  scope: Record<string, unknown>;
+  state_sufficiency: Record<string, unknown>;
   diagnostics: string[];
 }
 
@@ -33,11 +33,11 @@ export interface ExecutionResult {
 }
 
 export interface EvaluateResponse {
-  status: 'cache_hit' | 'needs_confirmation' | 'diverged' | 'incomplete_state' | 'fallback';
+  status: 'cache_hit' | 'needs_confirmation' | 'diverged' | 'incomplete_state' | 'fallback' | 'validation_warning';
   schema_data?: CandidateSchema;
-  state?: Record<string, any>;
+  state?: Record<string, unknown>;
   plain_translation?: string;
-  divergence_delta?: Record<string, any>;
+  divergence_delta?: Record<string, unknown>;
   assistant_message?: string;
   fitness_report?: FitnessReport;
   retries_attempted: number;
@@ -63,4 +63,13 @@ export interface QuotaStatus {
   remaining: number;
   cached_runs: number;
   cold_runs: number;
+}
+
+export interface CachedIntentSummary {
+  id: string;
+  intent_text: string;
+  schema_data: CandidateSchema;
+  state: Record<string, unknown>;
+  friendly_name?: string;
+  last_approved_at: string;
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import Header from '../components/Header';
 import DecisionPulse from '../components/DecisionPulse';
@@ -11,7 +11,6 @@ import {
   SteppedBlock,
   SmallGridBox,
   BarcodeTag,
-  AsciiTelemetry,
   OutwardApertureHero,
 } from '../components/AbstractGeometry';
 
@@ -115,7 +114,6 @@ function FloatingBlockComposition({ className = '' }: { className?: string }) {
 
 export default function Home() {
   const [activePrimitive, setActivePrimitive] = useState<'choice' | 'score' | 'noul'>('choice');
-  const [typewriterText, setTypewriterText] = useState('');
   
 
   return (
@@ -239,7 +237,7 @@ export default function Home() {
                   </div>
                   <div className="p-3 bg-[#181A20] rounded-[2px] border border-[#272A35] space-y-2 relative z-10">
                     <div className="text-xs text-white font-medium font-sans">
-                      "I was charged twice on invoice #994. Please issue a refund ASAP."
+                      &ldquo;I was charged twice on invoice #994. Please issue a refund ASAP.&rdquo;
                     </div>
                     <div className="flex flex-wrap gap-1.5 pt-1">
                       <span className="px-2 py-0.5 rounded-[2px] bg-[#C8FF00] text-black font-mono text-[10px] font-bold">
@@ -254,7 +252,7 @@ export default function Home() {
                     </div>
                   </div>
                   <p className="text-xs text-[#A1A1AA] font-sans relative z-10">
-                    Type any sentence. It's automatically understood, verified, and decided in under a second.
+                    Type any sentence. It&apos;s automatically understood, verified, and decided in under a second.
                   </p>
                 </div>
               </ScrollReveal>
@@ -334,7 +332,7 @@ export default function Home() {
                       <span className="text-xs font-mono text-[#71717A]">Pick one from many</span>
                     </div>
                     <h3 className="text-lg font-bold font-mono text-white">
-                      "Which category does this belong to?"
+                      &ldquo;Which category does this belong to?&rdquo;
                     </h3>
                     <div className="p-4 bg-[#181A20] border border-[#272A35] rounded-[2px] flex flex-wrap items-center gap-2">
                       <span className="text-xs text-[#71717A] font-mono mr-2">Categories:</span>
@@ -361,7 +359,7 @@ export default function Home() {
                       <span className="text-xs font-mono text-[#71717A]">Score on a scale</span>
                     </div>
                     <h3 className="text-lg font-bold font-mono text-white">
-                      "How urgent is this, from 1 to 5?"
+                      &ldquo;How urgent is this, from 1 to 5?&rdquo;
                     </h3>
                     <div className="p-4 bg-[#181A20] border border-[#272A35] rounded-[2px] flex items-center gap-3">
                       <span className="text-xs text-[#71717A] font-mono">Urgency:</span>
@@ -391,10 +389,10 @@ export default function Home() {
                       <span className="text-xs font-mono text-[#71717A]">True or false?</span>
                     </div>
                     <h3 className="text-lg font-bold font-mono text-white">
-                      "Is this claim actually true?"
+                      &ldquo;Is this claim actually true?&rdquo;
                     </h3>
                     <div className="p-4 bg-[#181A20] border border-[#272A35] rounded-[2px] flex items-center justify-between">
-                      <span className="text-xs text-white font-mono">Claim: "SPF passes for paypal.com"</span>
+                      <span className="text-xs text-white font-mono">Claim: &ldquo;SPF passes for paypal.com&rdquo;</span>
                       <span className="text-xs font-mono text-[#10B981] font-bold bg-[#10B981]/10 border border-[#10B981]/30 px-2 py-0.5 rounded-[2px]">
                         TRUE (99.4%)
                       </span>
@@ -426,11 +424,11 @@ export default function Home() {
                 </p>
 
                 <p>
-                  I created Simple Jev with a simple, caring belief: you shouldn't have to write code to get answers you can count on. Whether you are trying to route customer emails to the right queue, rate the urgency of a midnight database crash, or verify if an incoming payment domain is authentic, the software should understand your words and do the hard math for you.
+                  I created Simple Jev with a simple, caring belief: you shouldn&apos;t have to write code to get answers you can count on. Whether you are trying to route customer emails to the right queue, rate the urgency of a midnight database crash, or verify if an incoming payment domain is authentic, the software should understand your words and do the hard math for you.
                 </p>
 
                 <p>
-                  This is built for the solo founders juggling everything at once, the customer support teams drowned in tickets, the curious builders who love clean tools, and anyone exhausted by unpredictable AI hallucinations. It’s made to feel calm, effortless, and dependable — turning your everyday questions into deterministic decisions in under a second.
+                  This is built for the solo founders juggling everything at once, the customer support teams drowned in tickets, the curious builders who love clean tools, and anyone exhausted by unpredictable AI hallucinations. It&apos;s made to feel calm, effortless, and dependable — turning your everyday questions into deterministic decisions in under a second.
                 </p>
               </div>
 
@@ -486,7 +484,7 @@ export default function Home() {
                 <span className="text-[#C8FF00]">◆</span> SIMPLE JEV
               </div>
               <p className="text-xs text-[#71717A] leading-relaxed">
-                A zero-code conversational layer over TypeSafe AI's Jev model. Deterministic decisions with 5-point mathematical validation.
+                A zero-code conversational layer over TypeSafe AI&apos;s Jev model. Deterministic decisions with 5-point mathematical validation.
               </p>
               <div className="flex items-center gap-1.5 text-[10px] font-mono text-[#10B981]">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#10B981]" />

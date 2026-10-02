@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import Link from 'next/link';
 import Header from '../../components/Header';
 import ConfirmationCard from '../../components/ConfirmationCard';
 import DeltaPrompt from '../../components/DeltaPrompt';
@@ -9,21 +8,12 @@ import DecisionCard from '../../components/DecisionCard';
 import Stepper from '../../components/Stepper';
 import ProgressiveTrustBanner from '../../components/ProgressiveTrustBanner';
 import {
-  IconCloudUpload,
   IconChatBubble,
   IconFlame,
   IconFolder,
-  IconHouse,
   IconUserProfile,
-  IconSplitCard,
   IconSpeedometerArc,
   IconShield,
-  IconChoiceRouter,
-  IconUrgencyScore,
-  IconPolicyVerifier,
-  IconLeadQualifier,
-  IconSentimentGauge,
-  IconVaultCompliance,
   IconSendDecision,
   IconStudioTerminal,
   IconTemplatesMatrix,
@@ -51,29 +41,25 @@ import {
   pinSchema,
   unpinSchema,
   renamePinnedSchema,
+  getRecentInquiries,
+  saveRecentInquiry,
+  StoredInquiry,
 } from '../../services/storage';
 
 interface ChatMessage {
   id: string;
-  type: 'user' | 'confirmation' | 'delta' | 'decision' | 'assistant_clarification' | 'fallback' | 'error';
+  type: 'user' | 'confirmation' | 'delta' | 'decision' | 'assistant_clarification' | 'fallback' | 'error' | 'validation_warning';
   text?: string;
   timestamp?: string;
   schema?: CandidateSchema;
-  state?: Record<string, any>;
+  state?: Record<string, unknown>;
   plainTranslation?: string;
   result?: ExecutionResult;
-  delta?: Record<string, any>;
+  delta?: Record<string, unknown>;
   isCached?: boolean;
 }
 
-interface RecentInquiry {
-  id: string;
-  title: string;
-  query: string;
-  type: 'choice' | 'score' | 'noul';
-  verdict?: string;
-  timestamp: string;
-}
+type RecentInquiry = StoredInquiry;
 
 // ────────────────────────────────────────────────────────────────────
 // FEATURED TEMPLATES FOR THE HERO CAROUSEL BANNER
@@ -199,11 +185,11 @@ export default function PlaygroundPage() {
   // Speculative prefetch cache: stores in-flight background promises triggered on hover or mount
   const prefetchCacheRef = useRef<Map<string, { key: string; promise: Promise<ExecutionResult> }>>(new Map());
 
-  const getPrefetchKey = (schema: CandidateSchema, state?: Record<string, any>) => {
+  const getPrefetchKey = (schema: CandidateSchema, state?: Record<string, unknown>) => {
     return `${schema.type}_${schema.question}_${(schema.options || []).join('|')}_${schema.assertion || ''}_${JSON.stringify(state || {})}`;
   };
 
-  const handlePrefetchDecision = (turnId: string, schema: CandidateSchema, state?: Record<string, any>) => {
+  const handlePrefetchDecision = (turnId: string, schema: CandidateSchema, state?: Record<string, unknown>) => {
     const key = getPrefetchKey(schema, state);
     const existing = prefetchCacheRef.current.get(turnId);
     if (existing && existing.key === key) {
@@ -258,53 +244,6 @@ export default function PlaygroundPage() {
 
   const hasProcessedInitialQuery = useRef(false);
 
-  useEffect(() => {
-    const prefs = getPreferences();
-    setMode(prefs.mode || 'restricted');
-    setConsecutiveUnedited(prefs.unedited_count || 0);
-    const pinned = getPinnedSchemas();
-    setPinnedSchemas(pinned);
-    fetchQuota().then(setQuota);
-    fetchSystemStatus().then((s) => {
-      setEngineStatus({
-        is_simulation: s.is_simulation,
-        engine_name: s.engine_name,
-      });
-    });
-
-    if (typeof window !== 'undefined' && !hasProcessedInitialQuery.current) {
-      hasProcessedInitialQuery.current = true;
-      const params = new URLSearchParams(window.location.search);
-      const queryParam = params.get('q');
-      const queryMode = params.get('mode') as 'restricted' | 'unrestricted' | null;
-      if (queryMode) {
-        setMode(queryMode);
-      }
-      if (queryParam) {
-        handleSendPrompt(queryParam, queryMode || undefined);
-      }
-    }
-  }, []);
-
-  const handleModeChange = (newMode: 'restricted' | 'unrestricted') => {
-    setMode(newMode);
-    savePreferences({ mode: newMode, theme: 'dark', unedited_count: consecutiveUnedited });
-  };
-
-  useEffect(() => {
-    if (messages.length > 0) {
-      chatBottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }
-  }, [messages, isProcessing]);
-
-  // Automatic hero carousel cycle every 8 seconds if idle
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentSlideIndex((prev) => (prev + 1) % HERO_SLIDES.length);
-    }, 8000);
-    return () => clearInterval(timer);
-  }, []);
-
   const handleSendPrompt = async (text: string, overrideMode?: 'restricted' | 'unrestricted') => {
     if (!text || !text.trim() || isProcessing) return;
     const cleanText = text.trim();
@@ -327,16 +266,13 @@ export default function PlaygroundPage() {
 
     // Add to recent inquiries history
     const shortTitle = cleanText.length > 30 ? `${cleanText.slice(0, 27)}...` : cleanText;
-    setRecentInquiries((prev) => [
-      {
-        id: `rec-${Date.now()}`,
-        title: shortTitle,
-        query: cleanText,
-        type: 'choice',
-        timestamp: 'Just now',
-      },
-      ...prev.slice(0, 9),
-    ]);
+    const updatedHistory = saveRecentInquiry({
+      title: shortTitle,
+      query: cleanText,
+      type: 'choice',
+      timestamp: 'Just now',
+    });
+    setRecentInquiries(updatedHistory);
 
     if (activeQuickRunSchema) {
       setIsQuickRunning(true);
@@ -347,12 +283,23 @@ export default function PlaygroundPage() {
           ...prev,
           { id: newTurnId, type: 'decision', result, schema: activeQuickRunSchema.schema_data },
         ]);
+        const qType = (activeQuickRunSchema.schema_data.type?.toLowerCase() || 'choice') as 'choice' | 'score' | 'noul';
+        const verdictStr = String(result.decision);
+        const savedRecents = saveRecentInquiry({
+          title: activeQuickRunSchema.friendly_name || shortTitle,
+          query: cleanText,
+          type: qType,
+          verdict: verdictStr,
+          timestamp: 'Just now',
+        });
+        setRecentInquiries(savedRecents);
         setActiveQuickRunSchema(null);
         fetchQuota().then(setQuota);
-      } catch (err: any) {
+      } catch (err: unknown) {
+        const errorMsg = err instanceof Error ? err.message : String(err);
         setMessages((prev) => [
           ...prev,
-          { id: newTurnId, type: 'error', text: `Quick Run failed: ${err.message}` },
+          { id: newTurnId, type: 'error', text: `Quick Run failed: ${errorMsg}` },
         ]);
       } finally {
         setIsQuickRunning(false);
@@ -370,39 +317,136 @@ export default function PlaygroundPage() {
           ...prev,
           { id: newTurnId, type: 'decision', result: response.execution_result, schema: response.schema_data, isCached: true },
         ]);
+        const qType = (response.schema_data.type?.toLowerCase() || 'choice') as 'choice' | 'score' | 'noul';
+        const res = response.execution_result;
+        const verdictStr = String(res.decision);
+        const savedRecents = saveRecentInquiry({
+          title: response.schema_data.question ? (response.schema_data.question.length > 30 ? `${response.schema_data.question.slice(0, 27)}...` : response.schema_data.question) : shortTitle,
+          query: cleanText,
+          type: qType,
+          verdict: verdictStr,
+          timestamp: 'Just now',
+        });
+        setRecentInquiries(savedRecents);
       } else if (response.status === 'needs_confirmation' && response.schema_data) {
         setMessages((prev) => [
           ...prev,
           { id: newTurnId, type: 'confirmation', schema: response.schema_data, state: response.state, plainTranslation: response.plain_translation, isCached: response.is_cached },
         ]);
+        // Item 12: Trigger speculative background prefetch immediately
+        handlePrefetchDecision(newTurnId, response.schema_data, response.state);
       } else if (response.status === 'diverged' && response.schema_data) {
         setMessages((prev) => [
           ...prev,
           { id: newTurnId, type: 'delta', delta: response.divergence_delta, schema: response.schema_data, state: response.state },
         ]);
+        handlePrefetchDecision(newTurnId, response.schema_data, response.state);
       } else if (response.status === 'incomplete_state') {
         setMessages((prev) => [
           ...prev,
           { id: newTurnId, type: 'assistant_clarification', text: response.assistant_message, schema: response.schema_data, state: response.state },
         ]);
+      } else if (response.status === 'validation_warning') {
+        const warningDiagnostics = response.fitness_report?.diagnostics?.length
+          ? response.fitness_report.diagnostics.join('. ')
+          : 'Candidate schema triggered quality validation warnings.';
+        if (response.schema_data) {
+          setMessages((prev) => [
+            ...prev,
+            {
+              id: newTurnId,
+              type: 'confirmation',
+              schema: response.schema_data,
+              state: response.state,
+              plainTranslation: `${response.plain_translation || ''}\n\n⚠️ Validation Notice: ${warningDiagnostics}`.trim(),
+              isCached: false,
+            },
+          ]);
+          handlePrefetchDecision(newTurnId, response.schema_data, response.state);
+        } else {
+          setMessages((prev) => [
+            ...prev,
+            {
+              id: newTurnId,
+              type: 'error',
+              text: `Validation warning: ${warningDiagnostics}`,
+            },
+          ]);
+        }
       } else if (response.status === 'fallback') {
         setMessages((prev) => [
           ...prev,
           { id: newTurnId, type: 'fallback', text: response.assistant_message },
         ]);
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const errorMsg = err instanceof Error ? err.message : String(err);
       setMessages((prev) => [
         ...prev,
-        { id: newTurnId, type: 'error', text: `Something went wrong: ${err.message}` },
+        { id: newTurnId, type: 'error', text: `Something went wrong: ${errorMsg}` },
       ]);
     } finally {
       setIsProcessing(false);
     }
   };
 
-  const handleConfirmDecision = async (turnId: string, schema: CandidateSchema, state?: Record<string, any>) => {
+  useEffect(() => {
+    queueMicrotask(() => {
+      const prefs = getPreferences();
+      setMode(prefs.mode || 'restricted');
+      setConsecutiveUnedited(prefs.unedited_count || 0);
+      const pinned = getPinnedSchemas();
+      setPinnedSchemas(pinned);
+      const savedInquiries = getRecentInquiries();
+      setRecentInquiries(savedInquiries);
+    });
+    fetchQuota().then(setQuota);
+    fetchSystemStatus().then((s) => {
+      setEngineStatus({
+        is_simulation: s.is_simulation,
+        engine_name: s.engine_name,
+      });
+    });
+
+    if (typeof window !== 'undefined' && !hasProcessedInitialQuery.current) {
+      hasProcessedInitialQuery.current = true;
+      const params = new URLSearchParams(window.location.search);
+      const queryParam = params.get('q');
+      const queryMode = params.get('mode') as 'restricted' | 'unrestricted' | null;
+      queueMicrotask(() => {
+        if (queryMode) {
+          setMode(queryMode);
+        }
+        if (queryParam) {
+          handleSendPrompt(queryParam, queryMode || undefined);
+        }
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleModeChange = (newMode: 'restricted' | 'unrestricted') => {
+    setMode(newMode);
+    savePreferences({ mode: newMode, theme: 'dark', unedited_count: consecutiveUnedited });
+  };
+
+  useEffect(() => {
+    if (messages.length > 0) {
+      chatBottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages, isProcessing]);
+
+  // Automatic hero carousel cycle every 8 seconds if idle
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlideIndex((prev) => (prev + 1) % HERO_SLIDES.length);
+    }, 8000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const handleConfirmDecision = async (turnId: string, schema: CandidateSchema, state?: Record<string, unknown>) => {
     setExecutingTurnId(turnId);
+    // eslint-disable-next-line react-hooks/purity
     const clickStart = performance.now();
     try {
       const key = getPrefetchKey(schema, state);
@@ -412,6 +456,7 @@ export default function PlaygroundPage() {
       if (cached && cached.key === key) {
         // Await the prefetched execution promise
         result = await cached.promise;
+        // eslint-disable-next-line react-hooks/purity
         const perceivedMs = Math.round(performance.now() - clickStart);
         if (perceivedMs < result.execution_time_ms) {
           result = { ...result, execution_time_ms: perceivedMs };
@@ -426,13 +471,26 @@ export default function PlaygroundPage() {
         )
       );
       prefetchCacheRef.current.delete(turnId);
+      const qType = (schema.type?.toLowerCase() || 'choice') as 'choice' | 'score' | 'noul';
+      const verdictStr = String(result.decision);
+      const shortTitle = schema.question ? (schema.question.length > 30 ? `${schema.question.slice(0, 27)}...` : schema.question) : 'Inquiry';
+      const queryContent = (state?.content_text as string) || (state?.raw_query as string) || shortTitle;
+      const savedRecents = saveRecentInquiry({
+        title: shortTitle,
+        query: queryContent,
+        type: qType,
+        verdict: verdictStr,
+        timestamp: 'Just now',
+      });
+      setRecentInquiries(savedRecents);
       const newCount = consecutiveUnedited + 1;
       setConsecutiveUnedited(newCount);
       savePreferences({ mode, theme: 'dark', unedited_count: newCount });
       if (mode === 'restricted' && newCount >= 3) setShowTrustBanner(true);
       fetchQuota().then(setQuota);
-    } catch (err: any) {
-      alert(`Execution failed: ${err.message}`);
+    } catch (err: unknown) {
+      const errorMsg = err instanceof Error ? err.message : String(err);
+      alert(`Execution failed: ${errorMsg}`);
     } finally {
       setExecutingTurnId(null);
     }
@@ -485,8 +543,9 @@ export default function PlaygroundPage() {
           msg.id === turnId ? { ...msg, schema: patched.schema_data, state: patched.state, plainTranslation: patched.plain_translation } : msg
         )
       );
-    } catch (err: any) {
-      alert(`Patch failed: ${err.message}`);
+    } catch (err: unknown) {
+      const errorMsg = err instanceof Error ? err.message : String(err);
+      alert(`Patch failed: ${errorMsg}`);
     }
   };
 
@@ -652,7 +711,13 @@ export default function PlaygroundPage() {
                     </div>
                     <div className="flex items-center justify-between text-[10px] text-[#71717A] mt-0.5">
                       <span className="capitalize">{item.type}</span>
-                      <span>{item.timestamp}</span>
+                      {item.verdict ? (
+                        <span className="text-[#C8FF00] font-mono truncate max-w-[110px]" title={item.verdict}>
+                          {item.verdict}
+                        </span>
+                      ) : (
+                        <span>{item.timestamp}</span>
+                      )}
                     </div>
                   </button>
                 ))}
@@ -796,6 +861,7 @@ export default function PlaygroundPage() {
                 {/* 1. HERO FEATURED BANNER CARD (Compact Whirl.chat Style) */}
                 <div className="relative w-full rounded-xl overflow-hidden border border-[#222530] shadow-xl group min-h-[120px] sm:min-h-[135px] flex flex-col justify-end p-4 sm:p-5">
                   {/* Banner Image Background */}
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src="/playground-header.jpg"
                     alt="Featured Template Illustration"
@@ -1003,7 +1069,7 @@ export default function PlaygroundPage() {
                           schema={msg.schema}
                           onIncludeAndExecute={() => handleConfirmDecision(msg.id, msg.schema!, msg.state)}
                           onRevertToPrevious={() => {
-                            const prev = msg.delta?.previous_schema || msg.schema!;
+                            const prev = (msg.delta?.previous_schema as CandidateSchema) || msg.schema!;
                             handleConfirmDecision(msg.id, prev, msg.state);
                           }}
                           onPrefetch={() => handlePrefetchDecision(msg.id, msg.schema!, msg.state)}

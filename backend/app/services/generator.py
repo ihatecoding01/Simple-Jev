@@ -67,12 +67,12 @@ class GeneratorService:
             user_message = f"<user_inquiry>\n{sanitized_prompt}\n</user_inquiry>"
 
             res = client.chat.completions.create(
-                model="openai/gpt-oss-20b",
+                model=settings.GROQ_MODEL,
                 messages=[
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": user_message}
                 ],
-                temperature=0.1,
+                temperature=settings.GROQ_TEMPERATURE,
                 response_format={"type": "json_object"}
             )
 
@@ -216,8 +216,10 @@ class GeneratorService:
         Never exposes raw JSON to the user.
         """
         if schema.type == QuestionType.CHOICE:
-            opts = schema.options or []
-            if len(opts) == 1:
+            opts = [o.strip() for o in (schema.options or []) if o and str(o).strip()]
+            if not opts:
+                return f"I'll evaluate the question: '{schema.question}'. Sound right?"
+            elif len(opts) == 1:
                 opts_str = opts[0]
             elif len(opts) == 2:
                 opts_str = f"{opts[0]} or {opts[1]}"
@@ -226,8 +228,21 @@ class GeneratorService:
             return f"I'll sort this into one of: {opts_str}. Sound right?"
 
         elif schema.type == QuestionType.SCORE:
-            min_s = int(schema.min_score) if schema.min_score.is_integer() else schema.min_score
-            max_s = int(schema.max_score) if schema.max_score.is_integer() else schema.max_score
+            def _format_score(val: Optional[float], default: float) -> str:
+                if val is None:
+                    return str(int(default))
+                if isinstance(val, int):
+                    return str(val)
+                if isinstance(val, float):
+                    return str(int(val)) if val.is_integer() else f"{val:.1f}"
+                try:
+                    num = float(val)
+                    return str(int(num)) if num.is_integer() else f"{num:.1f}"
+                except (ValueError, TypeError):
+                    return str(int(default))
+
+            min_s = _format_score(schema.min_score, 1.0)
+            max_s = _format_score(schema.max_score, 5.0)
             criteria = schema.criteria or "specified criteria"
             return f"I'll evaluate this on a scale of {min_s} to {max_s} based on {criteria}. Sound right?"
 

@@ -1,4 +1,4 @@
-import { CandidateSchema, EvaluateResponse, ExecutionResult, PinnedSchema, QuotaStatus } from '../types';
+import { CachedIntentSummary, CandidateSchema, EvaluateResponse, ExecutionResult, QuotaStatus } from '../types';
 
 const BACKEND_URL = (typeof process !== 'undefined' && process.env?.NEXT_PUBLIC_API_URL)
   ? process.env.NEXT_PUBLIC_API_URL.replace(/\/$/, '')
@@ -8,7 +8,7 @@ const API_BASE = BACKEND_URL ? `${BACKEND_URL}/api/v1` : '/api/v1';
 export async function evaluateIntent(
   prompt: string,
   mode: 'restricted' | 'unrestricted' = 'restricted',
-  existingState: Record<string, any> | null = null,
+  existingState: Record<string, unknown> | null = null,
   clientFingerprint = ''
 ): Promise<EvaluateResponse> {
   const res = await fetch(`${API_BASE}/intent/evaluate`, {
@@ -31,7 +31,7 @@ export async function evaluateIntent(
 
 export async function revalidateSchema(
   schemaData: CandidateSchema,
-  state: Record<string, any> | null = null
+  state: Record<string, unknown> | null = null
 ): Promise<EvaluateResponse> {
   const res = await fetch(`${API_BASE}/schema/revalidate`, {
     method: 'POST',
@@ -49,7 +49,7 @@ export async function revalidateSchema(
 
 export async function patchSchema(
   originalSchema: CandidateSchema,
-  state: Record<string, any> | null,
+  state: Record<string, unknown> | null,
   userCorrection: string,
   originalPrompt = ''
 ): Promise<EvaluateResponse> {
@@ -71,7 +71,7 @@ export async function patchSchema(
 
 export async function executeJev(
   schemaData: CandidateSchema,
-  state: Record<string, any>
+  state: Record<string, unknown>
 ): Promise<ExecutionResult> {
   const res = await fetch(`${API_BASE}/jev/execute`, {
     method: 'POST',
@@ -100,7 +100,7 @@ export async function fetchQuota(fingerprint = ''): Promise<QuotaStatus> {
   return { daily_limit: 25, remaining: 25, cached_runs: 0, cold_runs: 0 };
 }
 
-export async function fetchCachedTemplates(): Promise<any[]> {
+export async function fetchCachedTemplates(): Promise<CachedIntentSummary[]> {
   try {
     const res = await fetch(`${API_BASE}/cache/all`);
     if (res.ok) {

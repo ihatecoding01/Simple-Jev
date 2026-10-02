@@ -224,8 +224,8 @@ class ExecutorService:
             )
 
         elif schema.type == QuestionType.SCORE:
-            min_s = schema.min_score or 1.0
-            max_s = schema.max_score or 5.0
+            min_s = float(schema.min_score) if schema.min_score is not None else 1.0
+            max_s = float(schema.max_score) if schema.max_score is not None else 5.0
             
             urgency_score = min_s + (max_s - min_s) * 0.5
             if any(w in state_text for w in ["urgent", "critical", "broken", "emergency", "immediately", "severe"]):

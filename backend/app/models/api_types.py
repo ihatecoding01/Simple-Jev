@@ -46,3 +46,11 @@ class UsageQuotaResponse(BaseModel):
     cached_runs: int
     cold_runs: int
     reset_in_hours: int = 24
+
+class CachedIntentSummary(BaseModel):
+    id: str
+    intent_text: str
+    schema_data: CandidateSchema
+    state: Dict[str, Any]
+    friendly_name: Optional[str] = None
+    last_approved_at: str

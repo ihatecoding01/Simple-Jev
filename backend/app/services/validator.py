@@ -83,22 +83,53 @@ class ValidatorService:
                     for j in range(i + 1, len(opts)):
                         w1 = set(re.findall(r"\w+", opts[i]))
                         w2 = set(re.findall(r"\w+", opts[j]))
-                        if w1 and w2 and (w1 == w2 or (len(w1.intersection(w2)) / max(len(w1), len(w2)) > 0.8)):
+                        if not w1 or not w2:
+                            continue
+                        if w1 == w2:
+                            is_exclusive = False
+                            diagnostics.append(f"overlapping_options: '{schema_data.options[i]}' and '{schema_data.options[j]}' are identical.")
+                            break
+
+                        diff1 = w1 - w2
+                        diff2 = w2 - w1
+                        # If both options have distinguishing unique words, they are mutually exclusive alternatives
+                        # (e.g. 'Company A' vs 'Company B', 'Tier 1' vs 'Tier 2', 'Approve' vs 'Reject')
+                        has_distinguishing_words = bool(diff1 and diff2)
+
+                        overlap_ratio = len(w1.intersection(w2)) / max(len(w1), len(w2))
+                        if overlap_ratio >= 0.85 and not has_distinguishing_words:
                             is_exclusive = False
                             diagnostics.append(f"overlapping_options: '{schema_data.options[i]}' and '{schema_data.options[j]}' overlap substantially.")
                             break
 
         # 5. Coverage check (Choice)
-        # Check if an obvious escape hatch or category is missing
+        # Check if an escape hatch or category is missing for narrow non-binary choice sets.
         coverage_judgment = "complete"
         coverage_conf = 0.93
         if schema_data.type == QuestionType.CHOICE:
-            opts_str = " ".join((schema_data.options or [])).lower()
-            if "other" not in opts_str and "general" not in opts_str and "unsure" not in opts_str:
-                # If very few specific options exist, might be missing options
-                if len(schema_data.options or []) == 2 and "billing" in opts_str and "technical" not in opts_str:
+            opts = [o.strip().lower() for o in (schema_data.options or [])]
+            escape_hatch_terms = {"other", "general", "unsure", "none", "unknown", "misc", "miscellaneous", "neither", "n/a"}
+            has_escape_hatch = any(any(term in opt for term in escape_hatch_terms) for opt in opts)
+
+            # Check if options represent an exhaustive binary pair (e.g. Yes/No, True/False, High/Low)
+            is_binary_pair = False
+            if len(opts) == 2:
+                binary_pairs = [
+                    {"yes", "no"}, {"true", "false"}, {"approve", "reject"},
+                    {"allow", "deny"}, {"pass", "fail"}, {"accept", "decline"},
+                    {"positive", "negative"}, {"high", "low"}, {"in", "out"}
+                ]
+                opts_set = set(opts)
+                is_binary_pair = any(pair == opts_set for pair in binary_pairs)
+
+            # Domain-agnostic check: If only 2 non-binary choices exist without an escape hatch
+            # on an open-ended classification task, flag missing_option so user/patcher can add an escape hatch.
+            if len(opts) == 2 and not is_binary_pair and not has_escape_hatch:
+                q_lower = schema_data.question.lower()
+                is_open_category = any(k in q_lower for k in ["what", "which category", "classify", "route", "sort", "type", "assign"])
+                if is_open_category:
                     coverage_judgment = "missing_option"
-                    diagnostics.append("missing_option: Option set does not cover plausible alternatives.")
+                    diagnostics.append("missing_option: Choice set has only 2 specific options without an escape-hatch or catch-all category (e.g., 'Other' or 'General').")
 
         # Determine overall pass/fail
         passed = (

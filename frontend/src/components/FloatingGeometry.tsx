@@ -143,33 +143,6 @@ function drawCheckerBlock(
   ctx.restore();
 }
 
-function drawDotGrid(
-  ctx: CanvasRenderingContext2D,
-  x: number,
-  y: number,
-  size: number,
-  color: string,
-  alpha: number,
-  pulseValue: number
-) {
-  ctx.save();
-  ctx.globalAlpha = alpha * (0.6 + 0.4 * pulseValue);
-  ctx.fillStyle = color;
-
-  const cols = 3;
-  const rows = 3;
-  const gap = size / (cols + 1);
-  const dotR = Math.max(1.5, size * 0.06);
-
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < cols; c++) {
-      ctx.beginPath();
-      ctx.arc(x + gap * (c + 1), y + gap * (r + 1), dotR, 0, Math.PI * 2);
-      ctx.fill();
-    }
-  }
-  ctx.restore();
-}
 
 export default function FloatingGeometry({
   className = '',
@@ -183,7 +156,6 @@ export default function FloatingGeometry({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const particlesRef = useRef<Particle[]>([]);
   const glitchLinesRef = useRef<GlitchLine[]>([]);
-  const animFrameRef = useRef<number>(0);
   const lastTimeRef = useRef<number>(0);
 
   const init = useCallback(() => {
@@ -292,13 +264,16 @@ export default function FloatingGeometry({
 
       ctx.restore();
     }
-
-    animFrameRef.current = requestAnimationFrame(render);
   }, []);
 
   useEffect(() => {
     init();
-    animFrameRef.current = requestAnimationFrame(render);
+    let animId = 0;
+    const loop = (time: number) => {
+      render(time);
+      animId = requestAnimationFrame(loop);
+    };
+    animId = requestAnimationFrame(loop);
 
     const handleResize = () => {
       init();
@@ -306,7 +281,7 @@ export default function FloatingGeometry({
     window.addEventListener('resize', handleResize);
 
     return () => {
-      cancelAnimationFrame(animFrameRef.current);
+      cancelAnimationFrame(animId);
       window.removeEventListener('resize', handleResize);
     };
   }, [init, render]);

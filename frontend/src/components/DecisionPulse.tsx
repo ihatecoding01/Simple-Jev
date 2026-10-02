@@ -692,7 +692,7 @@ export default function DecisionPulse() {
               Live Question:
             </span>
             <span className="font-semibold text-[#F4F4F5]">
-              "{activeStory.question}"
+              &ldquo;{activeStory.question}&rdquo;
             </span>
             <span className="text-[#52525B]">➔</span>
             <span className="text-[#71717A] text-[10px] font-mono uppercase tracking-wider">

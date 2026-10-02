@@ -1,4 +1,5 @@
 import uuid
+import threading
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional, Tuple
 from app.models.jev_types import CachedIntent, CandidateSchema, QuestionType
@@ -9,8 +10,10 @@ class IntentCache:
     """
     Stores validator-approved schemas keyed by intent vector embedding.
     Tracks exact hits, schema divergences, cold misses, and known-bad rejection patterns.
+    Thread-safe writes and reads to support background task caching.
     """
     def __init__(self):
+        self._lock = threading.Lock()
         self._cache: Dict[str, CachedIntent] = {}
         self._known_bad: List[Dict[str, Any]] = []
         self._seed_default_templates()
@@ -58,17 +61,19 @@ class IntentCache:
             friendly_name=friendly_name or intent_text[:40],
             last_approved_at=datetime.now(timezone.utc).isoformat()
         )
-        self._cache[entry_id] = entry
+        with self._lock:
+            self._cache[entry_id] = entry
         return entry
 
     def record_bad_pattern(self, intent_text: str, schema_data: CandidateSchema, reason: str):
         """Stores rejected schema patterns to steer retries away from repeat errors."""
-        self._known_bad.append({
-            "intent_text": intent_text,
-            "schema": schema_data.model_dump(),
-            "reason": reason,
-            "recorded_at": datetime.now(timezone.utc).isoformat()
-        })
+        with self._lock:
+            self._known_bad.append({
+                "intent_text": intent_text,
+                "schema": schema_data.model_dump(),
+                "reason": reason,
+                "recorded_at": datetime.now(timezone.utc).isoformat()
+            })
 
     def match(
         self,
@@ -85,7 +90,10 @@ class IntentCache:
         best_entry: Optional[CachedIntent] = None
         best_score: float = -1.0
 
-        for entry in self._cache.values():
+        with self._lock:
+            entries_snapshot = list(self._cache.values())
+
+        for entry in entries_snapshot:
             sim = embedder.cosine_similarity(query_vec, entry.embedding)
             if sim > best_score:
                 best_score = sim
@@ -123,10 +131,16 @@ class IntentCache:
                     }
                     return "diverged", best_entry, delta, best_score
 
-        # Exact or near-exact match
-        return "exact_hit", best_entry, None, best_score
+        # Check if match meets exact cache hit threshold (>= EXACT_CACHE_THRESHOLD)
+        if best_score >= settings.EXACT_CACHE_THRESHOLD:
+            return "exact_hit", best_entry, None, best_score
+
+        # Semantic match (CACHE_SIMILARITY_THRESHOLD <= score < EXACT_CACHE_THRESHOLD)
+        # Reuses cached schema without calling Generator LLM, but prompts for user confirmation before executing
+        return "semantic_match", best_entry, None, best_score
 
     def get_all_cached(self) -> List[CachedIntent]:
-        return list(self._cache.values())
+        with self._lock:
+            return list(self._cache.values())
 
 intent_cache = IntentCache()

@@ -5,7 +5,7 @@ import { CandidateSchema } from '../types';
 import { DotCluster } from './AbstractGeometry';
 
 interface DeltaPromptProps {
-  delta: Record<string, any>;
+  delta: Record<string, unknown>;
   schema: CandidateSchema;
   onIncludeAndExecute: () => void;
   onRevertToPrevious: () => void;
@@ -21,8 +21,8 @@ export default function DeltaPrompt({
   onPrefetch,
   isExecuting,
 }: DeltaPromptProps) {
-  const added = delta.added_options || [];
-  const removed = delta.removed_options || [];
+  const added = (Array.isArray(delta.added_options) ? delta.added_options : []) as string[];
+  const removed = (Array.isArray(delta.removed_options) ? delta.removed_options : []) as string[];
 
   useEffect(() => {
     const timer = setTimeout(() => {

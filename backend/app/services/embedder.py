@@ -1,5 +1,7 @@
 import os
 import re
+import threading
+from collections import OrderedDict
 from typing import Dict, List, Optional
 import numpy as np
 
@@ -7,14 +9,17 @@ class IntentEmbedder:
     """
     Computes dense vector representations of intent strings and calculates cosine similarity.
     Uses sentence-transformers (all-MiniLM-L6-v2, 384 dimensions) for state-of-the-art semantic intent matching,
-    with in-memory vector caching for sub-millisecond retrieval and an offline deterministic fallback.
+    with an in-memory, thread-safe, bounded LRU vector cache for sub-millisecond retrieval,
+    and an offline deterministic fallback.
     """
-    def __init__(self, model_name: str = "all-MiniLM-L6-v2"):
+    def __init__(self, model_name: str = "all-MiniLM-L6-v2", max_cache_size: int = 4096):
         self._dim = 384
         self._model_name = model_name
         self._model = None
         self._has_transformer = False
-        self._cache: Dict[str, List[float]] = {}
+        self._max_cache_size = max_cache_size
+        self._cache: OrderedDict[str, List[float]] = OrderedDict()
+        self._cache_lock = threading.Lock()
         self._load_model()
 
     def _load_model(self):
@@ -33,24 +38,41 @@ class IntentEmbedder:
     def is_using_transformer(self) -> bool:
         return self._has_transformer
 
+    def _get_from_cache(self, key: str) -> Optional[List[float]]:
+        with self._cache_lock:
+            if key in self._cache:
+                self._cache.move_to_end(key)
+                return self._cache[key]
+        return None
+
+    def _put_in_cache(self, key: str, vec: List[float]) -> None:
+        with self._cache_lock:
+            if key in self._cache:
+                self._cache.move_to_end(key)
+            else:
+                if len(self._cache) >= self._max_cache_size:
+                    self._cache.popitem(last=False)
+                self._cache[key] = vec
+
     def embed(self, text: str) -> List[float]:
         """
         Embeds a text string into a normalized 384-dimensional vector.
-        Uses in-memory caching to avoid redundant encode computations.
+        Uses in-memory bounded LRU caching to avoid redundant encode computations.
         """
         clean_text = text.strip()
         if not clean_text:
             return [0.0] * self._dim
 
         cache_key = clean_text.lower()
-        if cache_key in self._cache:
-            return self._cache[cache_key]
+        cached = self._get_from_cache(cache_key)
+        if cached is not None:
+            return cached
 
         if self._has_transformer and self._model is not None:
             try:
                 vec = self._model.encode(clean_text, convert_to_numpy=True, normalize_embeddings=True)
                 res = vec.tolist()
-                self._cache[cache_key] = res
+                self._put_in_cache(cache_key, res)
                 return res
             except Exception as e:
                 print(f"[IntentEmbedder] Transformer encode error ({e}), falling back to deterministic vector.")
@@ -73,7 +95,7 @@ class IntentEmbedder:
         if norm > 0:
             vec = vec / norm
         res = vec.tolist()
-        self._cache[cache_key] = res
+        self._put_in_cache(cache_key, res)
         return res
 
     @staticmethod

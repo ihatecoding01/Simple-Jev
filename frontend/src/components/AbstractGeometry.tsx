@@ -178,9 +178,12 @@ export function OutwardApertureHero({
 
   useEffect(() => {
     // Mount triggers the outward burst
-    const t = setTimeout(() => setActive(true), 80);
+    const t = setTimeout(() => {
+      setActive(true);
+      onTrigger?.();
+    }, 80);
     return () => clearTimeout(t);
-  }, []);
+  }, [onTrigger]);
 
   return (
     <div className="relative py-8 sm:py-14 overflow-hidden select-none">

@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useRef, useEffect } from 'react';
-import { DotCluster } from './AbstractGeometry';
 import { IconSendDecision, IconScannerReticle } from './CyberIcons';
 
 interface InputBarProps {
