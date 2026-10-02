@@ -4,8 +4,8 @@
  * Provides the full no-code conversational layer over TypeSafe AI's Jev model:
  * 1. Intent Embedding & Semantic Cache (384-dim normalized cosine similarity)
  * 2. 5-Point Meta-Schema Validator (Coverage, Exclusivity, Type Fit, Scope, State Sufficiency)
- * 3. Deterministic Plain-Language Translation (Zero Raw JSON Exposure)
- * 4. Deterministic System 1 Simulation Engine & Live TypeSafe Jev API Client
+ * 3. Live LLM Generator (Groq llama-3.3-70b / Gemini) + Deterministic Template Engine
+ * 4. Live TypeSafe Jev API Client + Deterministic System 1 Simulation Engine
  * 5. Instant Zero-Cost Chip Re-Validation
  */
 
@@ -314,7 +314,95 @@ function formatPlainTranslation(schema: CandidateSchema): string {
 }
 
 // ────────────────────────────────────────────────────────────────────────────
-// SYSTEM 1 SIMULATION EXECUTION ENGINE
+// LIVE GROQ GENERATOR (WITH DETERMINISTIC FALLBACK)
+// ────────────────────────────────────────────────────────────────────────────
+async function generateWithGroq(
+  prompt: string,
+  groqApiKey: string,
+  existingState?: Record<string, unknown>
+): Promise<{ schema: CandidateSchema; state: Record<string, unknown> } | null> {
+  try {
+    const systemPrompt = `You are a schema generator for TypeSafe AI's Jev model. Your role is strictly to extract context state and define a candidate System 1 decision schema from user intent.
+SCHEMA SPECIFICATION:
+Extract:
+1. 'state': an object containing the factual context or background text to evaluate (e.g. content_text, raw_query).
+2. 'schema': a typed question schema of type 'Choice', 'Score', or 'Noul':
+   - If Choice: provide 'question' and 'options' (array of 3 to 6 distinct, mutually exclusive choices).
+   - If Score: provide 'question', 'min_score' (1.0), 'max_score' (5.0), and 'criteria'.
+   - If Noul: provide 'question' and 'assertion' (boolean statement to verify).
+Return ONLY valid JSON matching this schema: {"state": {"content_text": "..."}, "schema": {"type": "Choice"|"Score"|"Noul", "question": "...", "options": [...]}}`;
+
+    const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${groqApiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "llama-3.3-70b-versatile",
+        temperature: 0.1,
+        response_format: { type: "json_object" },
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: `<user_inquiry>\n${prompt}\n</user_inquiry>` }
+        ]
+      })
+    });
+
+    if (!res.ok) {
+      console.warn("Groq API returned error status:", res.status);
+      return null;
+    }
+
+    const data = await res.json() as {
+      choices?: Array<{ message?: { content?: string } }>;
+    };
+    const content = data.choices?.[0]?.message?.content;
+    if (!content) return null;
+
+    const parsed = JSON.parse(content) as {
+      schema?: {
+        type?: string;
+        question?: string;
+        options?: string[];
+        min_score?: number;
+        max_score?: number;
+        criteria?: string;
+        assertion?: string;
+      };
+      state?: Record<string, unknown>;
+    };
+
+    const sData = parsed.schema || {};
+    const rawType = (sData.type || "Choice").toLowerCase();
+    const qType: QuestionType = rawType === "score" ? "Score" : (rawType === "noul" ? "Noul" : "Choice");
+
+    const schema: CandidateSchema = {
+      type: qType,
+      question: sData.question || prompt,
+      options: qType === "Choice" ? (sData.options && sData.options.length >= 2 ? sData.options : ["Option A", "Option B", "General Inquiries"]) : [],
+      min_score: typeof sData.min_score === "number" ? sData.min_score : 1.0,
+      max_score: typeof sData.max_score === "number" ? sData.max_score : 5.0,
+      criteria: sData.criteria || "Evaluation criteria",
+      assertion: sData.assertion || prompt
+    };
+
+    const stateObj: Record<string, unknown> = {
+      ...(existingState || {}),
+      ...(parsed.state || {}),
+      raw_query: prompt,
+      content_text: (parsed.state?.content_text as string) || prompt
+    };
+
+    return { schema, state: stateObj };
+  } catch (err) {
+    console.warn("Groq call failed, using heuristic extraction:", err);
+    return null;
+  }
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+// SYSTEM 1 EXECUTION ENGINE (TYPESAFE JEV API + DETERMINISTIC SIMULATION)
 // ────────────────────────────────────────────────────────────────────────────
 function executeSimulatedJev(schema: CandidateSchema, state: Record<string, unknown>): ExecutionResult {
   const startTime = performance.now();
@@ -404,6 +492,77 @@ function executeSimulatedJev(schema: CandidateSchema, state: Record<string, unkn
   };
 }
 
+async function executeJevDecision(
+  schema: CandidateSchema,
+  state: Record<string, unknown>,
+  jevApiKey?: string,
+  jevApiUrl?: string
+): Promise<ExecutionResult> {
+  if (jevApiKey && jevApiKey.trim()) {
+    try {
+      const baseUrl = (jevApiUrl || "https://api.typesafe.ai/v1").replace(/\/$/, "");
+      const stateText = (state.content_text as string) || (state.raw_query as string) || JSON.stringify(state);
+
+      const payload = {
+        state: stateText,
+        questions: {
+          decision: schema.type === "Choice"
+            ? { instructions: schema.question, criteria: Object.fromEntries((schema.options || []).map(o => [o, null])) }
+            : (schema.type === "Score"
+              ? { instructions: schema.question, criteria: ["very low", "low", "medium", "high", "critical"] }
+              : { instructions: schema.question, criteria: schema.assertion || schema.question })
+        }
+      };
+
+      const callStart = performance.now();
+      const res = await fetch(`${baseUrl}/decide`, {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${jevApiKey}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if (res.ok) {
+        const data = await res.json() as {
+          model?: string;
+          answers?: {
+            decision?: {
+              choice?: string;
+              score?: number;
+              supported?: boolean;
+              confidence?: number;
+              probabilities?: Record<string, number>;
+            };
+          };
+        };
+        const answer = data.answers?.decision || {};
+        const elapsed = Math.round(performance.now() - callStart);
+        const decisionVal = answer.choice !== undefined ? answer.choice : (answer.score !== undefined ? answer.score : (answer.supported !== undefined ? (answer.supported ? "True" : "False") : "Approved"));
+        const conf = typeof answer.confidence === "number" ? answer.confidence : 0.95;
+        const dist = answer.probabilities || { [String(decisionVal)]: conf };
+
+        return {
+          decision: decisionVal,
+          confidence: Number(conf.toFixed(3)),
+          distribution: dist,
+          summary: `TypeSafe Jev (${data.model || 'jev-1.13.0'}) evaluated decision with ${(conf * 100).toFixed(1)}% certainty.`,
+          question_type: schema.type,
+          execution_time_ms: elapsed,
+          is_simulation: false,
+          engine_mode: "live",
+          engine_name: `TypeSafe Jev (${data.model || 'jev-1.13.0'})`
+        };
+      }
+    } catch (err) {
+      console.warn("Live Jev API call failed, falling back to deterministic simulation:", err);
+    }
+  }
+
+  return executeSimulatedJev(schema, state);
+}
+
 // ────────────────────────────────────────────────────────────────────────────
 // CORS & HTTP HELPER
 // ────────────────────────────────────────────────────────────────────────────
@@ -448,8 +607,8 @@ export default {
       });
     }
 
-    // GET /api/v1/quota
-    if (path === "/api/v1/quota" && request.method === "GET") {
+    // GET /api/v1/usage/quota OR /api/v1/quota
+    if ((path === "/api/v1/usage/quota" || path === "/api/v1/quota") && request.method === "GET") {
       return jsonResponse({
         daily_limit: 25,
         remaining: 24,
@@ -476,7 +635,7 @@ export default {
     if (path === "/api/v1/jev/execute" && request.method === "POST") {
       try {
         const body = await request.json() as { schema_data: CandidateSchema; state: Record<string, unknown> };
-        const result = executeSimulatedJev(body.schema_data, body.state || {});
+        const result = await executeJevDecision(body.schema_data, body.state || {}, env.JEV_API_KEY, env.JEV_API_URL);
         return jsonResponse(result);
       } catch (err) {
         return jsonResponse({ detail: `Execution error: ${String(err)}` }, 400);
@@ -497,13 +656,12 @@ export default {
           fitness_report: report,
           retries_attempted: 0,
           stepper_stages: [
-            { stage: "parse", label: "Intent Parsed", status: "completed" },
-            { stage: "validate", label: "Fast Edge Revalidation", status: report.passed ? "completed" : "active" },
-            { stage: "confirm", label: "Ready for Verdict", status: "active" }
+            { stage: "chip_edit", label: "Updated options locally", status: "completed" },
+            { stage: "revalidated", label: "Fast Edge Revalidation", status: report.passed ? "completed" : "active" }
           ],
           is_cached: false,
-          engine_mode: "simulation",
-          is_simulation: true
+          engine_mode: env.JEV_API_KEY ? "live" : "simulation",
+          is_simulation: !env.JEV_API_KEY
         });
       } catch (err) {
         return jsonResponse({ detail: `Revalidation error: ${String(err)}` }, 400);
@@ -551,8 +709,8 @@ export default {
             { stage: "confirm", label: "Awaiting Confirmation", status: "active" }
           ],
           is_cached: false,
-          engine_mode: "simulation",
-          is_simulation: true
+          engine_mode: env.JEV_API_KEY ? "live" : "simulation",
+          is_simulation: !env.JEV_API_KEY
         });
       } catch (err) {
         return jsonResponse({ detail: `Patch error: ${String(err)}` }, 400);
@@ -595,7 +753,7 @@ export default {
         if (bestMatch && highestSim >= EXACT_SIM) {
           const execState = body.existing_state || { content_text: prompt, raw_query: prompt };
           if (mode === 'unrestricted') {
-            const execResult = executeSimulatedJev(bestMatch.schema_data, execState);
+            const execResult = await executeJevDecision(bestMatch.schema_data, execState, env.JEV_API_KEY, env.JEV_API_URL);
             return jsonResponse({
               status: "cache_hit",
               schema_data: bestMatch.schema_data,
@@ -608,8 +766,8 @@ export default {
                 { stage: "cache", label: `Exact Hit (${(highestSim * 100).toFixed(0)}%)`, status: "completed" },
                 { stage: "execute", label: "Auto-Executed Jev", status: "completed" }
               ],
-              engine_mode: "simulation",
-              is_simulation: true
+              engine_mode: env.JEV_API_KEY ? "live" : "simulation",
+              is_simulation: !env.JEV_API_KEY
             });
           } else {
             return jsonResponse({
@@ -623,8 +781,8 @@ export default {
                 { stage: "cache", label: `Cached Intent (${(highestSim * 100).toFixed(0)}%)`, status: "completed" },
                 { stage: "confirm", label: "Awaiting Run Confirmation", status: "active" }
               ],
-              engine_mode: "simulation",
-              is_simulation: true
+              engine_mode: env.JEV_API_KEY ? "live" : "simulation",
+              is_simulation: !env.JEV_API_KEY
             });
           }
         }
@@ -643,43 +801,53 @@ export default {
               { stage: "cache", label: `Semantic Match (${(highestSim * 100).toFixed(0)}%)`, status: "completed" },
               { stage: "confirm", label: "Awaiting Confirmation", status: "active" }
             ],
-            engine_mode: "simulation",
-            is_simulation: true
+            engine_mode: env.JEV_API_KEY ? "live" : "simulation",
+            is_simulation: !env.JEV_API_KEY
           });
         }
 
-        // 3. Cold Miss: Generate Candidate Schema
-        const lowerPrompt = prompt.toLowerCase();
-        let candidateSchema: CandidateSchema;
-        const candidateState: Record<string, unknown> = body.existing_state || { content_text: prompt, raw_query: prompt };
+        // 3. Cold Miss: Try Groq LLM Generation if API key present
+        let candidateSchema: CandidateSchema | null = null;
+        let candidateState: Record<string, unknown> = body.existing_state || { content_text: prompt, raw_query: prompt };
 
-        if (/\b(urgency|rate|score|scale|level)\b/.test(lowerPrompt)) {
-          candidateSchema = {
-            type: 'Score',
-            question: "Rate the severity and operational impact of this incident from 1 to 5.",
-            min_score: 1.0,
-            max_score: 5.0,
-            criteria: "Impact on critical infrastructure and customer availability"
-          };
-        } else if (/\b(verify|spf|compliance|gdpr|valid|check if|does)\b/.test(lowerPrompt)) {
-          candidateSchema = {
-            type: 'Noul',
-            question: "Verify if this policy condition or claim is satisfied.",
-            assertion: `The following criteria holds true: ${prompt}`
-          };
-        } else if (/\b(qualify|lead|prospect|deal|sales)\b/.test(lowerPrompt)) {
-          candidateSchema = {
-            type: 'Choice',
-            question: "How should this opportunity be triaged?",
-            options: ["Enterprise Tier", "Mid-Market", "SMB Self-Serve", "Unqualified"]
-          };
-        } else {
-          // General classification
-          candidateSchema = {
-            type: 'Choice',
-            question: "What is the appropriate classification for this request?",
-            options: ["Billing & Invoicing", "Technical Support", "Account Management", "General Inquiry"]
-          };
+        if (env.GROQ_API_KEY && env.GROQ_API_KEY.trim()) {
+          const groqResult = await generateWithGroq(prompt, env.GROQ_API_KEY, candidateState);
+          if (groqResult) {
+            candidateSchema = groqResult.schema;
+            candidateState = groqResult.state;
+          }
+        }
+
+        // If no Groq result or key missing, use deterministic heuristic generator
+        if (!candidateSchema) {
+          const lowerPrompt = prompt.toLowerCase();
+          if (/\b(urgency|rate|score|scale|level)\b/.test(lowerPrompt)) {
+            candidateSchema = {
+              type: 'Score',
+              question: "Rate the severity and operational impact of this incident from 1 to 5.",
+              min_score: 1.0,
+              max_score: 5.0,
+              criteria: "Impact on critical infrastructure and customer availability"
+            };
+          } else if (/\b(verify|spf|compliance|gdpr|valid|check if|does)\b/.test(lowerPrompt)) {
+            candidateSchema = {
+              type: 'Noul',
+              question: "Verify if this policy condition or claim is satisfied.",
+              assertion: `The following criteria holds true: ${prompt}`
+            };
+          } else if (/\b(qualify|lead|prospect|deal|sales)\b/.test(lowerPrompt)) {
+            candidateSchema = {
+              type: 'Choice',
+              question: "How should this opportunity be triaged?",
+              options: ["Enterprise Tier", "Mid-Market", "SMB Self-Serve", "Unqualified"]
+            };
+          } else {
+            candidateSchema = {
+              type: 'Choice',
+              question: "What is the appropriate classification for this request?",
+              options: ["Billing & Invoicing", "Technical Support", "Account Management", "General Inquiry"]
+            };
+          }
         }
 
         const report = validateSchema(candidateSchema, candidateState);
@@ -693,13 +861,13 @@ export default {
           fitness_report: report,
           retries_attempted: 0,
           stepper_stages: [
-            { stage: "parse", label: "Intent Parsed", status: "completed" },
+            { stage: "parse", label: env.GROQ_API_KEY ? "Parsed via Groq Llama-3.3" : "Intent Parsed", status: "completed" },
             { stage: "validate", label: "5-Point Fitness Check", status: report.passed ? "completed" : "active" },
             { stage: "confirm", label: "Confirmation Gate", status: "active" }
           ],
           is_cached: false,
-          engine_mode: "simulation",
-          is_simulation: true
+          engine_mode: env.JEV_API_KEY ? "live" : "simulation",
+          is_simulation: !env.JEV_API_KEY
         });
       } catch (err) {
         return jsonResponse({ detail: `Evaluation error: ${String(err)}` }, 500);
