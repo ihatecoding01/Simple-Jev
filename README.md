@@ -22,6 +22,12 @@
   <img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License" />
 </p>
 
+> ### ⚡ Live App & Quick Links
+> - 🚀 **Live Production Application**: **[https://simplejev.pages.dev](https://simplejev.pages.dev)**
+> - 🧪 **Interactive Studio & Playground**: **[https://simplejev.pages.dev/playground](https://simplejev.pages.dev/playground)**
+> - 📖 **Documentation**: [Architecture Spec](Architecture.md) • [Product PRD](PRD.md) • [Agent Guidelines](AGENTS.md) • [Contributing Guide](CONTRIBUTING.md)
+> - 📦 **GitHub Repository**: [ihatecoding01/Conversational-Jev](https://github.com/ihatecoding01/Conversational-Jev)
+
 ---
 
 ## 1. The Problem: Deterministic Decisions Shouldn't Require Writing JSON
@@ -238,7 +244,7 @@ Conversational-Jev/
 │   │   │   ├── ConfirmationCard.tsx  # "What I Understood" card with interactive chips
 │   │   │   ├── DecisionCard.tsx      # Verdict card with probability breakdown drawer
 │   │   │   ├── DeltaPrompt.tsx       # Schema divergence amber alert
-│   │   │   ├── Header.tsx            # Mode switcher, usage meter, engine indicator
+│   │   │   ├── Header.tsx            # Navigation bar with brand mark & studio link
 │   │   │   ├── InputBar.tsx          # Sticky natural language input bar
 │   │   │   ├── ProgressiveTrustBanner.tsx # Milestone banner for N >= 3 unedited runs
 │   │   │   ├── Sidebar.tsx           # Pinned rules library & Quick Run trigger
