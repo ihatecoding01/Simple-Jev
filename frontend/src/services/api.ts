@@ -1,6 +1,9 @@
 import { CandidateSchema, EvaluateResponse, ExecutionResult, PinnedSchema, QuotaStatus } from '../types';
 
-const API_BASE = '/api/v1';
+const BACKEND_URL = (typeof process !== 'undefined' && process.env?.NEXT_PUBLIC_API_URL)
+  ? process.env.NEXT_PUBLIC_API_URL.replace(/\/$/, '')
+  : '';
+const API_BASE = BACKEND_URL ? `${BACKEND_URL}/api/v1` : '/api/v1';
 
 export async function evaluateIntent(
   prompt: string,
@@ -119,7 +122,8 @@ export interface SystemEngineStatus {
 
 export async function fetchSystemStatus(): Promise<SystemEngineStatus> {
   try {
-    const res = await fetch('/');
+    const rootUrl = BACKEND_URL ? `${BACKEND_URL}/` : '/';
+    const res = await fetch(rootUrl);
     if (res.ok) {
       return res.json();
     }

@@ -74,3 +74,5 @@ frontend/public/references/
 scratch/
 tmp/
 simple_jev_comprehensive_documentation.md
+.cloudflare/
+
