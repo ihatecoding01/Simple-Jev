@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { CandidateSchema } from '../types';
 import { DotCluster } from './AbstractGeometry';
 
@@ -9,6 +9,7 @@ interface DeltaPromptProps {
   schema: CandidateSchema;
   onIncludeAndExecute: () => void;
   onRevertToPrevious: () => void;
+  onPrefetch?: () => void;
   isExecuting: boolean;
 }
 
@@ -17,10 +18,20 @@ export default function DeltaPrompt({
   schema,
   onIncludeAndExecute,
   onRevertToPrevious,
+  onPrefetch,
   isExecuting,
 }: DeltaPromptProps) {
   const added = delta.added_options || [];
   const removed = delta.removed_options || [];
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (!isExecuting) {
+        onPrefetch?.();
+      }
+    }, 200);
+    return () => clearTimeout(timer);
+  }, [schema, onPrefetch, isExecuting]);
 
   return (
     <div
@@ -70,6 +81,9 @@ export default function DeltaPrompt({
         <button
           className={`gt-btn-execute inline-flex items-center gap-2 ${isExecuting ? 'opacity-95 cursor-wait shadow-[0_0_25px_rgba(200,255,0,0.5)] border-[#C8FF00]' : ''}`}
           onClick={onIncludeAndExecute}
+          onMouseEnter={onPrefetch}
+          onPointerDown={onPrefetch}
+          onFocus={onPrefetch}
           disabled={isExecuting}
         >
           {isExecuting ? (

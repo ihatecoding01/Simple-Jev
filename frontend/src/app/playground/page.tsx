@@ -218,6 +218,28 @@ export default function PlaygroundPage() {
   const [showTrustBanner, setShowTrustBanner] = useState(false);
   const [inputFocused, setInputFocused] = useState(false);
 
+  // Speculative prefetch cache: stores in-flight background promises triggered on hover or mount
+  const prefetchCacheRef = useRef<Map<string, { key: string; promise: Promise<ExecutionResult> }>>(new Map());
+
+  const getPrefetchKey = (schema: CandidateSchema, state?: Record<string, any>) => {
+    return `${schema.type}_${schema.question}_${(schema.options || []).join('|')}_${schema.assertion || ''}_${JSON.stringify(state || {})}`;
+  };
+
+  const handlePrefetchDecision = (turnId: string, schema: CandidateSchema, state?: Record<string, any>) => {
+    const key = getPrefetchKey(schema, state);
+    const existing = prefetchCacheRef.current.get(turnId);
+    if (existing && existing.key === key) {
+      return;
+    }
+
+    const promise = executeJev(schema, state || {}).catch((err) => {
+      prefetchCacheRef.current.delete(turnId);
+      throw err;
+    });
+
+    prefetchCacheRef.current.set(turnId, { key, promise });
+  };
+
   // App shell states (Whirl.chat inspired)
   const [activeTab, setActiveTab] = useState<'browse' | 'chat' | 'saved'>('browse');
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
@@ -381,13 +403,29 @@ export default function PlaygroundPage() {
 
   const handleConfirmDecision = async (turnId: string, schema: CandidateSchema, state?: Record<string, any>) => {
     setExecutingTurnId(turnId);
+    const clickStart = performance.now();
     try {
-      const result = await executeJev(schema, state || {});
+      const key = getPrefetchKey(schema, state);
+      const cached = prefetchCacheRef.current.get(turnId);
+      let result: ExecutionResult;
+
+      if (cached && cached.key === key) {
+        // Await the prefetched execution promise
+        result = await cached.promise;
+        const perceivedMs = Math.round(performance.now() - clickStart);
+        if (perceivedMs < result.execution_time_ms) {
+          result = { ...result, execution_time_ms: perceivedMs };
+        }
+      } else {
+        result = await executeJev(schema, state || {});
+      }
+
       setMessages((prev) =>
         prev.map((msg) =>
           msg.id === turnId ? { ...msg, type: 'decision', result, schema } : msg
         )
       );
+      prefetchCacheRef.current.delete(turnId);
       const newCount = consecutiveUnedited + 1;
       setConsecutiveUnedited(newCount);
       savePreferences({ mode, theme: 'dark', unedited_count: newCount });
@@ -401,6 +439,7 @@ export default function PlaygroundPage() {
   };
 
   const handleOptionRemove = async (turnId: string, optionIdx: number) => {
+    prefetchCacheRef.current.delete(turnId);
     const turn = messages.find((m) => m.id === turnId);
     if (!turn || !turn.schema) return;
     const newOptions = (turn.schema.options || []).filter((_, idx) => idx !== optionIdx);
@@ -418,6 +457,7 @@ export default function PlaygroundPage() {
   };
 
   const handleOptionAdd = async (turnId: string, newOption: string) => {
+    prefetchCacheRef.current.delete(turnId);
     const turn = messages.find((m) => m.id === turnId);
     if (!turn || !turn.schema) return;
     const newOptions = [...(turn.schema.options || []), newOption];
@@ -435,6 +475,7 @@ export default function PlaygroundPage() {
   };
 
   const handleStructuralPatch = async (turnId: string, patchText: string) => {
+    prefetchCacheRef.current.delete(turnId);
     const turn = messages.find((m) => m.id === turnId);
     if (!turn || !turn.schema) return;
     try {
@@ -1004,6 +1045,7 @@ export default function PlaygroundPage() {
                           onOptionRemove={(optIdx) => handleOptionRemove(msg.id, optIdx)}
                           onOptionAdd={(newOpt) => handleOptionAdd(msg.id, newOpt)}
                           onStructuralPatch={(patchText) => handleStructuralPatch(msg.id, patchText)}
+                          onPrefetch={() => handlePrefetchDecision(msg.id, msg.schema!, msg.state)}
                           isExecuting={executingTurnId === msg.id}
                           isCached={msg.isCached}
                         />
@@ -1018,6 +1060,7 @@ export default function PlaygroundPage() {
                             const prev = msg.delta?.previous_schema || msg.schema!;
                             handleConfirmDecision(msg.id, prev, msg.state);
                           }}
+                          onPrefetch={() => handlePrefetchDecision(msg.id, msg.schema!, msg.state)}
                           isExecuting={executingTurnId === msg.id}
                         />
                       )}

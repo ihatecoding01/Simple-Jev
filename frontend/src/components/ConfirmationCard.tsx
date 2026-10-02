@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { CandidateSchema } from '../types';
 import { DotCluster } from './AbstractGeometry';
 
@@ -11,6 +11,7 @@ interface ConfirmationCardProps {
   onOptionRemove: (index: number) => void;
   onOptionAdd: (newOption: string) => void;
   onStructuralPatch: (patchText: string) => void;
+  onPrefetch?: () => void;
   isExecuting: boolean;
   isCached?: boolean;
 }
@@ -22,6 +23,7 @@ export default function ConfirmationCard({
   onOptionRemove,
   onOptionAdd,
   onStructuralPatch,
+  onPrefetch,
   isExecuting,
   isCached,
 }: ConfirmationCardProps) {
@@ -29,6 +31,16 @@ export default function ConfirmationCard({
   const [isAddingChip, setIsAddingChip] = useState(false);
   const [newChipText, setNewChipText] = useState('');
   const [patchText, setPatchText] = useState('');
+
+  // Speculatively prefetch decision on mount while user is reviewing options
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (!isExecuting) {
+        onPrefetch?.();
+      }
+    }, 200);
+    return () => clearTimeout(timer);
+  }, [schema, onPrefetch, isExecuting]);
 
   const isChoice = schema.type === 'Choice';
   const options = schema.options || [];
@@ -151,6 +163,9 @@ export default function ConfirmationCard({
         <button
           className={`gt-btn-execute inline-flex items-center gap-2 ${isExecuting ? 'opacity-95 cursor-wait shadow-[0_0_25px_rgba(200,255,0,0.5)] border-[#C8FF00]' : ''}`}
           onClick={onConfirm}
+          onMouseEnter={onPrefetch}
+          onPointerDown={onPrefetch}
+          onFocus={onPrefetch}
           disabled={isExecuting}
           id="confirm-decision-btn"
         >
