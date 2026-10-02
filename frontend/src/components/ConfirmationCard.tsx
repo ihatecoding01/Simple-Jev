@@ -98,7 +98,7 @@ export default function ConfirmationCard({
       {isChoice && (
         <div className="mb-5">
           <div className="mb-2 font-mono text-[10px] tracking-wider uppercase text-[#71717A]">
-            Click × to remove · + to add options (local re-verification, 0 credits):
+            Click x to remove, + to add options (local re-verification, 0 credits):
           </div>
           <div className="flex flex-wrap gap-2 items-center">
             {options.map((opt, idx) => (
@@ -110,7 +110,7 @@ export default function ConfirmationCard({
                     onClick={() => onOptionRemove(idx)}
                     title={`Remove "${opt}"`}
                   >
-                    ×
+                    x
                   </button>
                 )}
               </span>
@@ -175,7 +175,7 @@ export default function ConfirmationCard({
               <span className="font-mono text-white tracking-wide">EXECUTING JEV (~300ms)...</span>
             </>
           ) : (
-            'Run Decision ↵'
+            'Run Decision'
           )}
         </button>
 

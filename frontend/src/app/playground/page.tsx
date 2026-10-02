@@ -8,6 +8,24 @@ import DeltaPrompt from '../../components/DeltaPrompt';
 import DecisionCard from '../../components/DecisionCard';
 import Stepper from '../../components/Stepper';
 import ProgressiveTrustBanner from '../../components/ProgressiveTrustBanner';
+import {
+  IconChoiceRouter,
+  IconUrgencyScore,
+  IconPolicyVerifier,
+  IconLeadQualifier,
+  IconSentimentGauge,
+  IconVaultCompliance,
+  IconSendDecision,
+  IconStudioTerminal,
+  IconTemplatesMatrix,
+  IconSavedRulesPin,
+  IconScannerReticle,
+  IconCyberChevronRight,
+  IconCyberChevronLeft,
+  IconSidebarToggle,
+  IconSearchTerminal,
+  IconClose,
+} from '../../components/CyberIcons';
 import { CandidateSchema, ExecutionResult, PinnedSchema, QuotaStatus } from '../../types';
 import {
   evaluateIntent,
@@ -58,12 +76,7 @@ const HERO_SLIDES = [
     description: 'Sort incoming emails into Billing, Support, or Account with deterministic Jev schemas.',
     query: "Categorize customer email: 'I was charged twice on invoice #994. Please issue a refund ASAP.'",
     color: '#8B5CF6',
-    icon: (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="2" y="4" width="20" height="16" rx="2" />
-        <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
-      </svg>
-    ),
+    icon: <IconChoiceRouter size={24} color="#8B5CF6" />,
   },
   {
     id: 'slide-urgency',
@@ -72,13 +85,7 @@ const HERO_SLIDES = [
     description: 'Score system outage impact and customer disruption on a deterministic 1 to 5 scale.',
     query: 'Rate urgency: Primary database cluster has failed and all customer logins are returning errors.',
     color: '#C8FF00',
-    icon: (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M12 20V10" />
-        <path d="M18 20V4" />
-        <path d="M6 20v-4" />
-      </svg>
-    ),
+    icon: <IconUrgencyScore size={24} color="#C8FF00" />,
   },
   {
     id: 'slide-spf',
@@ -87,11 +94,7 @@ const HERO_SLIDES = [
     description: 'Verify if sender domain passes strict SPF authentication with mathematical certainty.',
     query: 'Verify: The incoming email SPF record passes verification for paypal.com domain.',
     color: '#10B981',
-    icon: (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-      </svg>
-    ),
+    icon: <IconPolicyVerifier size={24} color="#10B981" />,
   },
   {
     id: 'slide-lead',
@@ -100,15 +103,7 @@ const HERO_SLIDES = [
     description: 'Triage enterprise prospects vs self-serve signups by headcount and deployment scope.',
     query: 'Qualify lead: Fortune 500 enterprise requesting 25,000 seat dedicated cloud deployment.',
     color: '#06B6D4',
-    icon: (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="12" cy="12" r="10" />
-        <line x1="22" y1="12" x2="18" y2="12" />
-        <line x1="6" y1="12" x2="2" y2="12" />
-        <line x1="12" y1="6" x2="12" y2="2" />
-        <line x1="12" y1="22" x2="12" y2="18" />
-      </svg>
-    ),
+    icon: <IconLeadQualifier size={24} color="#06B6D4" />,
   },
 ];
 
@@ -123,12 +118,7 @@ const READY_TEMPLATES = [
     description: 'Sort incoming emails into Billing, Support, or Account automatically.',
     query: "Categorize customer email: 'I was charged twice on invoice #994. Please issue a refund ASAP.'",
     color: '#8B5CF6',
-    icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <rect width="20" height="16" x="2" y="4" rx="2" />
-        <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
-      </svg>
-    ),
+    icon: <IconChoiceRouter size={24} color="#8B5CF6" />,
   },
   {
     id: 'incident-scorer',
@@ -137,13 +127,7 @@ const READY_TEMPLATES = [
     description: 'Score production downtime impact from 1 (minor) to 5 (critical emergency).',
     query: 'Rate urgency: Primary database cluster has failed and all customer logins are returning errors.',
     color: '#C8FF00',
-    icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M12 20V10" />
-        <path d="M18 20V4" />
-        <path d="M6 20v-4" />
-      </svg>
-    ),
+    icon: <IconUrgencyScore size={24} color="#C8FF00" />,
   },
   {
     id: 'spf-verifier',
@@ -152,11 +136,7 @@ const READY_TEMPLATES = [
     description: 'Verify if incoming email domain passes SPF and security policies.',
     query: 'Verify: The incoming email SPF record passes verification for paypal.com domain.',
     color: '#10B981',
-    icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-      </svg>
-    ),
+    icon: <IconPolicyVerifier size={24} color="#10B981" />,
   },
   {
     id: 'lead-qualifier',
@@ -165,15 +145,7 @@ const READY_TEMPLATES = [
     description: 'Triage incoming leads: Enterprise, Mid-Market, SMB, or Unqualified.',
     query: 'Qualify lead: Fortune 500 enterprise requesting 25,000 seat dedicated deployment.',
     color: '#06B6D4',
-    icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="12" cy="12" r="10" />
-        <path d="m4.93 4.93 4.24 4.24" />
-        <path d="m14.83 9.17 4.24-4.24" />
-        <path d="m14.83 14.83 4.24 4.24" />
-        <path d="m9.17 14.83-4.24 4.24" />
-      </svg>
-    ),
+    icon: <IconLeadQualifier size={24} color="#06B6D4" />,
   },
   {
     id: 'feedback-sentiment',
@@ -182,11 +154,7 @@ const READY_TEMPLATES = [
     description: 'Quantify customer satisfaction and churn risk on a 1 to 10 scale.',
     query: "Score sentiment: 'Product is fast and sleek, but checkout failed twice and documentation is lacking.'",
     color: '#F59E0B',
-    icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-      </svg>
-    ),
+    icon: <IconSentimentGauge size={24} color="#F59E0B" />,
   },
   {
     id: 'gdpr-compliance',
@@ -195,12 +163,7 @@ const READY_TEMPLATES = [
     description: 'Verify whether a user deletion request requires immediate Article 17 action.',
     query: 'Verify: User requests complete data deletion under Article 17 of GDPR within 30 days.',
     color: '#EC4899',
-    icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
-        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-      </svg>
-    ),
+    icon: <IconVaultCompliance size={24} color="#EC4899" />,
   },
 ];
 
@@ -553,10 +516,7 @@ export default function PlaygroundPage() {
               title={isSidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
               aria-label="Toggle sidebar"
             >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <rect width="18" height="18" x="3" y="3" rx="2" />
-                <path d="M9 3v18" />
-              </svg>
+              <IconSidebarToggle size={18} />
             </button>
           </div>
 
@@ -564,10 +524,7 @@ export default function PlaygroundPage() {
           {!isSidebarCollapsed && (
             <div className="px-3 pt-3 pb-1">
               <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-[6px] bg-[#14161C] border border-[#232630] text-xs text-[#A1A1AA]">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#71717A]">
-                  <circle cx="11" cy="11" r="8" />
-                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                </svg>
+                <IconSearchTerminal size={14} color="#71717A" />
                 <input
                   type="text"
                   placeholder="Search templates..."
@@ -590,12 +547,7 @@ export default function PlaygroundPage() {
               }`}
               title="Browse Templates"
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#C8FF00]">
-                <rect width="7" height="7" x="3" y="3" rx="1" />
-                <rect width="7" height="7" x="14" y="3" rx="1" />
-                <rect width="7" height="7" x="14" y="14" rx="1" />
-                <rect width="7" height="7" x="3" y="14" rx="1" />
-              </svg>
+              <IconTemplatesMatrix size={16} color={activeTab === 'browse' ? '#C8FF00' : '#71717A'} className="shrink-0" />
               {!isSidebarCollapsed && <span>Decision Templates</span>}
             </button>
 
@@ -608,9 +560,7 @@ export default function PlaygroundPage() {
               }`}
               title="Live Studio Session"
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#8B5CF6]">
-                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-              </svg>
+              <IconStudioTerminal size={16} color={activeTab === 'chat' ? '#8B5CF6' : '#71717A'} className="shrink-0" />
               {!isSidebarCollapsed && (
                 <>
                   <span>Studio Session</span>
@@ -632,9 +582,7 @@ export default function PlaygroundPage() {
               }`}
               title="Saved & Pinned Rules"
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#FF2E54]">
-                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
-              </svg>
+              <IconSavedRulesPin size={16} color={activeTab === 'saved' ? '#FF2E54' : '#71717A'} className="shrink-0" />
               {!isSidebarCollapsed && (
                 <>
                   <span>Saved Rules</span>
@@ -698,9 +646,9 @@ export default function PlaygroundPage() {
         {/* ──────────────────────────────────────────────────────── */}
         {/* MAIN STUDIO CANVAS                                      */}
         {/* ──────────────────────────────────────────────────────── */}
-        <main className="flex-1 flex flex-col min-w-0 bg-[#0B0C0E] overflow-y-auto">
+        <main className="flex-1 flex flex-col min-w-0 bg-[#07080A] h-screen overflow-hidden relative">
           {/* Main Top Header Controls */}
-          <header className="sticky top-0 z-20 px-6 py-4 bg-[#0B0C0E]/90 backdrop-blur-md border-b border-[#1C1E26] flex items-center justify-between gap-4">
+          <header className="shrink-0 px-6 py-3.5 bg-[#0B0C0E]/90 backdrop-blur-md border-b border-[#1C1E26] flex items-center justify-between gap-4 z-10">
             <div>
               <h1 className="text-lg sm:text-xl font-bold text-white font-sans tracking-tight flex items-center gap-2">
                 <span>Playground Studio</span>
@@ -751,96 +699,37 @@ export default function PlaygroundPage() {
             </div>
           </header>
 
-          <div className="flex-1 max-w-5xl w-full mx-auto p-4 sm:p-8 flex flex-col gap-6">
-            {/* Quick Run Banner */}
-            {activeQuickRunSchema && (
-              <div className="flex items-center justify-between p-3.5 rounded-[8px] bg-[#C8FF00]/10 border border-[#C8FF00]/30 animate-fade-in">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-2.5 h-2.5 rounded-full bg-[#C8FF00] animate-pulse" />
-                  <span className="text-xs sm:text-sm text-white font-medium">
-                    Quick Run Mode: <strong className="text-[#C8FF00]">{activeQuickRunSchema.friendly_name}</strong>
-                  </span>
-                  <span className="text-[11px] text-[#A1A1AA] bg-black/40 px-2 py-0.5 rounded-[4px]">
-                    0 credits used (Free)
-                  </span>
-                </div>
-                <button
-                  className="px-2.5 py-1 text-xs text-[#A1A1AA] hover:text-white bg-[#14161C] hover:bg-[#1F222A] rounded-[4px] border border-[#272A35] cursor-pointer transition-colors"
-                  onClick={() => setActiveQuickRunSchema(null)}
-                >
-                  Exit Quick Run
-                </button>
-              </div>
-            )}
-
-            {/* Progressive Trust Milestone Banner */}
-            {showTrustBanner && mode === 'restricted' && (
-              <ProgressiveTrustBanner
-                onSwitch={() => { handleModeChange('unrestricted'); setShowTrustBanner(false); }}
-                onDismiss={() => setShowTrustBanner(false)}
-              />
-            )}
-
-            {/* ──────────────────────────────────────────────────────── */}
-            {/* PROMINENT NATURAL LANGUAGE INPUT BAR                     */}
-            {/* ──────────────────────────────────────────────────────── */}
-            <div
-              className={`p-2 rounded-[12px] border transition-all duration-300 shadow-xl ${
-                inputFocused
-                  ? 'bg-[#131418] border-[#C8FF00]/50 shadow-[0_0_30px_rgba(200,255,0,0.12)]'
-                  : 'bg-[#131418] border-[#22252F] hover:border-[#333745]'
-              }`}
-            >
-              <div className="flex items-center gap-3 px-2">
-                <div className="text-[#71717A] shrink-0">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <circle cx="12" cy="12" r="10" />
-                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
-                    <line x1="12" y1="17" x2="12.01" y2="17" />
-                  </svg>
-                </div>
-                <input
-                  ref={inputRef}
-                  type="text"
-                  value={inputValue}
-                  onChange={(e) => setInputValue(e.target.value)}
-                  onFocus={() => setInputFocused(true)}
-                  onBlur={() => setInputFocused(false)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' && inputValue.trim() && !isProcessing) {
-                      handleSendPrompt(inputValue.trim());
-                    }
-                  }}
-                  placeholder={
-                    activeQuickRunSchema
-                      ? `Enter input to test with "${activeQuickRunSchema.friendly_name}"...`
-                      : 'Ask anything, e.g. "Categorize this customer email: I need an invoice refund"'
-                  }
-                  className="flex-1 bg-transparent border-none outline-none text-sm text-white placeholder:text-[#52525B] font-sans py-2.5"
-                  disabled={isProcessing}
-                  id="playground-prompt-input"
-                />
-                {inputValue && (
+          {/* SCROLLABLE VIEWPORT FOR MESSAGES & TEMPLATES */}
+          <div className="flex-1 overflow-y-auto px-4 sm:px-8 py-6">
+            <div className="max-w-4xl w-full mx-auto space-y-6">
+              {/* Quick Run Banner */}
+              {activeQuickRunSchema && (
+                <div className="flex items-center justify-between p-3.5 rounded-[8px] bg-[#C8FF00]/10 border border-[#C8FF00]/30 animate-fade-in">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-2.5 h-2.5 rounded-full bg-[#C8FF00] animate-pulse" />
+                    <span className="text-xs sm:text-sm text-white font-medium">
+                      Quick Run Mode: <strong className="text-[#C8FF00]">{activeQuickRunSchema.friendly_name}</strong>
+                    </span>
+                    <span className="text-[11px] text-[#A1A1AA] bg-black/40 px-2 py-0.5 rounded-[4px]">
+                      0 credits used (Free)
+                    </span>
+                  </div>
                   <button
-                    onClick={() => setInputValue('')}
-                    className="text-[#71717A] hover:text-white text-xs px-1.5 py-1 cursor-pointer"
-                    title="Clear input"
+                    className="px-2.5 py-1 text-xs text-[#A1A1AA] hover:text-white bg-[#14161C] hover:bg-[#1F222A] rounded-[4px] border border-[#272A35] cursor-pointer transition-colors"
+                    onClick={() => setActiveQuickRunSchema(null)}
                   >
-                    ✕
+                    Exit Quick Run
                   </button>
-                )}
-                <button
-                  className="shrink-0 px-5 py-2.5 bg-[#FF2E54] hover:bg-[#E01B42] text-white text-xs font-semibold rounded-[8px] transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed shadow-[0_0_15px_rgba(255,46,84,0.3)] hover:shadow-[0_0_25px_rgba(255,46,84,0.5)] active:scale-[0.98]"
-                  onClick={() => {
-                    if (inputValue.trim() && !isProcessing) handleSendPrompt(inputValue.trim());
-                  }}
-                  disabled={!inputValue.trim() || isProcessing}
-                  id="playground-send-btn"
-                >
-                  {isProcessing ? 'Thinking...' : 'Run Decision ↵'}
-                </button>
-              </div>
-            </div>
+                </div>
+              )}
+
+              {/* Progressive Trust Milestone Banner */}
+              {showTrustBanner && mode === 'restricted' && (
+                <ProgressiveTrustBanner
+                  onSwitch={() => { handleModeChange('unrestricted'); setShowTrustBanner(false); }}
+                  onDismiss={() => setShowTrustBanner(false)}
+                />
+              )}
 
             {/* ──────────────────────────────────────────────────────── */}
             {/* VIEW A: TEMPLATES BROWSER (WHIRL.CHAT STYLE)             */}
@@ -866,8 +755,8 @@ export default function PlaygroundPage() {
                       </div>
                       <div className="flex items-center gap-3">
                         <div
-                          className="w-10 h-10 rounded-[10px] flex items-center justify-center shrink-0 shadow-lg"
-                          style={{ backgroundColor: `${activeSlide.color}25`, color: activeSlide.color, border: `1px solid ${activeSlide.color}50` }}
+                          className="w-12 h-12 rounded-[12px] bg-[#030305] border border-white/15 flex items-center justify-center shrink-0 shadow-2xl transition-transform group-hover:scale-105"
+                          style={{ color: activeSlide.color }}
                         >
                           {activeSlide.icon}
                         </div>
@@ -904,10 +793,7 @@ export default function PlaygroundPage() {
                         className="px-5 py-2.5 rounded-full bg-white hover:bg-[#F4F4F5] text-black font-semibold text-xs tracking-wide shadow-xl flex items-center gap-2 cursor-pointer transition-all hover:scale-105 active:scale-95"
                       >
                         <span>Try This Template</span>
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                          <line x1="5" y1="12" x2="19" y2="12" />
-                          <polyline points="12 5 19 12 12 19" />
-                        </svg>
+                        <IconCyberChevronRight size={14} />
                       </button>
                     </div>
                   </div>
@@ -927,10 +813,10 @@ export default function PlaygroundPage() {
                     {messages.length > 0 && (
                       <button
                         onClick={() => setActiveTab('chat')}
-                        className="text-xs text-[#8B5CF6] hover:text-[#A78BFA] font-medium flex items-center gap-1 cursor-pointer"
+                        className="text-xs text-[#8B5CF6] hover:text-[#A78BFA] font-medium flex items-center gap-1.5 cursor-pointer"
                       >
                         <span>View Current Chat ({messages.length})</span>
-                        <span>→</span>
+                        <IconCyberChevronRight size={13} color="#8B5CF6" />
                       </button>
                     )}
                   </div>
@@ -940,16 +826,12 @@ export default function PlaygroundPage() {
                       <div
                         key={template.id}
                         onClick={() => handleSendPrompt(template.query)}
-                        className="group flex items-start gap-4 p-4 rounded-[12px] bg-[#131418] border border-[#22252F] hover:border-[#383C4B] hover:bg-[#171920] transition-all duration-200 cursor-pointer shadow-sm hover:shadow-lg relative overflow-hidden"
+                        className="group flex items-start gap-4 p-4 rounded-[14px] bg-[#0A0B0E] border border-[#1A1C24] hover:border-[#2C303E] hover:bg-[#0F1116] transition-all duration-200 cursor-pointer shadow-md hover:shadow-2xl relative overflow-hidden"
                       >
-                        {/* App Icon */}
+                        {/* App Icon Tile - Deep Obsidian matching Reference Image */}
                         <div
-                          className="w-11 h-11 rounded-[10px] flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-110"
-                          style={{
-                            backgroundColor: `${template.color}15`,
-                            color: template.color,
-                            border: `1px solid ${template.color}35`,
-                          }}
+                          className="w-12 h-12 rounded-[12px] bg-[#030305] border border-white/[0.08] group-hover:border-white/20 flex items-center justify-center shrink-0 transition-all duration-300 group-hover:scale-105 shadow-inner"
+                          style={{ color: template.color }}
                         >
                           {template.icon}
                         </div>
@@ -970,10 +852,8 @@ export default function PlaygroundPage() {
                         </div>
 
                         {/* Right Chevron Slide Icon */}
-                        <div className="text-[#52525B] group-hover:text-white transition-all transform group-hover:translate-x-1 shrink-0 pt-1">
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <polyline points="9 18 15 12 9 6" />
-                          </svg>
+                        <div className="text-[#52525B] group-hover:text-[#C8FF00] transition-all transform group-hover:translate-x-1 shrink-0 pt-1">
+                          <IconCyberChevronRight size={16} />
                         </div>
                       </div>
                     ))}
@@ -994,7 +874,7 @@ export default function PlaygroundPage() {
                       onClick={() => setActiveTab('browse')}
                       className="px-2.5 py-1 text-xs text-[#A1A1AA] hover:text-white bg-[#14161C] hover:bg-[#1F222A] rounded-[6px] border border-[#272A35] flex items-center gap-1.5 cursor-pointer transition-colors"
                     >
-                      <span>←</span>
+                      <IconCyberChevronLeft size={13} color="#A1A1AA" />
                       <span>Templates</span>
                     </button>
                     <span className="text-xs text-[#71717A]">
@@ -1012,14 +892,12 @@ export default function PlaygroundPage() {
 
                 {messages.length === 0 && !isProcessing && (
                   <div className="text-center py-16 space-y-3">
-                    <div className="w-12 h-12 rounded-full bg-[#181A20] text-[#71717A] mx-auto flex items-center justify-center">
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-                      </svg>
+                    <div className="w-14 h-14 rounded-[12px] bg-[#14161C] border border-[#272A35] text-[#8B5CF6] mx-auto flex items-center justify-center shadow-[0_0_20px_rgba(139,92,246,0.15)]">
+                      <IconStudioTerminal size={28} color="#8B5CF6" />
                     </div>
-                    <h3 className="text-sm font-semibold text-white">No active conversation</h3>
-                    <p className="text-xs text-[#71717A] max-w-sm mx-auto">
-                      Type your question in the bar above or select a template to see how Simple Jev evaluates intent.
+                    <h3 className="text-sm font-semibold text-white font-sans">Playground Studio Ready</h3>
+                    <p className="text-xs text-[#71717A] max-w-sm mx-auto font-sans leading-relaxed">
+                      Type your natural language request in the chatbox below or choose a template to execute deterministic System 1 decisions.
                     </p>
                   </div>
                 )}
@@ -1143,9 +1021,7 @@ export default function PlaygroundPage() {
                 {pinnedSchemas.length === 0 ? (
                   <div className="p-8 rounded-[12px] bg-[#131418] border border-[#22252F] text-center space-y-2">
                     <div className="w-10 h-10 rounded-full bg-[#181A20] text-[#71717A] mx-auto flex items-center justify-center">
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
-                      </svg>
+                      <IconSavedRulesPin size={20} color="#71717A" />
                     </div>
                     <div className="text-sm font-semibold text-white">No pinned rules yet</div>
                     <p className="text-xs text-[#71717A] max-w-sm mx-auto">
@@ -1204,7 +1080,6 @@ export default function PlaygroundPage() {
                             onClick={() => handleTriggerQuickRun(schema)}
                           >
                             <span>Quick Run</span>
-                            <span>⚡</span>
                           </button>
                           <button
                             className="px-2.5 py-1.5 text-xs text-[#A1A1AA] hover:text-white bg-[#181A20] rounded-[6px] border border-[#272A35] cursor-pointer"
@@ -1231,9 +1106,126 @@ export default function PlaygroundPage() {
                 )}
               </div>
             )}
+            <div ref={chatBottomRef} className="h-4" />
           </div>
-        </main>
-      </div>
+        </div>
+
+        {/* ──────────────────────────────────────────────────────── */}
+        {/* PROMINENT GROUNDED BOTTOM CHATBOX                        */}
+        {/* ──────────────────────────────────────────────────────── */}
+        <div className="shrink-0 w-full bg-[#0B0C0E]/95 backdrop-blur-xl border-t border-[#1C1E26] px-4 py-3 sm:px-8 sm:py-3.5 z-20 shadow-[0_-15px_35px_rgba(0,0,0,0.7)]">
+          <div className="max-w-4xl mx-auto space-y-2.5">
+            {/* Quick Prompt Pill / Template Suggestions */}
+            <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5 select-none text-[11px] font-mono">
+              <span className="text-[#52525B] uppercase tracking-wider shrink-0 flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#C8FF00]" />
+                Quick Prompts:
+              </span>
+              <button
+                type="button"
+                onClick={() => handleSendPrompt("Categorize customer email: 'I was charged twice on invoice #994. Please issue a refund ASAP.'")}
+                className="shrink-0 px-2.5 py-1 rounded-[4px] bg-[#14161C] hover:bg-[#1E212B] border border-[#272A35] hover:border-[#8B5CF6]/50 text-[#D4D4D8] hover:text-white transition-colors cursor-pointer"
+              >
+                Email Refund Router
+              </button>
+              <button
+                type="button"
+                onClick={() => handleSendPrompt("Rate urgency: Primary Postgres database cluster has failed and all customer logins are returning 500 errors.")}
+                className="shrink-0 px-2.5 py-1 rounded-[4px] bg-[#14161C] hover:bg-[#1E212B] border border-[#272A35] hover:border-[#C8FF00]/50 text-[#D4D4D8] hover:text-white transition-colors cursor-pointer"
+              >
+                Outage Urgency (1-5)
+              </button>
+              <button
+                type="button"
+                onClick={() => handleSendPrompt("Verify assertion: The incoming email SPF record passes verification for paypal.com domain.")}
+                className="shrink-0 px-2.5 py-1 rounded-[4px] bg-[#14161C] hover:bg-[#1E212B] border border-[#272A35] hover:border-[#10B981]/50 text-[#D4D4D8] hover:text-white transition-colors cursor-pointer"
+              >
+                SPF Security Verifier
+              </button>
+            </div>
+
+            {/* The Input Card */}
+            <div
+              className={`p-2 sm:p-2.5 rounded-[12px] border transition-all duration-300 shadow-xl ${
+                inputFocused
+                  ? 'bg-[#121317] border-[#C8FF00]/60 shadow-[0_0_35px_rgba(200,255,0,0.16)]'
+                  : 'bg-[#121317] border-[#252833] hover:border-[#383C4B]'
+              }`}
+            >
+              <div className="flex items-center gap-3 px-2">
+                <div className="text-[#C8FF00] shrink-0 opacity-80 group-hover:opacity-100">
+                  <IconScannerReticle size={20} color={inputFocused ? '#C8FF00' : '#8E909B'} />
+                </div>
+                <input
+                  ref={inputRef}
+                  type="text"
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                  onFocus={() => setInputFocused(true)}
+                  onBlur={() => setInputFocused(false)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && inputValue.trim() && !isProcessing) {
+                      handleSendPrompt(inputValue.trim());
+                    }
+                  }}
+                  placeholder={
+                    activeQuickRunSchema
+                      ? `Enter input to test with "${activeQuickRunSchema.friendly_name}"...`
+                      : 'Ask in plain English, e.g. "Categorize customer email: I need an invoice refund"'
+                  }
+                  className="flex-1 bg-transparent border-none outline-none text-sm text-white placeholder:text-[#52525B] font-sans py-2"
+                  disabled={isProcessing}
+                  id="playground-prompt-input"
+                />
+                {inputValue && (
+                  <button
+                    onClick={() => setInputValue('')}
+                    className="text-[#71717A] hover:text-white text-xs px-2 py-1 cursor-pointer flex items-center justify-center"
+                    title="Clear input"
+                  >
+                    <IconClose size={13} color="#71717A" />
+                  </button>
+                )}
+                <button
+                  className="shrink-0 px-4 sm:px-5 py-2.5 bg-[#FF2E54] hover:bg-[#E01B42] text-white text-xs font-semibold rounded-[8px] transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed shadow-[0_0_18px_rgba(255,46,84,0.35)] hover:shadow-[0_0_28px_rgba(255,46,84,0.6)] active:scale-[0.98] inline-flex items-center gap-2 font-mono"
+                  onClick={() => {
+                    if (inputValue.trim() && !isProcessing) handleSendPrompt(inputValue.trim());
+                  }}
+                  disabled={!inputValue.trim() || isProcessing}
+                  id="playground-send-btn"
+                >
+                  {isProcessing ? (
+                    <>
+                      <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white animate-spin rounded-[1px]" />
+                      <span>Thinking...</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>Run Decision</span>
+                      <IconSendDecision size={14} color="#FFFFFF" />
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+
+            {/* Sub-telemetry */}
+            <div className="flex items-center justify-between px-2 text-[10px] font-mono text-[#52525B]">
+              <div className="flex items-center gap-2">
+                <span className="text-[#C8FF00] font-bold">JEV SYSTEM 1 ENGINE</span>
+                <span>•</span>
+                <span>PRE-FETCHED SPECULATION (~300MS)</span>
+              </div>
+              <div className="hidden sm:flex items-center gap-1">
+                <span>PRESS</span>
+                <kbd className="px-1.5 py-0.5 rounded bg-[#1C1E26] text-[#A1A1AA] border border-[#2E313D] text-[9px]">ENTER</kbd>
+                <span>TO RUN</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
     </div>
-  );
+  </div>
+);
 }

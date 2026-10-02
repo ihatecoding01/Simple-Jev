@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { PinnedSchema } from '../types';
 import { unpinSchema, renamePinnedSchema } from '../services/storage';
+import { IconClose } from './CyberIcons';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -60,12 +61,12 @@ export default function Sidebar({
             </span>
           </div>
           <button
-            className="w-7 h-7 rounded-[4px] bg-[#161618] border border-[#2E2E32] text-[#A1A1AA] hover:text-white hover:border-[#71717A] flex items-center justify-center transition-colors cursor-pointer text-xs font-mono"
+            className="w-7 h-7 rounded-[4px] bg-[#161618] border border-[#2E2E32] text-[#A1A1AA] hover:text-white hover:border-[#71717A] flex items-center justify-center transition-colors cursor-pointer text-xs"
             onClick={onClose}
             title="Close sidebar"
             id="close-sidebar-btn"
           >
-            ✕
+            <IconClose size={13} color="#A1A1AA" />
           </button>
         </div>
 

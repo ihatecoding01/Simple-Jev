@@ -2,6 +2,7 @@
 
 import React, { useRef, useEffect } from 'react';
 import { DotCluster } from './AbstractGeometry';
+import { IconSendDecision, IconScannerReticle } from './CyberIcons';
 
 interface InputBarProps {
   inputValue: string;
@@ -40,8 +41,8 @@ export default function InputBar({
     <div className="fixed bottom-0 left-0 right-0 z-30 backdrop-blur-md bg-[#050505]/95 border-t border-[#27272B] px-4 py-3 sm:py-4">
       <div className="max-w-4xl mx-auto space-y-2">
         <div className="flex items-center bg-[#141416] border border-[#27272B] rounded-[4px] px-3 sm:px-4 py-2 focus-within:border-[#C8FF00] focus-within:shadow-[0_0_20px_rgba(200,255,0,0.18)] transition-all">
-          <div className="mr-2 hidden sm:block opacity-60">
-            <DotCluster rows={2} cols={2} color="violet" />
+          <div className="mr-2 text-[#C8FF00] opacity-70">
+            <IconScannerReticle size={18} color="#C8FF00" />
           </div>
           <textarea
             ref={textareaRef}
@@ -67,10 +68,7 @@ export default function InputBar({
             {isProcessing ? (
               <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white animate-spin rounded-[1px]" />
             ) : (
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <line x1="22" y1="2" x2="11" y2="13"></line>
-                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-              </svg>
+              <IconSendDecision size={16} color="#FFFFFF" />
             )}
           </button>
         </div>
