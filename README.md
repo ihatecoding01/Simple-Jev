@@ -133,35 +133,35 @@ Simple Jev operates as a resilient five-stage pipeline designed to protect Jev's
 
 ```mermaid
 flowchart TD
-    User([User Prompt: Plain English]) --> Security[Prompt Injection Barrier & Sanitizer]
-    Security --> Cache{Intent Vector Cache<br/>384-dim all-MiniLM-L6-v2}
+    User(["User Prompt: Plain English"]) --> Security["Prompt Injection Barrier & Sanitizer"]
+    Security --> Cache{"Intent Vector Cache (384-dim all-MiniLM-L6-v2)"}
 
     %% Exact Cache Hit Path
-    Cache -- "Exact Hit (>= 0.95 Sim) & Unrestricted Mode" --> FastExec[Jev System 1 Execution]
+    Cache -->|"Exact Hit (>= 0.95 Sim) & Unrestricted Mode"| FastExec["Jev System 1 Execution"]
     
     %% Cache Miss or Divergence Path
-    Cache -- "Cold Miss or Restricted Mode" --> Generator[Generator Engine<br/>Extracts Candidate Schema & State]
+    Cache -->|"Cold Miss or Restricted Mode"| Generator["Generator Engine: Candidate Schema & State Extraction"]
     
-    Generator --> Validator{5-Point Meta-Validator<br/>Coverage | Exclusivity | Type Fit<br/>Scope | State Sufficiency}
+    Generator --> Validator{"5-Point Meta-Validator (Coverage, Exclusivity, Type Fit, Scope, State)"}
     
     %% Validation Failure Loop
-    Validator -- "Fails Criteria" --> Patcher[Targeted Diff Patcher<br/>Surgical Field Repair]
-    Patcher -- "Stall Cycle Detected (2 Retries)" --> Fallback[Graceful Plain Conversational Fallback]
-    Patcher -- "Repaired Schema" --> Validator
+    Validator -->|"Fails Criteria"| Patcher["Targeted Diff Patcher: Surgical Field Repair"]
+    Patcher -->|"Stall Cycle Detected (2 Retries)"| Fallback["Graceful Plain Conversational Fallback"]
+    Patcher -->|"Repaired Schema"| Validator
     
     %% Validation Success Path
-    Validator -- "Passes All Checks" --> ConfirmCard["What I Understood" Card<br/>Interactive Visual Chips]
+    Validator -->|"Passes All Checks"| ConfirmCard["What I Understood Card: Interactive Visual Chips"]
     
     %% User Chip Edits
-    ConfirmCard -- "User Modifies Chips (Add/Remove)" --> FastReval["Local Fast Re-Validation<br/>(Zero LLM Token Cost)"]
+    ConfirmCard -->|"User Modifies Chips (Add/Remove)"| FastReval["Local Fast Re-Validation (Zero LLM Token Cost)"]
     FastReval --> ConfirmCard
     
     %% User Confirmation / Auto-run
-    ConfirmCard -- "Confirm & Run" --> FastExec
+    ConfirmCard -->|"Confirm & Run"| FastExec
     
     %% Execution to Verdict
-    FastExec --> Verdict["Deterministic Decision Card<br/>Certainty % + Latency + Probability Distribution"]
-    FastExec -.-> CacheStore[(Update Semantic Cache)]
+    FastExec --> Verdict["Deterministic Decision Card: Certainty % + Latency + Distribution"]
+    FastExec -.-> CacheStore[("Update Semantic Cache")]
 ```
 
 ### The 5-Point Meta-Schema Contract
