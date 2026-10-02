@@ -32,7 +32,6 @@ import {
   patchSchema,
   executeJev,
   fetchQuota,
-  fetchSystemStatus,
 } from '../../services/api';
 import {
   getPreferences,
@@ -177,10 +176,6 @@ export default function PlaygroundPage() {
   const [showTrustBanner, setShowTrustBanner] = useState(false);
   const [inputFocused, setInputFocused] = useState(false);
   const [showAllTemplates, setShowAllTemplates] = useState(false);
-  const [engineStatus, setEngineStatus] = useState<{ is_simulation: boolean; engine_name: string }>({
-    is_simulation: true,
-    engine_name: 'Deterministic Simulation Engine (Demo)',
-  });
 
   // Speculative prefetch cache: stores in-flight background promises triggered on hover or mount
   const prefetchCacheRef = useRef<Map<string, { key: string; promise: Promise<ExecutionResult> }>>(new Map());
@@ -401,12 +396,6 @@ export default function PlaygroundPage() {
       setRecentInquiries(savedInquiries);
     });
     fetchQuota().then(setQuota);
-    fetchSystemStatus().then((s) => {
-      setEngineStatus({
-        is_simulation: s.is_simulation,
-        engine_name: s.engine_name,
-      });
-    });
 
     if (typeof window !== 'undefined' && !hasProcessedInitialQuery.current) {
       hasProcessedInitialQuery.current = true;
@@ -757,26 +746,6 @@ export default function PlaygroundPage() {
                 <span className="text-[10px] px-2 py-0.5 rounded-[4px] bg-[#C8FF00]/10 text-[#C8FF00] border border-[#C8FF00]/20 font-mono uppercase">
                   No-Code Jev
                 </span>
-                {/* Loud Engine State Attribution Badge */}
-                {engineStatus.is_simulation ? (
-                  <span
-                    className="flex items-center gap-1.5 px-2 py-0.5 rounded-[3px] bg-[#F59E0B]/15 border border-[#F59E0B]/50 text-[#F59E0B] font-mono text-[10px] font-bold tracking-wider uppercase shadow-[0_0_12px_rgba(245,158,11,0.2)]"
-                    title="Running local deterministic simulation engine (JEV_API_KEY not configured)"
-                    id="studio-engine-simulation-pill"
-                  >
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#F59E0B] animate-pulse" />
-                    <span>SIMULATION (DEMO)</span>
-                  </span>
-                ) : (
-                  <span
-                    className="flex items-center gap-1.5 px-2 py-0.5 rounded-[3px] bg-[#10B981]/15 border border-[#10B981]/50 text-[#10B981] font-mono text-[10px] font-bold tracking-wider uppercase shadow-[0_0_12px_rgba(16,185,129,0.2)]"
-                    title="Connected to live TypeSafe AI Jev production cluster"
-                    id="studio-engine-live-pill"
-                  >
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#10B981]" />
-                    <span>LIVE TYPESAFE JEV</span>
-                  </span>
-                )}
               </h1>
               <p className="text-xs text-[#71717A] mt-0.5">
                 Ask in plain English. Simple Jev generates and runs deterministic decision schemas.

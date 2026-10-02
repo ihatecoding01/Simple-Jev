@@ -43,31 +43,12 @@ export default function DecisionCard({ result, schema, onPinRule }: DecisionCard
         <div className="w-2.5 h-2.5 bg-[#C8FF00] shadow-[0_0_10px_#C8FF00]" />
       </div>
 
-      {/* Top row: badge + engine state + execution time */}
+      {/* Top row: badge + execution time */}
       <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
         <div className="flex flex-wrap items-center gap-2">
           <span className="gt-badge gt-badge--lime font-mono">
             [JEV DECISION]
           </span>
-          {result.is_simulation !== false ? (
-            <span
-              className="px-2 py-0.5 rounded-[2px] bg-[#F59E0B]/20 border border-[#F59E0B]/60 text-[#F59E0B] font-mono text-[10px] font-bold tracking-wider uppercase flex items-center gap-1.5 shadow-[0_0_12px_rgba(245,158,11,0.25)]"
-              title="Evaluated via local deterministic simulation engine (JEV_API_KEY not configured in backend)"
-              id="badge-engine-simulation"
-            >
-              <span className="w-1.5 h-1.5 rounded-full bg-[#F59E0B] animate-pulse" />
-              <span>SIMULATION (DEMO)</span>
-            </span>
-          ) : (
-            <span
-              className="px-2 py-0.5 rounded-[2px] bg-[#10B981]/20 border border-[#10B981]/60 text-[#10B981] font-mono text-[10px] font-bold tracking-wider uppercase flex items-center gap-1.5 shadow-[0_0_12px_rgba(16,185,129,0.25)]"
-              title="Evaluated on live TypeSafe Jev model cluster"
-              id="badge-engine-live"
-            >
-              <span className="w-1.5 h-1.5 rounded-full bg-[#10B981]" />
-              <span>LIVE TYPESAFE JEV</span>
-            </span>
-          )}
           <span className="gt-badge gt-badge--lime font-mono">
             {result.execution_time_ms}ms
           </span>
@@ -173,21 +154,6 @@ export default function DecisionCard({ result, schema, onPinRule }: DecisionCard
         </div>
       )}
 
-      {/* Loud benchmark & simulation watermark */}
-      <div className="mt-4 pt-3 border-t border-[#1C1C22] flex flex-wrap items-center justify-between gap-2 text-[10px] font-mono select-none">
-        <div className="flex flex-wrap items-center gap-1.5">
-          <span className={result.is_simulation !== false ? 'text-[#F59E0B] font-bold flex items-center gap-1' : 'text-[#10B981] font-bold flex items-center gap-1'}>
-            <span>{result.is_simulation !== false ? '⚡ BENCHMARK MODE: SIMULATION' : '🔒 BENCHMARK MODE: LIVE JEV'}</span>
-          </span>
-          <span className="text-[#3F3F46]">•</span>
-          <span className="text-[#71717A]">
-            {result.is_simulation !== false
-              ? 'Local deterministic engine (demo)'
-              : result.engine_name || 'TypeSafe AI Jev 1.13'}
-          </span>
-        </div>
-        <span className="text-[#52525B]">SentenceTransformers · all-MiniLM-L6-v2</span>
-      </div>
     </div>
   );
 }

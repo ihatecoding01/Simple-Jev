@@ -1,18 +1,9 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
-import { fetchSystemStatus } from '../services/api';
 
 export default function Header() {
-  const [isSimulation, setIsSimulation] = useState(true);
-
-  useEffect(() => {
-    fetchSystemStatus().then((status) => {
-      setIsSimulation(status.is_simulation);
-    });
-  }, []);
-
   return (
     <header className="sticky top-0 z-40 w-full backdrop-blur-md bg-[#050505]/90 border-b border-[#27272B] px-4 sm:px-8 py-3 transition-all select-none">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
@@ -29,31 +20,8 @@ export default function Header() {
           </div>
         </Link>
 
-        {/* Center: Engine Mode Badge + Playground Link */}
+        {/* Center: Playground Link */}
         <div className="flex items-center gap-3">
-          {/* Engine State Indicator - Loud & Unmistakable */}
-          <div
-            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-[2px] font-mono text-[10px] font-bold tracking-wider uppercase border ${
-              isSimulation
-                ? 'bg-[#F59E0B]/10 border-[#F59E0B]/50 text-[#F59E0B] shadow-[0_0_10px_rgba(245,158,11,0.2)]'
-                : 'bg-[#10B981]/10 border-[#10B981]/50 text-[#10B981] shadow-[0_0_10px_rgba(16,185,129,0.2)]'
-            }`}
-            title={
-              isSimulation
-                ? 'Running local deterministic simulation engine (JEV_API_KEY not configured)'
-                : 'Connected to live TypeSafe AI Jev endpoint'
-            }
-            id="header-engine-mode-badge"
-          >
-            <span
-              className={`w-1.5 h-1.5 rounded-full ${
-                isSimulation ? 'bg-[#F59E0B] animate-pulse' : 'bg-[#10B981]'
-              }`}
-            />
-            <span className="hidden sm:inline">ENGINE:</span>
-            <span>{isSimulation ? 'SIMULATION (DEMO)' : 'LIVE JEV'}</span>
-          </div>
-
           <Link
             href="/playground"
             className="flex items-center gap-2 px-3.5 sm:px-5 py-1.5 rounded-[2px] bg-[#141416] hover:bg-[#1A1A1D] border border-[#27272B] hover:border-[#C8FF00] text-xs font-mono font-semibold text-white hover:text-[#C8FF00] tracking-wider uppercase transition-all shadow-sm hover:shadow-[0_0_15px_rgba(200,255,0,0.2)] group"
